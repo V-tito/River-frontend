@@ -1,4 +1,4 @@
-.table {width:100%;
+.table {flex: 1;
 box-sizing: border-box; /* Include padding and border in the table width */
     border-collapse: collapse; /* Combine border to avoid double spacing */
     padding: 0%;

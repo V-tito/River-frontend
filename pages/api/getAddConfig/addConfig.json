@@ -1,0 +1,8 @@
+{"TestBoard": [{ "id": "id", "label": "id", "type": "number", "required": true },
+{ "id": "address", "label": "address", "type": "number", "required": true },
+{ "id": "max_inputs", "label": "max_inputs", "type": "number", "required": true },
+{ "id": "max_outputs", "label": "max_outputs", "type": "number", "required": true },
+{ "id": "parent_scheme_id", "label": "parent_scheme_id", "type": "number", "required": true },
+{ "id": "protocol_version", "label": "protocol_version", "type": "number", "required": true },
+    { "id": "name", "label": "name", "type": "text", "required": true },
+    { "id": "description", "label": "description", "type": "text", "required": true }]}

@@ -1,0 +1,17 @@
+.navigation_wrapper {
+    display: flex;
+    flex-direction:row
+  }
+  
+  .sidebar {
+    width: min-content;  
+    background-color: #f4f4f4;  
+    padding: 20px;  /* Padding for aesthetics */
+    height: 100%;  
+  }
+  
+  .main {
+    flex: 1;  /* Take the remaining space */
+    padding: 20px;  /* Main content padding */
+    justify-self: right;
+  }

@@ -1,8 +1,7 @@
 import React from 'react';
 import styles from "./table-builder.module.css";
 
-const DataTable = ({datar}) => {
-  const data=datar.results
+const DataTable = ({data}) => {
   return (
     <table className={styles.table}>
       <thead>
