@@ -1,8 +1,104 @@
-{"TestBoard": [{ "id": "id", "label": "id", "type": "number", "required": true },
-{ "id": "address", "label": "address", "type": "number", "required": true },
-{ "id": "max_inputs", "label": "max_inputs", "type": "number", "required": true },
-{ "id": "max_outputs", "label": "max_outputs", "type": "number", "required": true },
-{ "id": "parent_scheme_id", "label": "parent_scheme_id", "type": "number", "required": true },
-{ "id": "protocol_version", "label": "protocol_version", "type": "number", "required": true },
-    { "id": "name", "label": "name", "type": "text", "required": true },
-    { "id": "description", "label": "description", "type": "text", "required": true }]}
+{"TestBoard": [
+    {"id": "max_inputs", 
+        "label": "Число входных портов:", 
+        "type": "number", 
+        "required": true 
+    },
+    {"id": "max_outputs", 
+        "label": "Число выходов:", 
+        "type": "number", 
+        "required": true 
+    },
+    {"id": "parentScheme", 
+        "label": "Входит в схему:", 
+        "type": "number", 
+        "required": true 
+    },
+    {"id": "protocolVersion", 
+        "label": "Версия протокола:", 
+        "type": "number", 
+        "required": true 
+    },
+    {"id": "name", 
+        "label": "Название:", 
+        "type": "text", 
+        "required": true 
+    },
+    { "id": "description", 
+        "label": "Описание:", 
+        "type": "text", 
+        "required": false 
+    }
+    ],
+
+"Scheme": [
+    { "id": "name", 
+        "label": "Название:", 
+        "type": "text", 
+        "required": true 
+    },
+    { "id": "description",  
+        "label": "Описание:", 
+        "type": "text", 
+        "required": false 
+    }
+    ],
+
+"GroupOfSignals": [
+    { "id": "name", 
+        "label": "Название:", 
+        "type": "text", 
+        "required": true 
+    },
+    { "id": "description", 
+        "label": "Описание:", 
+        "type": "text", 
+        "required": false 
+    },
+    { "id": "parentScheme", 
+        "label": "Входит в схему:", 
+        "type": "number", 
+        "required": true 
+    }
+    ],
+
+"Signal":[
+    { "id": "name", 
+        "label": "Название:", 
+        "type": "text", 
+        "required": true 
+    },
+    { "id": "description", 
+        "label": "Описание:", 
+        "type": "text", 
+        "required": false 
+    },
+    { "id": "parentGroup", 
+        "label": "Входит в группу:", 
+        "type": "number", 
+        "required": true 
+    },
+    { "id": "TestBoard", 
+        "label": "Принадлежит плате:", 
+        "type": "number", 
+        "required": true 
+    },
+    { "id": "isOutput", 
+        "label": "Вид сигнала:", 
+        "type": "radio", 
+        "required": true, 
+        "values": ["Вывод","Ввод"]
+    },
+    { "id": "isStraight", 
+        "label": "Тип сигнала:", 
+        "type": "radio", 
+        "required": true, 
+        "values": ["Прямой","Обратный"]
+    },
+    { "id": "channel", 
+        "label": "Канал:", 
+        "type": "number", 
+        "required": true 
+    }
+    ]
+}

@@ -31,7 +31,7 @@ const Filter = (table) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();      
-            const addr=`/api/${table}${Filters.reduce((acc, curr) => {
+            const addr=`${process.env.API_URL}/api/${table}${Filters.reduce((acc, curr) => {
                 return acc ? `${acc}&${curr.field}=${curr.value}` : `${curr.field}=${curr.value}`;
             }, '')}`
             router.push(addr)

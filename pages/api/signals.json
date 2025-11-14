@@ -1,4 +1,0 @@
-[{"id":0,"name":"signal1","parent_board_id":0,"parent_group_id":0,"is_output":true,"is_straight":true,"channel":0},
-{"id":0,"name":"signal1","parent_board_id":0,"parent_group_id":1,"is_output":true,"is_straight":false,"channel":1},
-{"id":1,"name":"signal2","parent_board_id":1,"parent_group_id":1,"is_output":false,"is_straight":true,"channel":1},
-{"id":1,"name":"signal2","parent_board_id":1,"parent_group_id":0,"is_output":false,"is_straight":false,"channel":0}]

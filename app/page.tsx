@@ -1,5 +1,5 @@
-import NavigationWrapper from "../components/navigation_wrapper"
+
 const Home = () => {
-    return (<NavigationWrapper> </NavigationWrapper>)
+    return (<div>Project River</div>)
 }
 export default Home

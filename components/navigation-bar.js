@@ -16,9 +16,9 @@ const NavigationBar = () => {
     fetchConfig();
   }, []);
 
-  console.log(config)
+ 
   if (config == null) setConfig(JSON.parse('{"id":0,"name":"Home","link":"/"}'));
-  console.log(config)
+  
 
     return (<nav className={styles.nav}>
         <ul>

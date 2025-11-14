@@ -1,3 +1,5 @@
-{"pages":[{"id":0,"name":"Список схем","link":"/scheme_list"},
-{"id":1,"name":"Список плат","link":"/board_list"},
-{"id":2,"name":"Главная","link":"/"}]}
+{"pages":[{"id":0,"name":"Списки схем","link":"/Scheme"},
+{"id":1,"name":"Список плат","link":"/TestBoard"},
+{"id":2,"name":"Главная","link":"/"},
+{"id":3,"name":"Списки групп сигналов","link":"/GroupOfSignals"},
+{"id":4,"name":"Списки сигналов","link":"/Signal"}]}

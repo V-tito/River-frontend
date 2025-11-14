@@ -13,23 +13,26 @@ const DeleteForm = (table) => {
     const handleSubmit = async (e) => {
         e.preventDefault();      
             try {
-                const response = await fetch(`/api//river/v1/configurator/${table.table}/${formData.id}`,{
-                  method: 'DELETE'
+                const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/${table.table}/${formData.id}`,{
+                  method: 'DELETE',//headers: {'Content-Type': 'application/json',}
                 });
+                console.log(`${process.env.API_URL}/api//river/v1/configurator/${table.table}/${formData.id}`);
                 if (!response.ok) {
                   throw new Error('Network response was not ok');
                 }
               } catch (err) {
                 if (err instanceof Error) {
                     console.log (`Error: ${err.message}`)
+                    console.log(`${process.env.API_URL}/api/river/v1/configurator/${table.table}/${formData.id}`);
               }
              
             }
+            window.location.reload();
         }
         
     const handleReset = (e)=>{
         e.preventDefault();
-        setData([])
+        setFormData([])
     }
 
 

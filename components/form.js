@@ -20,7 +20,7 @@ const Form = () => {
         console.log("Form Data:", formData);
       
         try {
-            const response = await fetch('http://your-server-endpoint.com/api/data', {
+            const response = await fetch(`${process.env.API_URL}/api/data`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

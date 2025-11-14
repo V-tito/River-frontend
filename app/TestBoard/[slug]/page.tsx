@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import AddForm from "../../../components/add_form";
 import DeleteForm from "../../../components/delete_form";
 import DataTable from "../../../components/table-builder";
-import NavigationWrapper from "../../../components/navigation_wrapper"
+
 const BoardList = () => {
   const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,8 +18,8 @@ const BoardList = () => {
    useEffect(() => {
     const fetchData = async () => {
     try {
-    const response = await fetch(`/api/river/v1/configurator/TestBoard/${slug}`,{
-      method: 'GET'
+    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`,{
+      method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -36,40 +36,15 @@ const BoardList = () => {
 };
 }
 fetchData();
-console.log(`/api/river/v1/configurator/TestBoard/${slug}`)
+console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`)
 
 }, [ slug,params ]);
     
-    /*useEffect(() => {
-      
-      const fetchData = async () => {
-        try {
-          //const route = router.query.slug ? `/api/board${router.query.slug}` : `/api/board`
-          const response = await fetch('api/board',{
-            method: 'GET'
-          });
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const result = await response.json();
-          setData(result);
-        } catch (err: unknown) {
-          if (err instanceof Error) {
-            setError(err);
-        }
-        
-      } finally {
-        setLoading(false);
-      };
-      }
-      fetchData();
-  }, []); // Empty dependency array means this runs once on component mount*/
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 
   return (
     //
-    <NavigationWrapper>
           <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
             <AddForm table="TestBoard"></AddForm>
             <DeleteForm table="TestBoard"></DeleteForm>
@@ -78,7 +53,6 @@ console.log(`/api/river/v1/configurator/TestBoard/${slug}`)
       
             <DataTable data={data}></DataTable>
     </div>
-    </NavigationWrapper>
   );
 };
 
