@@ -5,9 +5,10 @@
   
   .sidebar {
     width: min-content;  
-    background-color: #f4f4f4;  
+ 
     padding: 20px;  /* Padding for aesthetics */
     height: 100%;  
+    border-width: 1px;
   }
   
   .main {

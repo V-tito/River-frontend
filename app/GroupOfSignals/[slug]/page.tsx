@@ -18,7 +18,7 @@ const GroupList = () => {
    useEffect(() => {
     const fetchData = async () => {
     try {
-    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupofSignals/${slug}`,{
+    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
@@ -45,8 +45,8 @@ fetchData();
   return (
     //
           <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-            <AddForm table="GroupofSignals"></AddForm>
-            <DeleteForm table="GroupofSignals"></DeleteForm>
+            <AddForm table="GroupOfSignals"></AddForm>
+            <DeleteForm table="GroupOfSignals"></DeleteForm>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список групп сигналов схемы {slug}:</h1>
       

@@ -27,7 +27,7 @@ const DataTable = ({data}) => {
           data.map((item) => (
             <tr key={item.id}>
               {Object.values(item).map((value, index) => (
-                <td key={index} className={styles.td}>{value}</td>
+                <td key={index} className={styles.td}>{String(value)}</td>
               ))}
             </tr>
           ))

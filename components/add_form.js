@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import styles from "./filter.module.css"; // Updated import path
+import styles from "./add_form.module.css"; // Updated import path
+import { refresh } from 'next/cache';
 
 
 
@@ -20,7 +21,7 @@ const AddForm = (table) => {
         setConfig(data);
         let newFormData={}
         data.forEach(field => 
-            (field.type="text") ? (newFormData[field.id] = ""):(newFormData[field.id] = null)
+            (field.type="text") ? (newFormData[field.id] = ""):(newFormData[field.id] = "")
         );
         setFormData(newFormData);
         setDef(newFormData)
@@ -42,30 +43,32 @@ const AddForm = (table) => {
         e.preventDefault();  
         let newFormData={...formData}
         if ((["GroupOfSignals","TestBoard"].includes(table.table))&&(!("signals" in formData))) {
-            newFormData={...newFormData, "signals":null}
+            newFormData={...newFormData, "signals":[]}
         }   
         if ( "parentScheme" in formData) 
             {newFormData["parentScheme"]= {"id": formData["parentScheme"] }}; 
         if ("parentGroup"in formData) 
             {newFormData["parentGroup"]= {"id": formData["parentGroup"] }};
-        if ("TestBoard" in formData) 
-            {newFormData["TestBoard"]= {"id": formData["TestBoard"] }}
+        if ("testBoard" in formData) 
+            {newFormData["testBoard"]= {"id": formData["testBoard"] }}
         if (table.table=="Signal") {newFormData={...newFormData, "isOutput":String(isOutput),"isStraight":String(isStraight)}}
-            /*try {
+
+        try {
                 const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/${table.table}`,{
                   method: 'POST',
-                  body: JSON.stringify(formData),
+                  body: JSON.stringify(newFormData),
                   headers: {'Content-Type': 'application/json',}
                 });
+                console.log(JSON.stringify(newFormData))
                 if (!response.ok) {
-                  throw new Error('Network response was not ok');
+                  throw new Error(`Network response was not ok: ${response.status}`);
                 }
+                refresh
               } catch (err) {
                 if (err instanceof Error) {
                     console.log (`Error: ${err.message}`)
               }
-            }*/
-           console.log(JSON.stringify(newFormData))
+            }
            console.log(table.table)
         }
         
@@ -79,11 +82,11 @@ const AddForm = (table) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={styles.form}>
             {config.map(field => (
                 <div key={field.id}>
                     <label htmlFor={field.id}>{field.label}</label>
-                    {field.type === 'radio' ? (<div><div><input
+                    {field.type === 'radio' ? (<div><div><input className={styles.radio}
                             type="radio"
                             id={field.id}
                             name={field.label}
@@ -92,7 +95,7 @@ const AddForm = (table) => {
                             checked={aliases[field.id]==true}
                             onChange={handleRadio}
                         /> {field.values[0]}</div>
-                        <div><input
+                        <div><input className={styles.radio}
                         type="radio"
                         id={field.id}
                         name={field.label}
@@ -106,6 +109,7 @@ const AddForm = (table) => {
                         
                     ) : (
                         <input
+                            className={styles.input}
                             type={field.type}
                             id={field.id}
                             value={formData[field.id]}
@@ -115,7 +119,7 @@ const AddForm = (table) => {
                     )}
                 </div>
             ))}
-            <button type="submit">Создать</button>
+            <button type="submit" className={styles.button}>Создать</button>
             <button type="reset" className={styles.button} onClick={handleReset}>
             Очистить
             </button>

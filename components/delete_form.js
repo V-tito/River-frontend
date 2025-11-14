@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import styles from "./filter.module.css"; // Updated import path
+import styles from "./delete_form.module.css"; // Updated import path
 
 const DeleteForm = (table) => {
     const [formData,setFormData]=useState()

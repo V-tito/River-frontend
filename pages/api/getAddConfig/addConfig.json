@@ -1,10 +1,10 @@
 {"TestBoard": [
-    {"id": "max_inputs", 
+    {"id": "maxInputs", 
         "label": "Число входных портов:", 
         "type": "number", 
         "required": true 
     },
-    {"id": "max_outputs", 
+    {"id": "maxOutputs", 
         "label": "Число выходов:", 
         "type": "number", 
         "required": true 
@@ -16,6 +16,11 @@
     },
     {"id": "protocolVersion", 
         "label": "Версия протокола:", 
+        "type": "number", 
+        "required": true 
+    },
+    {"id": "address", 
+        "label": "Адрес:", 
         "type": "number", 
         "required": true 
     },
@@ -78,7 +83,7 @@
         "type": "number", 
         "required": true 
     },
-    { "id": "TestBoard", 
+    { "id": "testBoard", 
         "label": "Принадлежит плате:", 
         "type": "number", 
         "required": true 
