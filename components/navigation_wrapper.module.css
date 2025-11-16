@@ -5,10 +5,13 @@
   
   .sidebar {
     width: min-content;  
- 
+    background-color: #1c5f3a;
+    color: #fff;
     padding: 20px;  /* Padding for aesthetics */
     height: 100%;  
     border-width: 1px;
+    border-radius: 5%;
+    box-sizing: border-box;
   }
   
   .main {

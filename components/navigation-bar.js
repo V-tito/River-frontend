@@ -23,7 +23,7 @@ const NavigationBar = () => {
     return (<nav className={styles.nav}>
         <ul>
             {config.map((item) => (
-                <li key={item.id}><Link href={item.link}>{item.name}</Link></li>
+                <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
               ))}
         </ul>
       </nav>)

@@ -1,3 +1,7 @@
 .nav {width:max-content;
-    
+    background-color: #1c5f3a;
+    color: #fff;
+}
+.li {
+    padding: 5px;
 }

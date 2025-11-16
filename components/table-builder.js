@@ -12,7 +12,6 @@ const DataTable = ({data}) => {
 
     fetchConfig();
   }, []);
-
   return (
     <table className={styles.table}>
       <thead>

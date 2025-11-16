@@ -9,11 +9,6 @@
         "type": "number", 
         "required": true 
     },
-    {"id": "parentScheme", 
-        "label": "Входит в схему:", 
-        "type": "number", 
-        "required": true 
-    },
     {"id": "protocolVersion", 
         "label": "Версия протокола:", 
         "type": "number", 
@@ -48,7 +43,11 @@
         "required": false 
     }
     ],
-
+"forTheFuture":[{"id": "parentScheme", 
+"label": "Входит в схему:", 
+"type": "number", 
+"required": true 
+}],
 "GroupOfSignals": [
     { "id": "name", 
         "label": "Название:", 
@@ -59,11 +58,6 @@
         "label": "Описание:", 
         "type": "text", 
         "required": false 
-    },
-    { "id": "parentScheme", 
-        "label": "Входит в схему:", 
-        "type": "number", 
-        "required": true 
     }
     ],
 
@@ -79,13 +73,13 @@
         "required": false 
     },
     { "id": "parentGroup", 
-        "label": "Входит в группу:", 
-        "type": "number", 
+        "label": "Выберите группу: ", 
+        "type": "select", 
         "required": true 
     },
     { "id": "testBoard", 
-        "label": "Принадлежит плате:", 
-        "type": "number", 
+        "label": "Выберите плату: ", 
+        "type": "select", 
         "required": true 
     },
     { "id": "isOutput", 

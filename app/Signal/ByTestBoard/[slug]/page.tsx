@@ -43,16 +43,19 @@ fetchData();
     if (error) return <p>Error: {error.message}</p>;
 
   return (
-    //
-          <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-            <AddForm table="Signal"></AddForm>
-            <DeleteForm table="Signal"></DeleteForm>
-            <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+    <div className='flex flex-row'>
+          <div className="flex flex-col p-5 self-left items-left gap-6 text-center sm:items-start sm:text-left ">
+            <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-10 text-black dark:text-zinc-50">
                 Список сигналов платы {slug}:</h1>
-      
             <DataTable data={data}></DataTable>
     </div>
+    <aside className='self-right items-right flex-row'>
+            <AddForm table="Signal"></AddForm>
+            <DeleteForm table="Signal"></DeleteForm>
+      </aside>
+      </div>
   );
 };
 
 export default SignalList;
+

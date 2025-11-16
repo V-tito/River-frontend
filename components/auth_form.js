@@ -1,7 +1,7 @@
 // components/Form.js
 "use client";
 import React, { useState } from "react";
-import styles from "./Form.module.css"; // Updated import path
+import styles from "./form.module.css"; // Updated import path
 
 const Form = () => {
     const [formData, setFormData] = useState({

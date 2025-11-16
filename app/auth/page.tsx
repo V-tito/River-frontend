@@ -1,4 +1,4 @@
-import Form from "../../components/form";
+import Form from "../../components/auth_form";
 
 export default function Home() {
   return (
