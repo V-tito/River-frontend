@@ -37,7 +37,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "components/add_form.js"  ],
+, "components/forms/add_form.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -2,6 +2,7 @@
 Нужен Node.js с npm
 Загрузить и разархивировать проект
 Из директории проекта запустить npm install (эта команда установит зависимости)
+Запустить npm build
 запустить npm install -g pm2
 запустить  pm2 start ecosystem.config.js
 Фронтенд запущен на localhost:3000

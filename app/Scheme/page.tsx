@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import DataTable from "../../components/table-builder";
-import AddForm from "../../components/add_form";
-import DeleteForm from "../../components/delete_form";
+import AddForm from "../../components/forms/add_form";
+import DeleteForm from "../../components/forms/delete_form";
 //import Filter from "../../components/filter";
 
 const Schemelist = () => {

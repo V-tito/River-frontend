@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import AddForm from "../../components/add_form";
-import DeleteForm from "../../components/delete_form";
+import AddDeleteWrapper from "../../components/AddDeleteWrapper";
 import DataTable from "../../components/table-builder";
 interface MyDataType {
   id: number;
@@ -90,14 +89,12 @@ useEffect(() => {
   console.log('lfd',listForDel)
   return (
     //
-    <div className='flex flex-row'>
-    <div className="flex flex-col p-5 self-left items-left gap-6 text-center sm:items-start sm:text-left ">
-            <div>{groups.map(group => (
+    <AddDeleteWrapper table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}>
+    {groups.map(group => (
             <div key={group.id}><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список сигналов группы {group.name}:</h1>
-                <DataTable data={data[group.name]}></DataTable></div>))}</div>
-    </div><aside className='self-right items-right flex-row'> <AddForm table="Signal"></AddForm>
-            <DeleteForm table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}></DeleteForm></aside></div>
+                <DataTable data={data[group.name]}></DataTable></div>))}
+                </AddDeleteWrapper>
   );
 };
 

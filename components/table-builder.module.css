@@ -2,12 +2,15 @@
 box-sizing: border-box; /* Include padding and border in the table width */
     border-collapse: collapse; /* Combine border to avoid double spacing */
     padding: 0%;
+    height: min-content;
+    width:100%
 }
 .th {
     padding: 5px; /* Adjust as needed */
     border: 1px solid #ccc; /* Adjust border size */
     overflow-wrap: anywhere; /* Break long words */
     word-wrap: break-word;
+    height: min-content;
 }
 .td {
     padding: 5px; /* Adjust as needed */
@@ -15,4 +18,5 @@ box-sizing: border-box; /* Include padding and border in the table width */
     overflow-wrap: anywhere; /* Break long words */
    /* word-wrap: break-word;*/
     word-break: break-all;
+    height: min-content;
 }

@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 //import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
 //import Filter from "../../../components/filter";
-import AddForm from "../../../../components/add_form";
-import DeleteForm from "../../../../components/delete_form";
+import AddDeleteWrapper from "../../../../components/AddDeleteWrapper";
 import DataTable from "../../../../components/table-builder";
 
 const SignalList = () => {
@@ -43,17 +42,11 @@ fetchData();
     if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className='flex flex-row'>
-          <div className="flex flex-col p-5 self-left items-left gap-6 text-center sm:items-start sm:text-left ">
+    <AddDeleteWrapper table="Signal" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-10 text-black dark:text-zinc-50">
                 Список сигналов платы {slug}:</h1>
             <DataTable data={data}></DataTable>
-    </div>
-    <aside className='self-right items-right flex-row'>
-            <AddForm table="Signal"></AddForm>
-            <DeleteForm table="Signal"></DeleteForm>
-      </aside>
-      </div>
+    </AddDeleteWrapper>
   );
 };
 

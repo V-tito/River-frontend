@@ -88,7 +88,7 @@ const AddForm = (table) => {
     
   }
   processConfig()
-}
+}else{setLoading(false)}
   }, [table]);
 
     const handleChange = (e) => {
@@ -102,8 +102,9 @@ const AddForm = (table) => {
         if ((["GroupOfSignals","TestBoard"].includes(table.table))&&(!("signals" in formData))) {
             newFormData={...newFormData, "signals":[]}
         }   
-        if ( "parentScheme" in formData) 
-            {newFormData["parentScheme"]= {"id": formData["parentScheme"] }}; 
+        //if ( "parentScheme" in formData) {
+          newFormData["parentScheme"]= {"id": process.env.defaultScheme }
+        //}; 
         if ("parentGroup"in formData) 
             {newFormData["parentGroup"]= {"id": aliases["parentGroup"] }};
         if ("testBoard" in formData) 
@@ -175,12 +176,12 @@ const AddForm = (table) => {
                     </div>
                         
                     ) : (field.type=="select" ? (<select
-                        className={styles.select}
+                        className={styles.input}
                         id={field.id}
                         value={aliases[field.id]}
                         required={field.required}
                         onChange={handleSelect}>
-                          <option>{field.id}</option>
+                          <option>Выберите элемент...</option>
                          {Object.entries(idToNameAliases[field.id]).map(item=>( <option key={item[0]} value={item[0]}>{item[1]}</option>))}
                         </select>) : (
                         <input

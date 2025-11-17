@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 //import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
 //import Filter from "../../../components/filter";
-import AddForm from "../../../components/add_form";
-import DeleteForm from "../../../components/delete_form";
+import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
 import DataTable from "../../../components/table-builder";
 
 const BoardList = () => {
@@ -45,14 +44,11 @@ console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
 
   return (
     //
-          <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-            <AddForm table="TestBoard"></AddForm>
-            <DeleteForm table="TestBoard"></DeleteForm>
+          <AddDeleteWrapper table="TestBoard" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список плат схемы {slug}:</h1>
-      
             <DataTable data={data}></DataTable>
-    </div>
+            </AddDeleteWrapper>
   );
 };
 

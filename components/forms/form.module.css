@@ -12,7 +12,7 @@
 
 .input,
 .radio,
-.select,
+.select ,
 .button {
   width: fit-content;
   padding: 4px;

@@ -46,7 +46,8 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
                             id="id"
                             required
                             onChange={handleChange}>
-                                {(listOfAll.map(item=>(item.map(piece=><option key={piece.id} value={piece.id}>{piece.name}</option>))))}
+                                <option value={null}>Выберите элемент...</option>
+                                {(listOfAll.map(item=>((item instanceof Array) ? (item.map(piece=><option key={piece.id} value={piece.id}>{piece.name}</option>)):(<option key={item.id} value={item.id}>{item.name}</option>))))}
                             </select>
                 </div>
             <button type="submit" className={styles.button}>Удалить</button>
