@@ -91,7 +91,7 @@ useEffect(() => {
     //
     <AddDeleteWrapper table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}>
     {groups.map(group => (
-            <div key={group.id}><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список сигналов группы {group.name}:</h1>
                 <DataTable data={data[group.name]}></DataTable></div>))}
                 </AddDeleteWrapper>

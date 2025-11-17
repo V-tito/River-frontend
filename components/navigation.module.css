@@ -1,6 +1,7 @@
 .nav {width:max-content;
     background-color: #1c5f3a;
     color: #fff;
+    height: 100%;
 }
 .li {
     padding: 5px;

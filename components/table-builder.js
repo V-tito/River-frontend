@@ -11,13 +11,14 @@ const DataTable = ({data}) => {
     };
 
     fetchConfig();
+    
   }, []);
   return (
     <table className={styles.table}>
       <thead>
         <tr>
-          {Object.keys(data[0] || {}).map((key) => (
-            <th key={key} className={styles.th}>{(key in config)?(config[key]):key}</th>
+          {Object.keys(data[0] || {}).map((key) => ((key in config)?(
+            <th key={key} className={styles.th}>{config[key]}</th>):('')
           ))}
         </tr>
       </thead>
@@ -25,8 +26,8 @@ const DataTable = ({data}) => {
         {data.length > 0 ? (
           data.map((item) => (
             <tr key={item.id}>
-              {Object.values(item).map((value, index) => (
-                <td key={index} className={styles.td}>{String(value)}</td>
+              {Object.entries(item).map(item1 => ((item1[0] in config)?(
+                <td key={item1[0]} className={styles.td}>{String(item1[1])}</td>):(null)
               ))}
             </tr>
           ))

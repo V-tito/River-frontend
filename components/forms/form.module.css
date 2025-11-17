@@ -1,5 +1,5 @@
 .form {
-  max-width: fit-content;
+  max-width: 100%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -34,4 +34,14 @@
 
 .button:hover {
   background-color: #124127;
+}
+.header{
+  text-align: center;
+  font-size: larger;
+  text-decoration: underline;
+  text-decoration-color: #1c5f3a;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  padding-bottom: 10px;
+  
 }

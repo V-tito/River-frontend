@@ -40,6 +40,7 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
     console.log(listOfAll)
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
+            <header className={styles.header}>Удалить элемент</header>
                 <div>
                     <label>{"Выберите элемент для удаления:"}</label>
                     <select className={styles.input} type="number"

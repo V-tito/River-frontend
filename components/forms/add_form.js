@@ -151,6 +151,7 @@ const AddForm = (table) => {
     console.log(`BN:`,boardToNames)
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
+          <header className={styles.header}>Добавить элемент</header>
             {config.map(field => (
                 <div key={field.id}>
                     <label htmlFor={field.id}>{field.label} </label>

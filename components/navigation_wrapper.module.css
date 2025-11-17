@@ -1,6 +1,7 @@
 .navigation_wrapper {
     display: flex;
-    flex-direction:row
+    flex-direction:row;
+    height: 100%;
   }
   
   .sidebar {
