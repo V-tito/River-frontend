@@ -86,13 +86,13 @@
         "label": "Вид сигнала:", 
         "type": "radio", 
         "required": true, 
-        "values": ["Вывод","Ввод"]
+        "values": ["Входящий","Исходящий"]
     },
     { "id": "isStraight", 
         "label": "Тип сигнала:", 
         "type": "radio", 
         "required": true, 
-        "values": ["Прямой","Обратный"]
+        "values": ["Прямой","Инвертированный"]
     },
     { "id": "channel", 
         "label": "Канал:", 
