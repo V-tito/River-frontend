@@ -2,8 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
-    border: 1px
+    border: 1px;
+
     
   
   }
@@ -13,12 +13,13 @@
     padding: 20px;
     border-radius: 5px;
     width: 80%;
+    justify-self: center;
   }
   
 .closeButtonStyle {
     background: none;
-    border-radius: 5%;
-    font-size: 20px;
+    border: 1px solid #ccc;
     cursor: pointer;
-    border: 1px
+    border: 1px;
+    justify-self: center;
   }
