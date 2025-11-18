@@ -1,9 +1,11 @@
 "use client";
 import { useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
+import Modal from "../modal"
 
 const DeleteForm = ({table,listOfAll=[[]]}) => {
     const [formData,setFormData]=useState()
+    const [error,setError]=useState(null)
   
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -19,10 +21,11 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
                 });
                 console.log(`${process.env.API_URL}/api/river/v1/configurator/${table}/${formData.id}`)
                 if (!response.ok) {
-                  throw new Error('Network response was not ok');
+                  throw new Error(`Ошибка сети: ${response.status}`);
                 }
               } catch (err) {
                 if (err instanceof Error) {
+                    setError(err)
                     console.log (`Error: ${err.message}`)
     
               }
@@ -55,7 +58,7 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
             <button type="reset" className={styles.button} onClick={handleReset}>
             Очистить
             </button>
-
+            <p><Modal state={error}>{error? error.message : ""}</Modal></p>
         </form>
     );}
 

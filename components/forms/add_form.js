@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
-
+import Modal from "../modal"
 
 
 
@@ -9,6 +9,7 @@ import styles from "./form.module.css"; // Updated import path
 const AddForm = (table) => {
     const [config, setConfig] = useState([]);
     const [formData,setFormData]=useState({})
+    const [error,setError]=useState(null)
     const [loading, setLoading] = useState(true);
     const [defFD,setDef]=useState({})
     const [isOutput,setOutput]=useState(false)
@@ -19,7 +20,6 @@ const AddForm = (table) => {
     const [chosenGroup,setChosenGroup]=useState()
     const aliases={"isOutput":isOutput,"isStraight":isStraight,"testBoard":chosenBoard,"parentGroup":chosenGroup}
     const setAliases={"isOutput":setOutput,"isStraight":setStraight,"testBoard":setChosenBoard,"parentGroup":setChosenGroup}
-   
     const idToNameAliases={"testBoard":boardToNames,"parentGroup":groupToNames}
   
     useEffect(() => {
@@ -42,7 +42,7 @@ const AddForm = (table) => {
               method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
             });
             if (!response.ok) {
-              throw new Error('Network response was not ok');
+              throw new Error('Ошибка сети');
             }
             const result = await response.json();
             
@@ -59,7 +59,7 @@ const AddForm = (table) => {
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Ошибка сети');
         }
         const result = await response.json();
         console.log('APIB',result)
@@ -120,12 +120,13 @@ const AddForm = (table) => {
                 console.log(JSON.stringify(newFormData))
                 if (!response.ok) {
                   console.log(JSON.stringify(newFormData))
-                  throw new Error(`Network response was not ok: ${response.status}`);
+                  throw new Error(`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`);
                   
                 }
                 window.location.reload();
               } catch (err) {
                 if (err instanceof Error) {
+                  setError(err)
                     console.log (`Error: ${err.message}`)
               }
             }
@@ -200,7 +201,7 @@ const AddForm = (table) => {
             <button type="reset" className={styles.button} onClick={handleReset}>
             Очистить
             </button>
-
+            <p><Modal state={error}>{error? error.message : ""}</Modal></p>
         </form>
     );}
 

@@ -3,6 +3,7 @@ import styles from "./table-builder.module.css";
 
 const DataTable = ({data}) => {
   const [config,setConfig]=useState({})
+  const aliases={"isOutput":{true:"Вывод",false:"Ввод"},"isStraight":{true:"Прямой",false:"Обратный"}}
   useEffect(() => {
     const fetchConfig = async () => {
       const response = await fetch('/api/parse_headers');
@@ -27,7 +28,7 @@ const DataTable = ({data}) => {
           data.map((item) => (
             <tr key={item.id}>
               {Object.entries(item).map(item1 => ((item1[0] in config)?(
-                <td key={item1[0]} className={styles.td}>{String(item1[1])}</td>):(null)
+                <td key={item1[0]} className={styles.td}>{item1[0] in aliases? aliases[item1[0]][item1[1]]: String(item1[1])}</td>):(null)
               ))}
             </tr>
           ))

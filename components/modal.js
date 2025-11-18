@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import styles from "./modal.module.css"
 
-const Modal = ({ isVisible, onClose, children }) => {
+const Modal = ({ state, children }) => {
+  const [isVisible, setIsVisible]=useState(false)
+
+  useEffect(()=>{setIsVisible(state!=null)},[state])
+
+  const onClose = ()=>{
+    setIsVisible(false)
+  }
   if (!isVisible) return null;
 
   return (
-    <div style={modalOverlayStyle}>
-      <div style={modalContentStyle}>
-        <button onClick={onClose} style={closeButtonStyle}>✖</button>
+    <div style={styles.modalOverlayStyle}>
+      <div style={styles.modalContentStyle}>
+        <button onClick={onClose} style={styles.closeButtonStyle}>Закрыть</button>
         {children}
       </div>
     </div>
@@ -14,32 +22,6 @@ const Modal = ({ isVisible, onClose, children }) => {
 };
 
 // Sample styles for the modal
-const modalOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 999,
-};
 
-const modalContentStyle = {
-  backgroundColor: '#fff',
-  padding: '20px',
-  borderRadius: '5px',
-  width: '80%',
-  maxWidth: '500px',
-};
-
-const closeButtonStyle = {
-  background: 'none',
-  border: 'none',
-  fontSize: '20px',
-  cursor: 'pointer',
-};
 
 export default Modal;
