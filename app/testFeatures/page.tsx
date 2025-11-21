@@ -1,7 +1,7 @@
-import AddForm from "../../components/forms/add_form";
-import DeleteForm from "../../components/forms/delete_form";
+import StateButton from "../../components/state_button";
+import StateIndicator from "../../components/state_indicator";
 
 const test = ()=> {
-    return (<div><AddForm table="TestBoard"></AddForm><DeleteForm table="GroupOfSignals"></DeleteForm></div>)
+    return (<div><StateButton sig=""></StateButton><StateIndicator api=''></StateIndicator></div>)
 }
 export default test

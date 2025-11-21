@@ -1,0 +1,17 @@
+.button{
+    width:max-content;
+    padding: 10%;
+    border-radius: 10%;
+    font-weight: bold;
+    box-shadow:black 1px;
+    box-sizing: border-box;
+}
+.on{
+    background-color: greenyellow;
+    color: black;
+    
+}
+.off{
+    background-color: red;
+    color: black;
+}

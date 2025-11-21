@@ -1,0 +1,19 @@
+.indicator {
+    width: 20px; /* Adjust the diameter */
+    height: 20px; /* Adjust the diameter */
+    border: 3px solid #ccc; /* Grey border */
+    border-radius: 50%; /* Makes it round */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  .active {
+    background-color: yellow; /* Yellow when active */
+  }
+  
+  .inactive {
+    background-color: grey; /* Grey when inactive */
+  }
