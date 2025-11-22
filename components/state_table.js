@@ -16,7 +16,7 @@ const StateTable = ({data}) => {
           data.map((item) => 
             <tr key={item.id}>
                 <td className={styles.td}>{item.name}</td>
-                <td className={styles.th}>{(isOutput in data && data.isOutput) ? <StateButton sig={data.id}></StateButton>:<StateIndicator api=''></StateIndicator>}</td>
+                <td className={styles.th}>{("isOutput" in item && item.isOutput) ? <StateButton sig={item.id}></StateButton>:<StateIndicator api=''></StateIndicator>}</td>
             </tr>
           )) : (
           <tr>

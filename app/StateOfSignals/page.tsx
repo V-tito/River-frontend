@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import StateTable from "../../components/state_table";
 interface MyDataType {
@@ -59,7 +60,7 @@ const StateOfSignals = () => {
     const results=await Promise.all(promises)
     
     const newData=results.reduce((acc, { name, temp }) => {
-      acc[name] = {id: temp.id, name: temp.name};
+      acc[name] = temp;
       return acc;
     }, {} as DynamicRecord);
     setData(newData)
@@ -71,7 +72,7 @@ const StateOfSignals = () => {
 
     if (loading) return (<p>Loading...</p>)
     if (error) return <p>Error: {error.message}</p>
-    return (<div><p>It is a stub bc fuck it all</p>{groups.map(group => (
+    return (<div>{groups.map(group => (
         <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             Список сигналов группы {group.name}:</h1>
             <StateTable data={data[group.name]}></StateTable></div>))}</div>)
