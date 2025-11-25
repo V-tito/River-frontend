@@ -2,23 +2,33 @@
 import { useState } from "react"
 import styles from "./state_button.module.css"
 
-const StateButton=({sig})=>{
+const StateButton=({dst=null,ch=null})=>{
     const [on,setOn]=useState(false)
+    
     /*useEffect(()=>{
         //тут надо будет по ид платы сигнала зафетчить адрес и сделать запрос о состоянии,
         const fetchCurrentState = async ()=> { //STUB!
-            const responce = await fetch ("there goes API", {method:"GET"})
-            const result=await responce.json
-            setOn(result.state)
-        }
-        fetchCurrentState()
-    })*/
+        let api=`${process.env.API_URL}/api/river/v1/protocol`
+        if (dst!=null){urlParams = new URLSearchParams({destination:dst,channel:ch});
+        api=api+urlParams.toString(); // Returns the query string
+          }
+        const responce = await fetch (api, {method:"GET"})
+        const result=await responce.json
+        setOn(result.state)
+        setLastCheckTime(result.time)//todo actual key
+    }
+    fetchCurrentState()
+})*/
 
     const changeState=async()=>{
             try {
-                const response = await fetch ("STUB",{method:"POST", body:JSON.stringify({state:(!on)})})//possibly PUT
+                let api=`${process.env.API_URL}/api/river/v1/protocol`
+                if (dst!=null){urlParams = new URLSearchParams({destination:dst,channel:ch,value:!on});
+                api=api+urlParams.toString(); // Returns the query string
+                }
+                const response = await fetch (api,{method:"POST", body:JSON.stringify({state:(!on)})})//possibly PUT
                 if (!response.ok) {
-                    throw new Error (`Network error ${responce.status}`)} else{setOn(!on)}
+                    throw new Error (`Ошибка сети ${response.status}`)} else{setOn(!on)}
             } catch (err) {
                 console.log(err)
         }

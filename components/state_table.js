@@ -20,8 +20,8 @@ const StateTable = ({data}) => {
                 <td className={styles.th}>{
                 ("isOutput" in item ) ? 
                   ( item.isOutput ?
-                      <StateButton sig={item.id}></StateButton> :
-                      <StateIndicator api={`${process.env.API_URL}/api/river/v1/protocol/${item.parentTestBoardId}`}
+                      <StateButton dst={item.parentTestBoardId} ch={item.channel}></StateButton> :
+                      <StateIndicator dst={item.parentTestBoardId} ch={item.channel}
                       //todo change to proper naming
                       >
                       </StateIndicator>)
