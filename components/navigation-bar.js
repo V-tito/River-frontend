@@ -2,15 +2,19 @@
 import { useEffect, useState } from 'react';
 import styles from "./navigation.module.css";
 import Link from 'next/link';
+import { useGlobal } from '../app/GlobalState';
 
 const NavigationBar = () => {
-  const [config, setConfig] = useState(JSON.parse('[{"id":0,"name":"Главная","link":"/"}]'));
+  const [config, setConfig] = useState(JSON.parse('{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'));
+  const {defaultScheme, setDefaultScheme}=useGlobal()
   
   useEffect(() => {
     const fetchConfig = async () => {
       const response = await fetch('/api/getNavigationConfig');
       const data = await response.json();
+      console.log(data)
       setConfig(data);
+      console.log(data)
     };
 
     fetchConfig();
@@ -22,7 +26,10 @@ const NavigationBar = () => {
 
     return (<nav className={styles.nav}>
         <ul>
-            {config.map((item) => (
+            {config.common.map((item) => (
+                <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
+              ))}
+              {defaultScheme==null ? '':config.schemeDependent.map((item) => (
                 <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
               ))}
         </ul>

@@ -5,6 +5,7 @@ import styles from "./state_button.module.css"
 const StateButton=({sig})=>{
     const [on,setOn]=useState(false)
     /*useEffect(()=>{
+        //тут надо будет по ид платы сигнала зафетчить адрес и сделать запрос о состоянии,
         const fetchCurrentState = async ()=> { //STUB!
             const responce = await fetch ("there goes API", {method:"GET"})
             const result=await responce.json

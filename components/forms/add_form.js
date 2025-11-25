@@ -2,11 +2,12 @@
 import { useEffect, useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
 import Modal from "../modal"
-
+import { useGlobal } from '../../app/GlobalState';
 
 
 
 const AddForm = (table) => {
+  const {defaultScheme}=useGlobal()
     const [config, setConfig] = useState([]);
     const [formData,setFormData]=useState({})
     const [error,setError]=useState(null)
@@ -38,7 +39,7 @@ const AddForm = (table) => {
     if (table.table=="Signal"){
         const fetchGroups = async () => {
             try {
-            const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${process.env.defaultScheme}`,{
+            const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`,{
               method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
             });
             if (!response.ok) {
@@ -55,7 +56,7 @@ const AddForm = (table) => {
         }
     const fetchBoards = async () => {
         try {
-        const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${process.env.defaultScheme}`,{
+        const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`,{
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });
         if (!response.ok) {
@@ -89,7 +90,7 @@ const AddForm = (table) => {
   }
   processConfig()
 }else{setLoading(false)}
-  }, [table]);
+  }, [table,defaultScheme]);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -103,7 +104,7 @@ const AddForm = (table) => {
             newFormData={...newFormData, "signals":[]}
         }   
         //if ( "parentScheme" in formData) {
-          newFormData["parentScheme"]= {"id": process.env.defaultScheme }
+          newFormData["parentScheme"]= {"id": defaultScheme.id }
         //}; 
         if ("parentGroup"in formData) 
             {newFormData["parentGroup"]= {"id": aliases["parentGroup"] }};

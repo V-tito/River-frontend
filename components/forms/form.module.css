@@ -12,7 +12,14 @@
 
 .input,
 .radio,
-.select ,
+.select {
+  max-width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  color: #333;
+  padding: 4px;
+}
 .button {
   width: fit-content;
   padding: 4px;
@@ -21,15 +28,22 @@
   border-radius: 5px;
   box-sizing: border-box;
 }
+.option {
+  padding: 10px;
+  background-color: white;
+  color: #333;
+  }
 
 .input {
   width: 100%;
+  padding: 4px;
 }
 
 .button {
   background-color: #1c5f3a;
   color: #fff;
   cursor: pointer;
+  align-self: center;
 }
 
 .button:hover {

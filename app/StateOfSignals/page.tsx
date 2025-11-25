@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import StateTable from "../../components/state_table";
+import { useGlobal } from '../GlobalState';
 interface MyDataType {
   id: number;
   name: string;
@@ -11,6 +12,7 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
+  const {defaultScheme}=useGlobal()
     const [data, setData] = useState<DynamicRecord>({});
       const [groups, setGroups] = useState<[MyDataType]|[]>([]);
         const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const StateOfSignals = () => {
     useEffect(() => {
         const fetchGroups = async () => {
         try {
-        const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${process.env.defaultScheme}`,{
+        const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`,{
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });
         if (!response.ok) {
@@ -32,6 +34,7 @@ const StateOfSignals = () => {
       }
     }
     }
+    
     const fetchSignals = async (groupId:number)=>{
       try {
         const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/Signal/byGroup/${groupId}`,{
@@ -68,13 +71,13 @@ const StateOfSignals = () => {
     }
     }
     fetchAll();
-    setLoading(false);},[])
+    setLoading(false);},[defaultScheme])
 
     if (loading) return (<p>Loading...</p>)
     if (error) return <p>Error: {error.message}</p>
     return (<div>{groups.map(group => (
         <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Список сигналов группы {group.name}:</h1>
+            Состояние сигналов группы {group.name}:</h1>
             <StateTable data={data[group.name]}></StateTable></div>))}</div>)
 }
 export default StateOfSignals

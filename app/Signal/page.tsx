@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import AddDeleteWrapper from "../../components/AddDeleteWrapper";
 import DataTable from "../../components/table-builder";
+import { useGlobal } from '../GlobalState';
 interface MyDataType {
   id: number;
   name: string;
@@ -11,6 +12,7 @@ interface DynamicRecord {
   [key: string]: []; // Change 'any' to a more specific type if possible
 }
 const SignalList = () => {
+  const { defaultScheme } = useGlobal();
   const [data, setData] = useState<DynamicRecord>({});
   const [groups, setGroups] = useState<[MyDataType]|[]>([]);
     const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ const SignalList = () => {
    useEffect(() => {
     const fetchGroups = async () => {
     try {
-    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${process.env.defaultScheme}`,{
+    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
@@ -67,7 +69,7 @@ const newData=results.reduce((acc, { name, temp }) => {
   acc[name] = temp;
   return acc;
 }, {} as DynamicRecord);
-const newList=results.reduce((acc, { name, temp }) => {
+const newList=results.reduce((acc, { temp }) => {
   acc.push(temp);
   return acc
 }, [])
@@ -77,7 +79,7 @@ setListForDel(newList)
 }
 }
 fetchAll();
-setLoading(false);},[])
+setLoading(false);},[defaultScheme])
 
 useEffect(() => {
 

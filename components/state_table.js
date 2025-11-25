@@ -14,9 +14,20 @@ const StateTable = ({data}) => {
       <tbody>
         {data.length > 0 ? (
           data.map((item) => 
+            
             <tr key={item.id}>
                 <td className={styles.td}>{item.name}</td>
-                <td className={styles.th}>{("isOutput" in item && item.isOutput) ? <StateButton sig={item.id}></StateButton>:<StateIndicator api=''></StateIndicator>}</td>
+                <td className={styles.th}>{
+                ("isOutput" in item ) ? 
+                  ( item.isOutput ?
+                      <StateButton sig={item.id}></StateButton> :
+                      <StateIndicator api={`${process.env.API_URL}/api/river/v1/protocol/${item.parentTestBoardId}`}
+                      //todo change to proper naming
+                      >
+                      </StateIndicator>)
+                  :
+                (<StateIndicator api={`${process.env.API_URL}/api/river/v1/protocol/${item.id}`}>
+                </StateIndicator>)}</td>
             </tr>
           )) : (
           <tr>
