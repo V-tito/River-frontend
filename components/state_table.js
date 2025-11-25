@@ -20,13 +20,13 @@ const StateTable = ({data}) => {
                 <td className={styles.th}>{
                 ("isOutput" in item ) ? 
                   ( item.isOutput ?
-                      <StateButton dst={item.parentTestBoardId} ch={item.channel}></StateButton> :
-                      <StateIndicator dst={item.parentTestBoardId} ch={item.channel}
+                      <StateButton sig={item.id}></StateButton> :
+                      <StateIndicator sig={item.id}
                       //todo change to proper naming
                       >
                       </StateIndicator>)
                   :
-                (<StateIndicator api={`${process.env.API_URL}/api/river/v1/protocol/${item.id}`}>
+                (<StateIndicator sig={item.id} board={true}>
                 </StateIndicator>)}</td>
             </tr>
           )) : (
