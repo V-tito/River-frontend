@@ -1,7 +1,7 @@
-import StateButton from "../../components/state_button";
-import StateIndicator from "../../components/state_indicator";
-
-const test = ()=> {
-    return (<div><StateButton sig=""></StateButton><StateIndicator api=''></StateIndicator></div>)
+"use client";
+import { useGlobal } from '../GlobalState';
+const Test = ()=> {
+    const { defaultScheme } = useGlobal();
+    return (<div>{defaultScheme}</div>)
 }
-export default test
+export default Test
