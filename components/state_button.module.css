@@ -5,6 +5,7 @@
     font-weight: bold;
     box-shadow:black 1px;
     box-sizing: border-box;
+    cursor:pointer
 }
 .on{
     background-color: greenyellow;
