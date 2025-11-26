@@ -3,7 +3,8 @@ import styles from "./table-builder.module.css";
 
 const DataTable = ({data}) => {
   const [config,setConfig]=useState({})
-  const aliases={"isOutput":{true:"Исходящий",false:"Входящий"},"isStraight":{true:"Прямой",false:"Инвертированный"}}
+  const aliases={"isOutput":{true:"Исходящий",false:"Входящий"},
+  "isStraight":{true:"Прямой",false:"Инвертированный"}}
   useEffect(() => {
     const fetchConfig = async () => {
       const response = await fetch('/api/parse_headers');
