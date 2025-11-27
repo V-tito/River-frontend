@@ -16,8 +16,8 @@ const StateTable = ({data}) => {
           data.map((item) => 
             
             <tr key={item.id}>
-                <td className={styles.td}>{item.name}</td>
-                <td className={styles.th}>{
+                <td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
+                <td className={styles.td}>{
                 ("isOutput" in item ) ? 
                   ( item.isOutput ?
                       <StateButton sig={item.id}></StateButton> :

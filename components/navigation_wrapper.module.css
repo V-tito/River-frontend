@@ -5,7 +5,7 @@
   }
   
   .sidebar {
-    width: min-content;  
+    width: max-content;  
     background-color: #1c5f3a;
     color: #fff;
     padding: 20px;  /* Padding for aesthetics */

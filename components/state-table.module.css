@@ -10,6 +10,8 @@ box-sizing: border-box; /* Include padding and border in the table width */
     border: 1px solid #ccc; /* Adjust border size */
     overflow-wrap: anywhere; /* Break long words */
     word-wrap: break-word;
+    background-color: #1c5f3a;
+    color:aliceblue;
 
 
 }
@@ -20,4 +22,7 @@ box-sizing: border-box; /* Include padding and border in the table width */
    /* word-wrap: break-word;*/
     word-break: break-all;
 
+}
+.namer{
+    width:100px;
 }

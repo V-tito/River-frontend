@@ -6,7 +6,7 @@ import { useGlobal } from '../app/GlobalState';
 
 const NavigationBar = () => {
   const [config, setConfig] = useState(JSON.parse('{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'));
-  const {defaultScheme, setDefaultScheme}=useGlobal()
+  const {defaultScheme}=useGlobal()
   
   useEffect(() => {
     const fetchConfig = async () => {
@@ -24,15 +24,17 @@ const NavigationBar = () => {
   if (config == null) setConfig(JSON.parse('{"id":0,"name":"Home","link":"/"}'));
   
 
-    return (<nav className={styles.nav}>
+    return (<div><nav className={styles.nav}>
         <ul>
             {config.common.map((item) => (
                 <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
               ))}
-              {defaultScheme==null ? '':config.schemeDependent.map((item) => (
-                <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
+              {defaultScheme==null ? '':config.schemeDependent.map((item) => (<div key={item.id}>
+                <li className={styles.li} ><Link href={item.link}>{item.name}</Link></li>
+                </div>
               ))}
         </ul>
-      </nav>)
+      </nav>
+      <div className={styles.currentScheme}><p>Текущая схема: {defaultScheme==null ? "не задана": defaultScheme.name}</p></div></div>)
 }
 export default NavigationBar

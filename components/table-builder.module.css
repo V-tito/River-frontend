@@ -15,8 +15,9 @@ box-sizing: border-box; /* Include padding and border in the table width */
 .td {
     padding: 5px; /* Adjust as needed */
     border: 1px solid #ccc; /* Adjust border size */
-    overflow-wrap: anywhere; /* Break long words */
+    overflow-wrap: normal; /* Break long words */
    /* word-wrap: break-word;*/
-    word-break: break-all;
+    word-break: normal;
     height: min-content;
+    width:min-content;
 }

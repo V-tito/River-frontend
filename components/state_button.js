@@ -1,8 +1,10 @@
 "use client"
 import { useState,useEffect } from "react"
+import Modal from "./modal"
 import styles from "./state_button.module.css"
 
 const StateButton=({sig})=>{
+    const [error, setError]=useState(null)
     const [on,setOn]=useState(() => {
         const savedVariable = localStorage.getItem(`Signal_${sig}_state`);
         if (savedVariable) {
@@ -28,6 +30,7 @@ const StateButton=({sig})=>{
                     throw new Error (`Ошибка сети ${response.status}`)} else{setOn(!on)}
             } catch (err) {
                 console.log(err)
+                setError(err)
         }
     }
     console.log("state",on,"for sig",sig)
@@ -35,7 +38,7 @@ const StateButton=({sig})=>{
         <button className={`${styles.button} ${on==true?styles.on:styles.off}`} onClick={changeState}>
         {on==true?"Вкл.":"Выкл."}
         </button>
-        {on}
+        <p><Modal state={error}>{error? error.message : ""}</Modal></p>
         </div>
     )
 }

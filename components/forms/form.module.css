@@ -3,6 +3,7 @@
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin:10px;
 }
 
 .label {
@@ -44,6 +45,8 @@
   color: #fff;
   cursor: pointer;
   align-self: center;
+  margin:5px;
+  margin-top:10px;
 }
 
 .button:hover {
