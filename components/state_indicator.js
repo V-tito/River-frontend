@@ -33,7 +33,9 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 }else {setOn(result)}
         }
         fetchCurrentState()
-    },[])
+        const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
+        return () => clearInterval(intervalId);
+    },[sig,board])
     const changeCheckSettings = () =>{
         setCheck((prev) => !prev);
     }

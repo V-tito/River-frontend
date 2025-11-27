@@ -22,7 +22,9 @@ const StateButton=({sig})=>{
         setLastCheckTime(result.time)//todo actual key
     }
     fetchCurrentState()
-},[])
+    const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
+    return () => clearInterval(intervalId);
+},[sig])
 
     const changeState=async()=>{
             try {
