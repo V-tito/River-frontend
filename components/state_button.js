@@ -6,7 +6,7 @@ const StateButton=({sig})=>{
     const [on,setOn]=useState(false)
     const [lastCheckTime,setLastCheckTime]=useState(null)
     
-    useEffect(()=>{
+    /*useEffect(()=>{
         //тут надо будет по ид платы сигнала зафетчить адрес и сделать запрос о состоянии,
         const fetchCurrentState = async ()=> { //STUB!
             const api=new URL(`${process.env.API_URL}/api/river/v1/protocol/get`)
@@ -18,13 +18,14 @@ const StateButton=({sig})=>{
                     })
         console.log(`tried to get signal state with ${JSON.stringify({id:sig})}`)
         const result=await responce.json()
-        setOn(result.state)
-        setLastCheckTime(result.time)//todo actual key
+        console.log("received",result)
+        setOn(result.b)
+        setLastCheckTime(result.a)//todo actual key
     }
     fetchCurrentState()
     const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
     return () => clearInterval(intervalId);
-},[sig])
+},[sig])*/
 
     const changeState=async()=>{
             try {

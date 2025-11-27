@@ -12,7 +12,6 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
         
           //добавить колонку время проверки
             const fetchCurrentState = async ()=> { //STUB!
-                console.log(board)
                 let api
                 if (board) {
                     api=new URL(`${process.env.API_URL}/api/river/v1/protocol/nop`)
@@ -26,22 +25,24 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                         //headers: {'Content-Type': 'application/json',}
                     })
                 console.log(`tried to get state on api ${api.toString()}`)
-                const result= response.json()
+                const result= await response.json()
+                console.log("received:", result)
                 
-                if (!board) {setOn(result.a)
-                    setLastCheckTime(result.b)//todo actual key
+                if (!board) {setOn(result.b)
+                    setLastCheckTime(String(result.a))//todo actual key
+                console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
                 }else {setOn(result)}
         }
         fetchCurrentState()
-        const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
+        const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
         return () => clearInterval(intervalId);
     },[sig,board])
     const changeCheckSettings = () =>{
         setCheck((prev) => !prev);
     }
-    return (<div><div className={`${styles.indicator} ${on ? styles.active : styles.inactive}`}></div>
+    return (<div><div className={`${styles.indicator} ${on==true ? styles.active : styles.inactive}`}></div>
     {showCheckDisplaySettings ? <input type="checkbox" checked={checkConstantly} onChange={changeCheckSettings}></input>:''}
-    {lastCheckTime==null ? '': <p>Сигнал получен в ${lastCheckTime}</p>}
+    {lastCheckTime==null ? '': <p>Сигнал получен в {lastCheckTime}</p>}
     </div>)
 }
 
