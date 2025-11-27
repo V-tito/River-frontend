@@ -3,30 +3,19 @@ import { useState,useEffect } from "react"
 import styles from "./state_button.module.css"
 
 const StateButton=({sig})=>{
-    const [on,setOn]=useState(false)
-    const [lastCheckTime,setLastCheckTime]=useState(null)
+    const [on,setOn]=useState(() => {
+        const savedVariable = localStorage.getItem(`Signal_${sig}_state`);
+        if (savedVariable) {
+            console.log("got saved", savedVariable, "for sig",sig)
+            return (savedVariable!=null ? savedVariable==='true' : false);
+        }
+      })
     
-    /*useEffect(()=>{
-        //тут надо будет по ид платы сигнала зафетчить адрес и сделать запрос о состоянии,
-        const fetchCurrentState = async ()=> { //STUB!
-            const api=new URL(`${process.env.API_URL}/api/river/v1/protocol/get`)
-            api.searchParams.set('id',sig)
-            const responce = await fetch (api.toString(), 
-                    {method:"GET", 
-                        //body: JSON.stringify({id:sig}),
-                        headers: {'Content-Type': 'application/json',}
-                    })
-        console.log(`tried to get signal state with ${JSON.stringify({id:sig})}`)
-        const result=await responce.json()
-        console.log("received",result)
-        setOn(result.b)
-        setLastCheckTime(result.a)//todo actual key
-    }
-    fetchCurrentState()
-    const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
-    return () => clearInterval(intervalId);
-},[sig])*/
-
+    useEffect(()=>{
+        localStorage.setItem(`Signal_${sig}_state`, on);
+        console.log("saved", on, "for sig",sig)
+},[sig,on]
+    )
     const changeState=async()=>{
             try {
                 const response = await fetch (`${process.env.API_URL}/api/river/v1/protocol/set`,
@@ -40,10 +29,14 @@ const StateButton=({sig})=>{
             } catch (err) {
                 console.log(err)
         }
-
     }
-    return (<div><button className={`${styles.button} ${on?styles.on:styles.off}`} onClick={changeState}>{on?"Вкл.":"Выкл."}</button>
-        {lastCheckTime==null ? '': <p>Сигнал получен в ${lastCheckTime}</p>}</div>
+    console.log("state",on,"for sig",sig)
+    return (<div>
+        <button className={`${styles.button} ${on==true?styles.on:styles.off}`} onClick={changeState}>
+        {on==true?"Вкл.":"Выкл."}
+        </button>
+        {on}
+        </div>
     )
 }
 

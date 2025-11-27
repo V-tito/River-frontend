@@ -1,0 +1,23 @@
+.table {flex: 1;
+box-sizing: border-box; /* Include padding and border in the table width */
+    border-collapse: collapse; /* Combine border to avoid double spacing */
+    padding: 0%;
+    width: 375px;  /* Set a fixed width */
+  height: min-content;
+}
+.th {
+    padding: 5px; /* Adjust as needed */
+    border: 1px solid #ccc; /* Adjust border size */
+    overflow-wrap: anywhere; /* Break long words */
+    word-wrap: break-word;
+
+
+}
+.td {
+    padding: 5px; /* Adjust as needed */
+    border: 1px solid #ccc; /* Adjust border size */
+    overflow-wrap: anywhere; /* Break long words */
+   /* word-wrap: break-word;*/
+    word-break: break-all;
+
+}

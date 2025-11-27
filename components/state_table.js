@@ -1,4 +1,4 @@
-import styles from "./table-builder.module.css";
+import styles from "./state-table.module.css";
 import StateIndicator from './state_indicator';
 import StateButton from './state_button';
 

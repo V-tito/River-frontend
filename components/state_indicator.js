@@ -5,10 +5,10 @@ import styles from "./state_indicator.module.css"
 
 const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     const [on,setOn]=useState(false)
-    const [checkConstantly,setCheck]=useState(false)
+    const [checkConstantly,setCheck]=useState(true)
     const [lastCheckTime,setLastCheckTime]=useState(null)
     
-    useEffect(()=>{
+   useEffect(()=>{
         
           //добавить колонку время проверки
             const fetchCurrentState = async ()=> { //STUB!
@@ -30,13 +30,14 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 
                 if (!board) {setOn(result.b)
                     setLastCheckTime(String(result.a))//todo actual key
-                console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
+                //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
                 }else {setOn(result)}
         }
         fetchCurrentState()
+        if (checkConstantly==true) {
         const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
-        return () => clearInterval(intervalId);
-    },[sig,board])
+        return () => clearInterval(intervalId);}
+    },[sig,board,checkConstantly])
     const changeCheckSettings = () =>{
         setCheck((prev) => !prev);
     }
