@@ -17,13 +17,17 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
-  const [defaultScheme, setDefaultScheme] = useState(()=>{try{
-  const storedScheme = localStorage.getItem('defaultScheme');
-  return storedScheme ? JSON.parse(storedScheme):null} catch (err) 
-  { console.log("error setting scheme",err.message)
-    return null}
-  })
+  const [defaultScheme, setDefaultScheme] = useState(null)
 // Update localStorage whenever defaultScheme changes
+useEffect(()=>{
+  if (typeof window !== 'undefined') {
+  try{
+    const storedScheme = localStorage.getItem('defaultScheme');
+    if(storedScheme){setDefaultScheme(JSON.parse(storedScheme))}
+    } catch (err) 
+    { console.log("error setting scheme",err.message)
+      return null}
+}},[])
 /*useEffect(()=>{
   {const fetchDefault=async () => {
       try{
