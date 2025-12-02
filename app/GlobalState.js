@@ -18,6 +18,7 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
+  const [pollingError,setPollingError] = useState()
   const [defaultScheme, setDefaultScheme] = useState(()=>{
     if (typeof window !== 'undefined') {
       logger.info("Setting up default scheme")
@@ -62,7 +63,7 @@ useEffect(() => {
 }, [defaultScheme]);
 logger.info("default scheme befor return",defaultScheme)
   return (
-    <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme }}>
+    <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme, sigPollingError,setSigPollingError }}>
       {children}
     </GlobalContext.Provider>
   );

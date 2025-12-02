@@ -1,0 +1,18 @@
+.eba {
+    width: max-content;  
+    background-color: #fff;
+    padding: 20px;  /* Padding for aesthetics */
+    height: 100%;  
+    border-width: 5px;
+    border-radius: 5%;
+    
+    box-sizing: border-box;
+}
+.ok{
+    color: #1c5f3a;
+    border-color: #1c5f3a;
+}
+.error {
+    color: #eb1e3a;
+    border-color: #eb1e3a;
+}

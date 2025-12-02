@@ -1,12 +1,13 @@
 "use client"
 import { useState,useEffect } from "react"
 import styles from "./state_indicator.module.css"
+import {useGlobal} from '../app/GlobalState'
 
 const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     const [on,setOn]=useState(false)
     const [checkConstantly,setCheck]=useState(true)
     const [lastCheckTime,setLastCheckTime]=useState(null)
-    const [error, setError]=useState(null)
+    const{setPollingError}=useGlobal()
     
    useEffect(()=>{
         
@@ -36,7 +37,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                     setLastCheckTime(String(result.a))//todo actual key
                 //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
                 }else {setOn(result)}
-        } catch (err) {setError(err)}}
+        } catch (err) {setPollingError(err)}}
         fetchCurrentState()
         if (checkConstantly==true) {
         const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds

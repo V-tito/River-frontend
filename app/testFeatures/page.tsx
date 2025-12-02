@@ -1,7 +1,8 @@
 "use client";
 import { useGlobal } from '../GlobalState';
-const Test = ()=> {
+import ErrorIndicatorBar from '../../components/ErrorIndicatorBar'
+const Test = () => {
     const { defaultScheme } = useGlobal();
-    return (<div>{defaultScheme}</div>)
+    return (<ErrorIndicatorBar></ErrorIndicatorBar>)
 }
 export default Test
