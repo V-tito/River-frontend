@@ -1,5 +1,5 @@
 "use client";
-import logger from "../../logger";
+//import //logger from "../..///logger";
 import { useEffect, useState } from 'react';
 import StateTable from '@/components/state_table';
 import { useGlobal } from '../GlobalState';
@@ -15,7 +15,7 @@ const StateOfPlates = () => {
    useEffect(() => {
     const fetchBoards = async () => {
     try {
-      logger.debug("state of boards page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`)
+      //logger.debug("state of boards page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`)
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
@@ -24,26 +24,26 @@ const StateOfPlates = () => {
     }
     const result = await response.json();
     setData(result);
-    logger.debug("state of boards page:set data with")
-    logger.debug(result)
+    //logger.debug("state of boards page:set data with")
+    //logger.debug(result)
   } catch (err: unknown) {
     if (err instanceof Error) {
       setError(err);
-      logger.debug(`state of  boards page: network error caught ${err.message}`)
+      //logger.debug(`state of  boards page: network error caught ${err.message}`)
   } else {
-    logger.debug(`state of  boards page: unknown exception`)
+    //logger.debug(`state of  boards page: unknown exception`)
   }
   
 } finally {
-  logger.debug("state of boards page: finished loading")
+  //logger.debug("state of boards page: finished loading")
   setLoading(false);
 };
 }
-logger.debug("state of boards page: trying to fetch data for scheme",defaultScheme)
+//logger.debug("state of boards page: trying to fetch data for scheme",defaultScheme)
 fetchBoards();
-logger.debug("state of boards page:fetching data finished")
+//logger.debug("state of boards page:fetching data finished")
 }, [defaultScheme]);
-logger.info("state of boards page:entered for scheme",defaultScheme)
+//logger.info("state of boards page:entered for scheme",defaultScheme)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
     

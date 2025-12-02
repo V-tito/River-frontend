@@ -1,5 +1,5 @@
 "use client"
-import logger from "../../logger";
+
 import React, { useEffect, useState } from 'react';
 import StateTable from "../../components/state_table";
 import { useGlobal } from '../GlobalState';
@@ -21,7 +21,7 @@ const StateOfSignals = () => {
     useEffect(() => {
         const fetchGroups = async () => {
         try {
-          logger.debug("state of boards page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`)
+
         const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`,{
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });

@@ -1,5 +1,5 @@
 "use client";
-import logger from "../../logger";
+//import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
 import AddDeleteWrapper from "../../components/AddDeleteWrapper";
 import DataTable from "../../components/table-builder";
@@ -24,44 +24,45 @@ const SignalList = () => {
    useEffect(() => {
     const fetchData=async()=>{
       try{
-        logger.debug("signals page: before fetch from api"+`/api/getSignalTables/${defaultScheme.id}`)
+        //logger.debug("signals page: before fetch from api"+`/api/getSignalTables/${defaultScheme.id}`)
       const response=await fetch(`/api/getSignalTables/${defaultScheme.id}`)
       const conf = await response.json();
         if (!response.ok){
           throw new Error (`Ошибка сети ${response.status}`)
         }
         setData(conf.data)
-        logger.debug("signals page: set data")
-        logger.debug(conf.data)
+        //logger.debug("signals page: set data")
+        //logger.debug(conf.data)
       setGroups(conf.groups)
-      logger.debug("signals page: set groups")
-      logger.debug(conf.groups)
+      //logger.debug("signals page: set groups")
+      //logger.debug(conf.groups)
       setListForDel(conf.list)
-      logger.debug("signals page: set list for delete form with")
-      logger.debug(conf.list)
+      //logger.debug("signals page: set list for delete form with")
+      //logger.debug(conf.list)
       
     } catch (err:unknown){
       if (err instanceof Error) {
         setError(err)
-        logger.debug(`signals page: network error caught ${err.message}`)
+        //logger.debug(`signals page: network error caught ${err.message}`)
       } else{
-      logger.debug(`signals page: unknown exception on signals page`)}
+      //logger.debug(`signals page: unknown exception on signals page`)
+      }
     } finally {
-      logger.debug("signals page: finished loading")
+      //logger.debug("signals page: finished loading")
       setLoading(false)}}
-    logger.debug("signals page: trying to fetch data for scheme",defaultScheme)
+    //logger.debug("signals page: trying to fetch data for scheme",defaultScheme)
     fetchData()
   },[defaultScheme])
 
-  logger.info("signals page:entered for scheme",defaultScheme)
+  //logger.info("signals page:entered for scheme",defaultScheme)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
-    logger.debug('groups fetched on signals page')
-    logger.debug(groups)
-    logger.debug('signals fetched on signals page')
-    logger.debug(data)
-    logger.debug('list for delete form on signals page')
-    logger.debug(listForDel)
+    //logger.debug('groups fetched on signals page')
+    //logger.debug(groups)
+    //logger.debug('signals fetched on signals page')
+    //logger.debug(data)
+    //logger.debug('list for delete form on signals page')
+    //logger.debug(listForDel)
   return (
     //
     <AddDeleteWrapper table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}>

@@ -1,5 +1,5 @@
 "use client";
-import logger from "../../../logger";
+//import //logger from "../../..///logger";
 import React, { useEffect, useState } from 'react';
 //import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
@@ -18,7 +18,7 @@ const GroupList = () => {
    useEffect(() => {
     const fetchData = async () => {
     try {
-      logger.debug("signals page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`)
+      //logger.debug("signals page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`)
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
@@ -27,24 +27,25 @@ const GroupList = () => {
     }
     const result = await response.json();
     setData(result);
-    logger.debug("signals page: set data")
-        logger.debug(result)
+    //logger.debug("signals page: set data")
+        //logger.debug(result)
   } catch (err: unknown) {
     if (err instanceof Error) {
       setError(err);
-      logger.debug(`groups page: network error caught ${err.message}`)
+      //logger.debug(`groups page: network error caught ${err.message}`)
   } else{
-    logger.debug(`groups page: unknown exception on signals page`)}
+    //logger.debug(`groups page: unknown exception on signals page`)
+    }
   } finally {
-    logger.debug("groups page: finished loading")
+    //logger.debug("groups page: finished loading")
   setLoading(false);
 };
 }
-logger.debug(`groups page: trying to fetch data for scheme ${slug}`)
+//logger.debug(`groups page: trying to fetch data for scheme ${slug}`)
 fetchData();
 
 }, [ slug,params ]);
-logger.info(`groups page:entered for scheme ${slug}`)
+//logger.info(`groups page:entered for scheme ${slug}`)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 

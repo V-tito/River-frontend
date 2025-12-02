@@ -1,4 +1,4 @@
-{"common":[{"id":2,"name":"Установить схему","link":"/"}],
+{"common":[{"id":2,"name":"Установить схему","link":"/"},{"id":0,"name":"Список схем","link":"/Scheme"}],
 "schemeDependent":[
     {"id":1,"name":"Списки плат","link":"/TestBoard"},
     {"id":3,"name":"Списки групп сигналов","link":"/GroupOfSignals"},
@@ -7,6 +7,6 @@
     {"id":6,"name":"Состояние плат","link":"/StateOfBoards"}
     ], 
 "hidden_pages":[
-    {"id":0,"name":"Список схем","link":"/Scheme"}
+    
     ]
 }

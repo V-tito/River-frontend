@@ -1,5 +1,5 @@
 "use client"
-import logger from "../logger";
+//import //logger from "..///logger";
 import React, { createContext, useContext, useState,useEffect } from 'react';
 
 const GlobalContext = createContext();
@@ -18,17 +18,17 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
-  const [pollingError,setPollingError] = useState()
+  const [pollingError,setPollingError] = useState(null)
   const [defaultScheme, setDefaultScheme] = useState(()=>{
     if (typeof window !== 'undefined') {
-      logger.info("Setting up default scheme")
+      //logger.info("Setting up default scheme")
     try{
       const storedScheme = localStorage.getItem('defaultScheme');
       if(storedScheme){
-        logger.info("set up default scheme from local storage",storedScheme)
+        //logger.info("set up default scheme from local storage",storedScheme)
         return JSON.parse(storedScheme)}
       } catch (err) 
-      {logger.error("error setting scheme",err.message)
+      {//logger.error("error setting scheme",err.message)
         return null}
   }})
 /*
@@ -58,10 +58,10 @@ useEffect(()=>{
 useEffect(() => {
   if (defaultScheme !== null) {
     localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
-    logger.info("putting default scheme into local storage",defaultScheme)
+    //logger.info("putting default scheme into local storage",defaultScheme)
   }
 }, [defaultScheme]);
-logger.info("default scheme befor return",defaultScheme)
+//logger.info("default scheme befor return",defaultScheme)
   return (
     <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme, pollingError,setPollingError }}>
       {children}

@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import DataTable from "../../components/table-builder";
-import AddForm from "../../components/forms/add_form";
-import DeleteForm from "../../components/forms/delete_form";
+import AddDeleteWrapper from "../../components/AddDeleteWrapper";
 //import Filter from "../../components/filter";
 
 const Schemelist = () => {
@@ -37,14 +36,12 @@ const Schemelist = () => {
   if (error) return <p>Error: {error.message}</p>;
   return (
     //<Filter table="scheme"></Filter> goes lower when needed
-      <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-        <AddForm table="Scheme"></AddForm>
-            <DeleteForm table="Scheme"></DeleteForm>
+    <AddDeleteWrapper table="Scheme" listOfAll={data}>
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список схем:</h1>
       
       <DataTable data={data}></DataTable>
-      </div>
+      </AddDeleteWrapper>
   );
 };
 

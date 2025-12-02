@@ -1,5 +1,5 @@
 "use client"
-import logger from "../logger";
+//import //logger from "..///logger";
 import styles from './navigation_wrapper.module.css';  // Import the CSS module for styling
 import NavigationBar from './navigation-bar';
 import ErrorIndicatorBar from './ErrorIndicatorBar';
@@ -11,7 +11,7 @@ const NavigationWrapper = ({ children }) => {
   const pathname=usePathname()
   const pathSegments = pathname.split('/');
     const pagename = pathSegments[pathSegments.length - 1];
-    logger.debug("pagename",pagename)
+    //logger.debug("pagename",pagename)
   return (
     <div className={styles.navigation_wrapper}>
       <aside className={styles.sidebar}>
