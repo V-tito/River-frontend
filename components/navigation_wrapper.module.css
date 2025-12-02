@@ -5,18 +5,14 @@
   }
   
   .sidebar {
-    width: max-content;  
-    background-color: #1c5f3a;
-    color: #fff;
-    padding: 20px;  /* Padding for aesthetics */
+    width:15%;  
     height: 100%;  
-    border-width: 1px;
-    border-radius: 5%;
-    box-sizing: border-box;
+    box-sizing: content-box;
   }
   
   .main {
     flex: 1;  /* Take the remaining space */
     padding: 20px;  /* Main content padding */
     justify-self: right;
+    width:85%;  
   }

@@ -24,7 +24,7 @@ const NavigationBar = () => {
   if (config == null) setConfig(JSON.parse('{"id":0,"name":"Home","link":"/"}'));
   
 
-    return (<div><nav className={styles.nav}>
+    return (<div className={styles.sidebar}><nav className={styles.nav}>
         <ul>
             {config.common.map((item) => (
                 <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>

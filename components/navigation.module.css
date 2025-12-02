@@ -1,4 +1,4 @@
-.nav {width:max-content;
+.nav {width:100%;
     background-color: #1c5f3a;
     color: #fff;
     height: 100%;
@@ -6,6 +6,16 @@
 .li {
     padding: 5px;
 }
+.sidebar {
+    width: 100%;  
+    background-color: #1c5f3a;
+    color: #fff;
+    padding: 20px;  /* Padding for aesthetics */
+    height: fit-content;  
+    border-width: 1px;
+    border-radius: 5%;
+    box-sizing: border-box;
+  }
 .currentScheme{
     box-sizing: content-box;
     border-radius: 10%;

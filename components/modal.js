@@ -14,7 +14,7 @@ const Modal = ({ state, children }) => {
   return (
     <div className={styles.modalOverlayStyle}>
       <div className={styles.modalContentStyle}>
-        <p>{children}</p>
+        {children}
         <button onClick={onClose} className={styles.closeButtonStyle}>Закрыть</button>
       </div>
     </div>

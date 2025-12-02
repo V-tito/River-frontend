@@ -1,10 +1,10 @@
 .eba {
-    width: max-content;  
+    width: 100%;  
     background-color: #fff;
-    padding: 20px;  /* Padding for aesthetics */
+    padding: 10px;  /* Padding for aesthetics */
     height: 100%;  
     border-width: 5px;
-    border-radius: 5%;
+    border-radius: 10%;
     
     box-sizing: border-box;
 }

@@ -63,7 +63,7 @@ useEffect(() => {
 }, [defaultScheme]);
 logger.info("default scheme befor return",defaultScheme)
   return (
-    <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme, sigPollingError,setSigPollingError }}>
+    <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme, pollingError,setPollingError }}>
       {children}
     </GlobalContext.Provider>
   );

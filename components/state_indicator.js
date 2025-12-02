@@ -32,7 +32,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 }
                 const result= await response.json()
                 console.log("received:", result)
-                
+                setPollingError(null)
                 if (!board) {setOn(result.b)
                     setLastCheckTime(String(result.a))//todo actual key
                 //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
@@ -42,7 +42,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
         if (checkConstantly==true) {
         const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
         return () => clearInterval(intervalId);}
-    },[sig,board,checkConstantly])
+    },[sig,board,checkConstantly,setPollingError])
     const changeCheckSettings = () =>{
         setCheck((prev) => !prev);
     }

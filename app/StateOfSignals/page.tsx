@@ -13,7 +13,7 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
-  const {defaultScheme}=useGlobal()
+  const {defaultScheme,setPollingError}=useGlobal()
     const [data, setData] = useState<DynamicRecord>({});
       const [groups, setGroups] = useState<[MyDataType]|[]>([]);
         const [loading, setLoading] = useState(true);
@@ -33,6 +33,7 @@ const StateOfSignals = () => {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err);
+          setPollingError(err)
       }
     }
     }
@@ -73,7 +74,7 @@ const StateOfSignals = () => {
     }
     }
     fetchAll();
-    setLoading(false);},[defaultScheme])
+    setLoading(false);},[defaultScheme,setPollingError])
 
     if (loading) return (<p>Loading...</p>)
     if (error) return <p>Error: {error.message}</p>
