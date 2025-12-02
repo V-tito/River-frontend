@@ -1,4 +1,4 @@
-
+"use client"
 import styles from './navigation_wrapper.module.css';  // Import the CSS module for styling
 import NavigationBar from './navigation-bar';
 const NavigationWrapper = ({ children }) => {

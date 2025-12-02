@@ -1,4 +1,5 @@
 "use client"
+import logger from "../logger";
 import React, { createContext, useContext, useState,useEffect } from 'react';
 
 const GlobalContext = createContext();
@@ -17,18 +18,20 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
-  const [defaultScheme, setDefaultScheme] = useState(null)
-// Update localStorage whenever defaultScheme changes
+  const [defaultScheme, setDefaultScheme] = useState(()=>{
+    if (typeof window !== 'undefined') {
+      logger.info("Setting up default scheme")
+    try{
+      const storedScheme = localStorage.getItem('defaultScheme');
+      if(storedScheme){
+        logger.info("set up default scheme from local storage",storedScheme)
+        return JSON.parse(storedScheme)}
+      } catch (err) 
+      {logger.error("error setting scheme",err.message)
+        return null}
+  }})
+/*
 useEffect(()=>{
-  if (typeof window !== 'undefined') {
-  try{
-    const storedScheme = localStorage.getItem('defaultScheme');
-    if(storedScheme){setDefaultScheme(JSON.parse(storedScheme))}
-    } catch (err) 
-    { console.log("error setting scheme",err.message)
-      return null}
-}},[])
-/*useEffect(()=>{
   {const fetchDefault=async () => {
       try{
       const storedScheme = localStorage.getItem('defaultScheme');
@@ -53,11 +56,11 @@ useEffect(()=>{
 },[])*/
 useEffect(() => {
   if (defaultScheme !== null) {
-    console.log("default scheme was set",defaultScheme)
     localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
+    logger.info("putting default scheme into local storage",defaultScheme)
   }
 }, [defaultScheme]);
-console.log("def",defaultScheme)
+logger.info("default scheme befor return",defaultScheme)
   return (
     <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme }}>
       {children}

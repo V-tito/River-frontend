@@ -6,7 +6,7 @@ import { useGlobal } from '../../app/GlobalState';
 
 
 
-const AddForm = (table) => {
+const AddForm = ({table}) => {
   const {defaultScheme}=useGlobal()
     const [config, setConfig] = useState([]);
     const [formData,setFormData]=useState({})
@@ -25,71 +25,35 @@ const AddForm = (table) => {
   
     useEffect(() => {
         const fetchConfig = async () => {
-        const response = await fetch(`/api/getAddConfig/${table.table}`);
+        const response = await fetch(`/api/getAddConfig/${table}`);
         const data = await response.json();
         setConfig(data);
         let newFormData={}
-        data.forEach(field => 
-            (field.type="text") ? (newFormData[field.id] = ""):(newFormData[field.id] = "")
-        );
+        data.forEach(field => (newFormData[field.id] = ""));
         setFormData(newFormData);
         setDef(newFormData)
     };
     fetchConfig();
-    if (table.table=="Signal"){
-        const fetchGroups = async () => {
-            try {
-            const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`,{
-              method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
-            });
-            if (!response.ok) {
-              throw new Error('Ошибка сети');
-            }
-            const result = await response.json();
-            
-            return result
-          } catch (err) {
-            if (err instanceof Error) {
-              setError(err);
-          }
+    if (table=="Signal"){
+      const fetchGroupsAndBoards = async () => {
+        try{
+          console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`)
+        const response = await fetch(`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`);
+        
+        const data = await response.json();
+        if (!response.ok){
+          throw new Error (`Ошибка сети ${response.status}`)
         }
-        }
-    const fetchBoards = async () => {
-        try {
-        const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`,{
-          method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
-        });
-        if (!response.ok) {
-          throw new Error('Ошибка сети');
-        }
-        const result = await response.json();
-        console.log('APIB',result)
-        return result
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err);
+        setBoardToNames(data.boards)
+        setGroupToNames(data.groups)
+      }catch(err){
+        setError(err)
       }
+}
+fetchGroupsAndBoards()
+setLoading(false)
     }
-    }
-    const processConfig = async () => {
-      const resBoards=await fetchBoards();
-      console.log('RB',resBoards)
-      const resGroups=await fetchGroups();
-      const tempBoardNames=resBoards.reduce((acc,item)=>{
-        return acc={...acc,[item.id]:item.name}
-      },{})
-      console.log(`tempBN:`,tempBoardNames)
-      const tempGroupNames=resGroups.reduce((acc,item)=>{
-        return acc={...acc,[item.id]:item.name}
-      },{})
-      setBoardToNames(tempBoardNames)
-      console.log(Object.entries(tempGroupNames))
-      setGroupToNames(tempGroupNames)
-      setLoading(false)
-    
-  }
-  processConfig()
-}else{setLoading(false)}
+else{setLoading(false)}
   }, [table,defaultScheme]);
 
     const handleChange = (e) => {
@@ -100,25 +64,24 @@ const AddForm = (table) => {
     const handleSubmit = async (e) => {
         e.preventDefault();  
         let newFormData={...formData}
-        if ((["GroupOfSignals","TestBoard"].includes(table.table))&&(!("signals" in formData))) {
+        if ((["GroupOfSignals","TestBoard"].includes(table))&&(!("signals" in formData))) {
             newFormData={...newFormData, "signals":[]}
         }   
         //if ( "parentScheme" in formData) {
           newFormData["parentScheme"]= {"id": defaultScheme.id }
         //}; 
         if ("parentGroup"in formData) 
-            {newFormData["parentGroup"]= {"id": aliases["parentGroup"] }};
+            {newFormData["parentGroup"]= {"id": chosenGroup }};
         if ("testBoard" in formData) 
-            {newFormData["testBoard"]= {"id": aliases["testBoard"] }}
-        if (table.table=="Signal") {newFormData={...newFormData, "isOutput":String(isOutput),"isStraight":String(isStraight)}}
+            {newFormData["testBoard"]= {"id": chosenBoard }}
+        if (table=="Signal") {newFormData={...newFormData, "isOutput":isOutput,"isStraight":isStraight}}
 
         try {
-                const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/${table.table}`,{
+                const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/${table}`,{
                   method: 'POST',
                   body: JSON.stringify(newFormData),
                   headers: {'Content-Type': 'application/json',}
                 });
-                console.log(JSON.stringify(newFormData))
                 if (!response.ok) {
                   console.log(JSON.stringify(newFormData))
                   throw new Error(`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`);
@@ -143,14 +106,10 @@ const AddForm = (table) => {
     }
 
     const handleSelect=(e)=>{
-      console.log(e.target.id)
       setAliases[e.target.id](e.target.value)
-      console.log(aliases[e.target.id])
-      console.log(e.target.value)
     }
 
     if (loading) return <p>Form loading...</p>;
-    console.log(`BN:`,boardToNames)
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
           <header className={styles.header}>Добавить элемент</header>
@@ -202,7 +161,7 @@ const AddForm = (table) => {
             <button type="reset" className={styles.button} onClick={handleReset}>
             Очистить
             </button>
-            <p><Modal state={error}>{error? error.message : ""}</Modal></p>
+            <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
     );}
 
