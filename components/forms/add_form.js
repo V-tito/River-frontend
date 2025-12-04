@@ -82,6 +82,7 @@ else{setLoading(false)}
                   body: JSON.stringify(newFormData),
                   headers: {'Content-Type': 'application/json',}
                 });
+                console.log("sent ",JSON.stringify(newFormData))
                 if (!response.ok) {
                   console.log(JSON.stringify(newFormData))
                   throw new Error(`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`);

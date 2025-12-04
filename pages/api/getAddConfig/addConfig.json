@@ -86,7 +86,7 @@
         "label": "Вид сигнала:", 
         "type": "radio", 
         "required": true, 
-        "values": ["Входящий","Исходящий"]
+        "values": ["Исходящий","Входящий"]
     },
     { "id": "isStraight", 
         "label": "Тип сигнала:", 
