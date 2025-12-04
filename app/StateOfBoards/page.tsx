@@ -7,7 +7,7 @@ import { useGlobal } from '../GlobalState';
   
 
 const StateOfPlates = () => {
-    const { defaultScheme } = useGlobal();
+    const { defaultScheme,setPollingError} = useGlobal();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -29,6 +29,7 @@ const StateOfPlates = () => {
   } catch (err: unknown) {
     if (err instanceof Error) {
       setError(err);
+      setPollingError(err)
       //logger.debug(`state of  boards page: network error caught ${err.message}`)
   } else {
     //logger.debug(`state of  boards page: unknown exception`)
@@ -42,7 +43,7 @@ const StateOfPlates = () => {
 //logger.debug("state of boards page: trying to fetch data for scheme",defaultScheme)
 fetchBoards();
 //logger.debug("state of boards page:fetching data finished")
-}, [defaultScheme]);
+}, [defaultScheme,setPollingError]);
 //logger.info("state of boards page:entered for scheme",defaultScheme)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;

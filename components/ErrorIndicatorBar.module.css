@@ -16,3 +16,11 @@
     color: #eb1e3a;
     border-color: #eb1e3a;
 }
+.none{
+    color: #969696;
+    border-color: #969696;
+}
+.header{
+    text-decoration: underline;
+    text-align: center;
+}

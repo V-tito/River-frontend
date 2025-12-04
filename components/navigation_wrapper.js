@@ -16,7 +16,8 @@ const NavigationWrapper = ({ children }) => {
     <div className={styles.navigation_wrapper}>
       <aside className={styles.sidebar}>
         <NavigationBar></NavigationBar>
-      {pagename=="StateOfSignals"||pagename=="StateOfBoards"?<ErrorIndicatorBar err={pollingError}></ErrorIndicatorBar>:''}
+      {pagename=="StateOfSignals"?<ErrorIndicatorBar err={pollingError} table="signals"></ErrorIndicatorBar>:''}
+      {pagename=="StateOfBoards"?<ErrorIndicatorBar err={pollingError} table="boards"></ErrorIndicatorBar>:''}
       </aside>
       <main className={styles.main}>
         {children} 

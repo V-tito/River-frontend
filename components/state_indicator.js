@@ -24,7 +24,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 const response = await fetch (api.toString(), 
                     {method:"GET", 
                         //body: JSON.stringify({id:sig}),
-                        //headers: {'Content-Type': 'application/json',}
+                        headers: {'Content-Type': 'application/json',}
                     })
                 console.log(`tried to get state on api ${api.toString()}`)
                 if (!response.ok){
@@ -32,13 +32,17 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 }
                 const result= await response.json()
                 console.log("received:", result)
-                setPollingError(null)
+                setPollingError("ok")
                 if (!board) {setOn(result.b)
                     setLastCheckTime(String(result.a))//todo actual key
                 //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
                 }else {setOn(result)}
-        } catch (err) {setPollingError(err)}}
+        } catch (err) {setPollingError(err)
+            console.log("error polling ",api)
+            console.log(err)
+        }}
         fetchCurrentState()
+        console.log("first fetch on page w board=",board)
         if (checkConstantly==true) {
         const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
         return () => clearInterval(intervalId);}
