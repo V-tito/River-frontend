@@ -1,4 +1,14 @@
 {"TestBoard": [
+    {"id": "name", 
+        "label": "Название:", 
+        "type": "text", 
+        "required": true 
+    },
+    {"id": "address", 
+        "label": "Адрес:", 
+        "type": "number", 
+        "required": true 
+    },
     {"id": "maxInputs", 
         "label": "Число входных портов:", 
         "type": "number", 
@@ -14,16 +24,8 @@
         "type": "number", 
         "required": true 
     },
-    {"id": "address", 
-        "label": "Адрес:", 
-        "type": "number", 
-        "required": true 
-    },
-    {"id": "name", 
-        "label": "Название:", 
-        "type": "text", 
-        "required": true 
-    },
+    
+    
     { "id": "description", 
         "label": "Описание:", 
         "type": "text", 
@@ -40,6 +42,11 @@
     { "id": "description",  
         "label": "Описание:", 
         "type": "text", 
+        "required": false 
+    },
+    { "id": "comport",  
+        "label": "COM-port:", 
+        "type": "number", 
         "required": false 
     }
     ],

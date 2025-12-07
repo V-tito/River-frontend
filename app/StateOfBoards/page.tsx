@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import StateTable from '@/components/state_table';
 import { useGlobal } from '../GlobalState';
-
   
 
 const StateOfPlates = () => {
@@ -53,8 +52,7 @@ fetchBoards();
           <div>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Состояние плат схемы {defaultScheme.name}:</h1>
-            <StateTable data={data}></StateTable>
-            </div>
-  );
+            <StateTable data={data} setFlipError={null}></StateTable>
+            </div>)
 }
 export default StateOfPlates

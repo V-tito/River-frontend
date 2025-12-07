@@ -67,9 +67,9 @@ else{setLoading(false)}
         if ((["GroupOfSignals","TestBoard"].includes(table))&&(!("signals" in formData))) {
             newFormData={...newFormData, "signals":[]}
         }   
-        //if ( "parentScheme" in formData) {
+        if ( "parentScheme" in formData) {
           newFormData["parentScheme"]= {"id": defaultScheme.id }
-        //}; 
+        }; 
         if ("parentGroup"in formData) 
             {newFormData["parentGroup"]= {"id": chosenGroup }};
         if ("testBoard" in formData) 

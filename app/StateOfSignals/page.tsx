@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import StateTable from "../../components/state_table";
 import { useGlobal } from '../GlobalState';
+import Modal from "../../components/modal"
 interface MyDataType {
   id: number;
   name: string;
@@ -13,6 +14,7 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
+  const [flipError,setFlipError]=useState<Error|null>(null)
   const {defaultScheme,setPollingError}=useGlobal()
     const [data, setData] = useState<DynamicRecord>({});
       const [groups, setGroups] = useState<[MyDataType]|[]>([]);
@@ -78,9 +80,11 @@ const StateOfSignals = () => {
 
     if (loading) return (<p>Loading...</p>)
     if (error) return <p>Error: {error.message}</p>
+    
     return (<div>{groups.map(group => (
         <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             Состояние сигналов группы {group.name}:</h1>
-            <StateTable data={data[group.name]}></StateTable></div>))}</div>)
+            <StateTable data={data[group.name]} setFlipError={setFlipError}></StateTable></div>))}
+            <Modal state={flipError} setState={setFlipError}><div>{flipError? flipError.message : ""}</div></Modal></div>)
 }
 export default StateOfSignals
