@@ -36,11 +36,13 @@ const fetchSignals = async (groupId)=>{
 }
 
 const fetchAll=async()=>{
+  console.log("fetching all")
 const newGroups=await fetchGroups()
 
 if (newGroups.length>0){
 const promises=newGroups.map( async (group) => {
   const temp= await fetchSignals(group.id)
+  console.log ("fetching signals by group names")
   return { name:String(group.name), temp }
 })
 const results=await Promise.all(promises)
@@ -49,10 +51,12 @@ const newData=results.reduce((acc, { name, temp }) => {
   acc[name] = temp;
   return acc;
 }, {});
+console.log("reduced data")
 const newList=results.reduce((acc, { temp }) => {
   acc.push(temp);
   return acc
 }, [])
+console.log("reduced data")
 res.status(200).json({data:newData,groups:newGroups,list:newList})
 }
 }

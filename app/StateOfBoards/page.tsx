@@ -52,7 +52,7 @@ fetchBoards();
           <div>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Состояние плат схемы {defaultScheme.name}:</h1>
-            <StateTable data={data} setFlipError={null}></StateTable>
+            <StateTable data={data}></StateTable>
             </div>)
 }
 export default StateOfPlates

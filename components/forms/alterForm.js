@@ -1,15 +1,17 @@
 "use client";
 import { useEffect, useState } from 'react';
-import styles from "./form.module.css"; // Updated import path
+import styles from "./alterForm.module.css"; // Updated import path
 import Modal from "../modal"
+import Popup from 'reactjs-popup';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
+import "./popup.css"
 
 
 
-const AddForm = ({table}) => {
+const AlterForm = ({table, object,isVisible,setIsVisible}) => {
   const {defaultScheme}=useGlobal()
-  const { register, handleSubmit,reset } = useForm();
+  const { register, handleSubmit,reset } = useForm({defaultValues:{...object}});
     const [config, setConfig] = useState([]);
     const [error,setError]=useState(null)
     const [loading, setLoading] = useState(true);
@@ -29,7 +31,6 @@ const AddForm = ({table}) => {
         try{
           console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`)
         const response = await fetch(`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`);
-        
         const data = await response.json();
         if (!response.ok){
           throw new Error (`Ошибка сети ${response.status}`)
@@ -47,6 +48,10 @@ else{setLoading(false)}
   }, [table,defaultScheme]);
 
 
+  const onClose = ()=>{
+    setIsVisible(false)
+  }
+
     const onSubmit = async (data) => { 
         let newFormData={...data}
         if ((["GroupOfSignals","TestBoard"].includes(table))&&(!("signals" in data))) {
@@ -60,7 +65,7 @@ else{setLoading(false)}
 
         try {
                 const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/${table}`,{
-                  method: 'POST',
+                  method: 'PATCH',
                   body: JSON.stringify(newFormData),
                   headers: {'Content-Type': 'application/json',}
                 });
@@ -70,6 +75,7 @@ else{setLoading(false)}
                   throw new Error(`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`);
                   
                 }
+                onClose()
                 window.location.reload();
               } catch (err) {
                 if (err instanceof Error) {
@@ -81,8 +87,9 @@ else{setLoading(false)}
 
     if (loading) return <p>Form loading...</p>;
     return (
+      <Popup open={isVisible} onClose={onClose}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-          <header className={styles.header}>Добавить элемент</header>
+          <header className={styles.header}>Изменить элемент</header>
             {config.map(field => (
                 <div key={field.id}>
                     <label className={styles.label} htmlFor={field.id}>{field.label} </label>
@@ -119,18 +126,19 @@ else{setLoading(false)}
                             className={styles.input}
                             type={field.type}
                             id={field.id}
-                            placeholder={field.placeholder}
+                            placeholder={object[field.id]}
                             {...register(field.id,field.validation)}
                         />
                     )))}
                 </div>
             ))}
             <button type="submit" className={styles.button}>Создать</button>
-            <button type="reset" className={styles.button} onClick={() => reset()}>
-            Очистить
+            <button type="reset" className={styles.button} onClick={() => reset()}>Очистить
             </button>
+            <button onClick={onClose} className={styles.button}>Закрыть</button>
             <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
+        </Popup>
     );}
 
-export default AddForm;
+export default AlterForm;

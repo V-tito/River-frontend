@@ -53,7 +53,7 @@ const SignalList = () => {
     //logger.debug("signals page: trying to fetch data for scheme",defaultScheme)
     fetchData()
   },[defaultScheme])
-
+console.log("data",data)
   //logger.info("signals page:entered for scheme",defaultScheme)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -69,7 +69,7 @@ const SignalList = () => {
     {groups.map(group => (
             <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список сигналов группы {group.name}:</h1>
-                <DataTable data={data[group.name]}></DataTable></div>))}
+                <DataTable data={data[group.name]} kind="Signal"></DataTable></div>))}
                 </AddDeleteWrapper>
   );
 };
