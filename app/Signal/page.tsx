@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import AddDeleteWrapper from "../../components/AddDeleteWrapper";
 import DataTiles from "../../components/tiles-signal";
 //<DataTiles data={data[group.name]}></DataTiles>
-import DataTable from '@/components/table-builder';
 import { useGlobal } from '../GlobalState';
 interface MyDataType {
   id: number;

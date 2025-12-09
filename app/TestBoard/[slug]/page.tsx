@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 //import Filter from "../../../components/filter";
 import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
-import DataTable from "../../../components/table-builder";
 import { useGlobal } from '@/app/GlobalState';
+import DataTiles from "../../../components/tiles-board"
 
 const BoardList = () => {
    const defaultScheme=useGlobal()
@@ -49,7 +49,8 @@ console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
           <AddDeleteWrapper table="TestBoard" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список плат схемы {defaultScheme.name}:</h1>
-            <DataTable data={data} kind="TestBoard"></DataTable>
+            
+            <DataTiles  data={data}></DataTiles>
             </AddDeleteWrapper>
   );
 };

@@ -38,7 +38,7 @@ const StateButton=({sig})=>{
         <button className={`${styles.button} ${on==true?styles.on:styles.off}`} onClick={changeState}>
         {on==true?"Вкл.":"Выкл."}
         </button>
-        <p>{sig.isStraight?sig. turnedOnStatusName:sig. turnedOffStatusName}</p>
+        <p>{on?(sig.isStraight?sig. turnedOnStatusName:sig. turnedOffStatusName):(sig.isStraight?sig. turnedOffStatusName:sig. turnedOnStatusName)}</p>
         <Modal state={error}>{error? error.message : ""}</Modal>
         </div>
     )

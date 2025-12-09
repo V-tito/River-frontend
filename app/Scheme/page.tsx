@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import DataTable from "../../components/table-builder";
 import AddDeleteWrapper from "../../components/AddDeleteWrapper";
+import DataTiles from "../../components/tiles-scheme"
 //import Filter from "../../components/filter";
 
 const Schemelist = () => {
@@ -39,8 +39,7 @@ const Schemelist = () => {
     <AddDeleteWrapper table="Scheme" listOfAll={data}>
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список схем:</h1>
-      
-      <DataTable data={data} kind="Scheme"></DataTable>
+      <DataTiles data={data}></DataTiles>
       </AddDeleteWrapper>
   );
 };
