@@ -11,6 +11,9 @@ const DataTiles = ({data}) => {
       <h1 className={styles.header}>{item.name}</h1>
       <p><span className={styles.feature}>Плата: </span><span>{item.testBoard.name}</span></p>
       <p><span className={styles.feature}>Канал: </span><span>{item.channel}</span></p>
+      <p className={styles.feature}>Имя активного состояния: </p><span>{item.turnedOnStatusName}</span>
+      <p className={styles.feature}>Имя неактивного состояния: </p><span>{item.turnedOffStatusName}</span>
+      <p><span className={styles.feature}>Канал: </span><span>{item.channel}</span></p>
       <div className={styles.types}>
       <div className={`${styles.type} ${item.isOutput ? styles.true : styles.false}`}>{aliases["isOutput"][item.isOutput]}</div>
       <div className={`${styles.type} ${item.isStraight ? styles.true : styles.false}`}>{aliases["isStraight"][item.isStraight]}</div>
