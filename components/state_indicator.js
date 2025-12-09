@@ -20,7 +20,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 } else {
                     api=new URL(`${process.env.API_URL}/api/river/v1/protocol/get`)
                 }
-                api.searchParams.set('id',sig)
+                api.searchParams.set('id',sig.id)
                 const response = await fetch (api.toString(), 
                     {method:"GET", 
                         //body: JSON.stringify({id:sig}),
@@ -54,6 +54,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     console.log("lastchecktime is",lastCheckTime)
     return (<div><div className={`${styles.indicator} ${on==true ? styles.active : styles.inactive}`}></div>
     {showCheckDisplaySettings ? <input type="checkbox" checked={checkConstantly} onChange={changeCheckSettings}></input>:''}
+    <p>{on==true?(board?("Есть соединение с платой"):(sig.isStraight?sig.turnedOnStatusName:sig.turnedOffStatusName)):(board?("Нет соединения с платой"):(sig.isStraight?sig.turnedOffStatusName:sig.turnedOnStatusName))}</p>
     {lastCheckTime==null ?  '':<p>Сигнал получен в {lastCheckTime}</p>}
     </div>)
 }

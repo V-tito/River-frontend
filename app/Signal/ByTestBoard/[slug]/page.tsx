@@ -45,7 +45,7 @@ fetchData();
     <AddDeleteWrapper table="Signal" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-10 text-black dark:text-zinc-50">
                 Список сигналов платы {slug}:</h1>
-            <DataTable data={data}></DataTable>
+            <DataTable data={data} kind="Signal"></DataTable>
     </AddDeleteWrapper>
   );
 };

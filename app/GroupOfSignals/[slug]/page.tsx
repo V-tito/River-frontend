@@ -6,8 +6,10 @@ import { useParams } from 'next/navigation';
 //import Filter from "../../../components/filter";
 import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
 import DataTable from "../../../components/table-builder";
+import { useGlobal } from '@/app/GlobalState';
 
 const GroupList = () => {
+  const defaultScheme=useGlobal()
   const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -53,8 +55,8 @@ fetchData();
     //
     <AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-                Список групп сигналов схемы {slug}:</h1>
-            <DataTable data={data} ></DataTable>
+                Список групп сигналов схемы {defaultScheme.name}:</h1>
+            <DataTable data={data} kind="GroupOfSignals"></DataTable>
     </AddDeleteWrapper>
   );
 };

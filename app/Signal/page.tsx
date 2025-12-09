@@ -55,7 +55,7 @@ const SignalList = () => {
     //logger.debug("signals page: trying to fetch data for scheme",defaultScheme)
     fetchData()
   },[defaultScheme])
-
+console.log("data",data)
   //logger.info("signals page:entered for scheme",defaultScheme)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;

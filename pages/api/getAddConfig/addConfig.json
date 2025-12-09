@@ -2,34 +2,38 @@
     {"id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "required": true 
+        "placeholder": "Кириллица и цифры без пробелов",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     {"id": "address", 
         "label": "Адрес:", 
         "type": "number", 
-        "required": true 
+        "placeholder": "Положительное целое число",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1}
     },
     {"id": "maxInputs", 
         "label": "Число входных портов:", 
         "type": "number", 
-        "required": true 
+        "placeholder": "32",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
     },
     {"id": "maxOutputs", 
         "label": "Число выходов:", 
         "type": "number", 
-        "required": true 
+        "placeholder": "24",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
     },
     {"id": "protocolVersion", 
         "label": "Версия протокола:", 
         "type": "number", 
-        "required": true 
+        "placeholder": "1",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
     },
-    
-    
     { "id": "description", 
         "label": "Описание:", 
-        "type": "text", 
-        "required": false 
+        "type": "textarea", 
+        "placeholder": "Развернутое описание платы",
+        "validation":{}
     }
     ],
 
@@ -37,34 +41,39 @@
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "required": true 
-    },
-    { "id": "description",  
-        "label": "Описание:", 
-        "type": "text", 
-        "required": false 
+        "placeholder": "Кириллица и цифры без пробелов",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "comport",  
         "label": "COM-port:", 
         "type": "number", 
-        "required": false 
+        "placeholder": "Номер порта подключения",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
+    },
+    { "id": "description",  
+        "label": "Описание:", 
+        "type": "textarea", 
+        "placeholder": "Развернутое описание схемы",
+        "validation":{}
     }
     ],
 "forTheFuture":[{"id": "parentScheme", 
 "label": "Входит в схему:", 
 "type": "number", 
-"required": true 
+"required": "Пожалуйста, заполните это поле" 
 }],
 "GroupOfSignals": [
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "required": true 
+        "placeholder": "Кириллица и цифры без пробелов",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "description", 
         "label": "Описание:", 
-        "type": "text", 
-        "required": false 
+        "type": "textarea", 
+        "placeholder": "Развернутое описание группы",
+        "validation":{}
     }
     ],
 
@@ -72,39 +81,54 @@
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "required": true 
-    },
-    { "id": "description", 
-        "label": "Описание:", 
-        "type": "text", 
-        "required": false 
+        "placeholder": "Кириллица и цифры без пробелов",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "parentGroup", 
         "label": "Выберите группу: ", 
         "type": "select", 
-        "required": true 
+        "validation":{"required": "Пожалуйста, выберите группу" }
     },
     { "id": "testBoard", 
         "label": "Выберите плату: ", 
         "type": "select", 
-        "required": true 
+        "validation":{"required": "Пожалуйста, выберите плату" } 
+    },
+    { "id": "channel", 
+        "label": "Канал:", 
+        "type": "number", 
+        "placeholder": "Положительное целое число",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
     },
     { "id": "isOutput", 
         "label": "Вид сигнала:", 
         "type": "radio", 
-        "required": true, 
+        "required": "Пожалуйста, выберите вид сигнала", 
         "values": ["Исходящий","Входящий"]
     },
     { "id": "isStraight", 
         "label": "Тип сигнала:", 
         "type": "radio", 
-        "required": true, 
+        "required": "Пожалуйста,  выберите тип сигнала", 
         "values": ["Прямой","Инвертированный"]
     },
-    { "id": "channel", 
-        "label": "Канал:", 
-        "type": "number", 
-        "required": true 
+    { "id": "turnedOnStatusName", 
+        "label": "Имя активного состояния:", 
+        "type": "textarea", 
+        "placeholder": "Поведение системы, когда сигнал активен",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
+    },
+    { "id": "turnedOffStatusName", 
+        "label": "Имя пассивного состояния:", 
+        "type": "textarea", 
+        "placeholder": "Поведение системы, когда сигнал неактивен",
+        "validation":{"required": "Пожалуйста, заполните это поле" }
+    },
+    { "id": "description", 
+        "label": "Описание:", 
+        "placeholder": "Развернутое описание сигнала",
+        "type": "textarea", 
+        "validation":{}
     }
     ]
 }

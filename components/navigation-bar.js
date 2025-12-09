@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import styles from "./navigation.module.css";
 import Link from 'next/link';
 import { useGlobal } from '../app/GlobalState';
+import { usePathname } from 'next/navigation';
+
 
 const NavigationBar = () => {
   const [config, setConfig] = useState(JSON.parse('{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'));
   const {defaultScheme}=useGlobal()
+  const currentPath=usePathname()
   
   useEffect(() => {
     const fetchConfig = async () => {
@@ -27,14 +30,15 @@ const NavigationBar = () => {
     return (<div className={styles.sidebar}><nav className={styles.nav}>
         <ul>
             {config.common.map((item) => (
-                <li className={styles.li} key={item.id}><Link href={item.link}>{item.name}</Link></li>
+                <li className={`${styles.li} ${item.link==currentPath||(item.link!='/'&&currentPath.includes(item.link))?styles.activeTab:''}`} key={item.id}><Link href={item.link}>{item.name}</Link></li>
               ))}
               {defaultScheme==null ? '':config.schemeDependent.map((item) => (<div key={item.id}>
-                <li className={styles.li} ><Link href={item.link}>{item.name}</Link></li>
+                <li className={`${styles.li} ${currentPath.includes(item.link)?styles.activeTab:''}`} ><Link href={item.link}>{item.name}</Link></li>
                 </div>
               ))}
         </ul>
+        
       </nav>
-      <div className={styles.currentScheme}><p>Текущая схема: {defaultScheme==null ? "не задана": defaultScheme.name}</p></div></div>)
+      </div>)
 }
 export default NavigationBar

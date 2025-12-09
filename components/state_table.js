@@ -20,8 +20,8 @@ const StateTable = ({data}) => {
                 <td className={styles.td}>{
                 ("isOutput" in item ) ? 
                   ( item.isOutput ?
-                      <StateButton sig={item.id}></StateButton> :
-                      <StateIndicator sig={item.id}
+                      <StateButton sig={item}></StateButton> :
+                      <StateIndicator sig={item}
                       //todo change to proper naming
                       >
                       </StateIndicator>)
