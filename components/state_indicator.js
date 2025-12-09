@@ -34,7 +34,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
                 console.log("received:", result)
                 setPollingError("ok")
                 if (!board) {setOn(result.b)
-                    setLastCheckTime(String(result.a))//todo actual key
+                    setLastCheckTime(String(result.a.split('.')[0]))//todo actual key
                 //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
                 }else {setOn(result)}
         } catch (err) {setPollingError(err)
@@ -54,7 +54,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     console.log("lastchecktime is",lastCheckTime)
     return (<div><div className={`${styles.indicator} ${on==true ? styles.active : styles.inactive}`}></div>
     {showCheckDisplaySettings ? <input type="checkbox" checked={checkConstantly} onChange={changeCheckSettings}></input>:''}
-    <p>{on==true?(board?("Есть соединение с платой"):(sig.isStraight?sig.turnedOnStatusName:sig.turnedOffStatusName)):(board?("Нет соединения с платой"):(sig.isStraight?sig.turnedOffStatusName:sig.turnedOnStatusName))}</p>
+    <span>{on==true?(board?("Есть соединение с платой"):(sig.isStraight?sig.turnedOnStatusName:sig.turnedOffStatusName)):(board?("Нет соединения с платой"):(sig.isStraight?sig.turnedOffStatusName:sig.turnedOnStatusName))}</span>
     {lastCheckTime==null ?  '':<p>Сигнал получен в {lastCheckTime}</p>}
     </div>)
 }
