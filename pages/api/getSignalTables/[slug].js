@@ -7,7 +7,7 @@ const fetchGroups = async () => {
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
     return result;
@@ -23,7 +23,7 @@ const fetchSignals = async (groupId)=>{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
 

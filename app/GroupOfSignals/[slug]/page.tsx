@@ -24,6 +24,7 @@ const GroupList = () => {
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
+    console.log(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`)
     if (!response.ok) {
       throw new Error (`Ошибка сети ${response.status}`)
     }

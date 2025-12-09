@@ -27,7 +27,7 @@ const StateOfSignals = () => {
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error(`Ошибка сети ${response.status}`);
         }
         const result = await response.json();
         return result;
@@ -45,7 +45,7 @@ const StateOfSignals = () => {
           method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error(`Ошибка сети ${response.status}`);
         }
         const result = await response.json();
     
