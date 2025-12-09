@@ -54,7 +54,7 @@ fetchData();
     <AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список групп сигналов схемы {slug}:</h1>
-            <DataTable data={data}></DataTable>
+            <DataTable data={data} ></DataTable>
     </AddDeleteWrapper>
   );
 };

@@ -1,0 +1,48 @@
+.tiles{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* Allows components to wrap onto the next line */
+    gap: 16px; /* Space between items */
+}
+.tile {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 250px; /* Grow and shrink with a base size of 300px */
+    min-height: 40vh;
+    max-width:30%;
+    padding: 0%;
+    height: 100%;
+    width:50%;
+    border-radius:5%;
+    background-color: #1c5f3a;
+    margin: 10px;
+    padding:20px;
+    color:aliceblue
+    
+}
+.header {
+    text-align: center;
+    font-size: larger;
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    padding-bottom: 10px;
+  }
+.types,
+.type  {
+    border-radius:5%;
+    padding:5px;
+    margin: 5px;
+    text-align: center;
+}
+.true {
+    background-color: rgb(140, 214, 126);
+}
+.false{
+    background-color: rgb(226, 124, 124);
+}
+.feature{
+    color: #cbcbcb;
+    font-size: small;
+}

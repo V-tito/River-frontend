@@ -2,7 +2,9 @@
 //import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
 import AddDeleteWrapper from "../../components/AddDeleteWrapper";
-import DataTable from "../../components/table-builder";
+import DataTiles from "../../components/tiles-signal";
+//<DataTiles data={data[group.name]}></DataTiles>
+import DataTable from '@/components/table-builder';
 import { useGlobal } from '../GlobalState';
 interface MyDataType {
   id: number;
@@ -65,11 +67,13 @@ const SignalList = () => {
     //logger.debug(listForDel)
   return (
     //
-    <AddDeleteWrapper table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}>
+    <AddDeleteWrapper table="Signal" listOfAll={listForDel ?? [[{id:null,name:"none"}]]}><div>
     {groups.map(group => (
             <div key={group.id} className='w-full h-min'><h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 Список сигналов группы {group.name}:</h1>
-                <DataTable data={data[group.name]}></DataTable></div>))}
+                <DataTiles data={data[group.name]}></DataTiles>
+                </div>
+              ))}</div>
                 </AddDeleteWrapper>
   );
 };
