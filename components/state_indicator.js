@@ -44,7 +44,7 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
         fetchCurrentState()
         console.log("first fetch on page w board=",board)
         if (checkConstantly==true) {
-        const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
+        const intervalId = setInterval(fetchCurrentState, 5000); // Fetch every 5 seconds
         return () => clearInterval(intervalId);}
     },[sig,board,checkConstantly,setPollingError])
     const changeCheckSettings = () =>{

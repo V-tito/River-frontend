@@ -47,7 +47,7 @@ const GroupList = () => {
 //logger.debug(`groups page: trying to fetch data for scheme ${slug}`)
 fetchData();
 
-}, [ slug,params ]);
+}, [ slug,params,defaultScheme ]);
 //logger.info(`groups page:entered for scheme ${slug}`)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -56,7 +56,7 @@ fetchData();
     //
     <AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-                Список групп сигналов схемы {defaultScheme.name}:</h1>
+                Список групп сигналов:</h1>
             <DataTable data={data} kind="GroupOfSignals"></DataTable>
     </AddDeleteWrapper>
   );

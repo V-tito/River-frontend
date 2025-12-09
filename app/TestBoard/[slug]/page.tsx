@@ -19,7 +19,7 @@ const BoardList = () => {
    useEffect(() => {
     const fetchData = async () => {
     try {
-    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`,{
+    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`,{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
@@ -39,7 +39,7 @@ const BoardList = () => {
 fetchData();
 console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`)
 
-}, [ slug,params ]);
+}, [ slug,params,defaultScheme ]);
     
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -48,7 +48,7 @@ console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
     //
           <AddDeleteWrapper table="TestBoard" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-                Список плат схемы {defaultScheme.name}:</h1>
+                Список плат:</h1>
             <DataTable data={data} kind="TestBoard"></DataTable>
             </AddDeleteWrapper>
   );

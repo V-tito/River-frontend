@@ -2,7 +2,7 @@
     {"id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "placeholder": "Кириллица и цифры без пробелов",
+        "placeholder": "Буквы и цифры без пробелов",
         "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     {"id": "address", 
@@ -41,7 +41,7 @@
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "placeholder": "Кириллица и цифры без пробелов",
+        "placeholder": "Буквы и цифры без пробелов",
         "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "comport",  
@@ -66,7 +66,7 @@
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "placeholder": "Кириллица и цифры без пробелов",
+        "placeholder": "Буквы и цифры без пробелов",
         "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "description", 
@@ -81,7 +81,7 @@
     { "id": "name", 
         "label": "Название:", 
         "type": "text", 
-        "placeholder": "Кириллица и цифры без пробелов",
+        "placeholder": "Буквы и цифры без пробелов",
         "validation":{"required": "Пожалуйста, заполните это поле" }
     },
     { "id": "parentGroup", 
