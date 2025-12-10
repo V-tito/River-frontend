@@ -1,16 +1,17 @@
-import AddForm from "./forms/add_form"
-import DeleteForm from "./forms/delete_form"
+import AddButton from "./AddButon"
+import DeleteButton from "./DeleteButon"
+import styles from "./AddDeleteWrapper.module.css"
 
 const AddDeleteWrapper = ({ table,listOfAll,children }) => {
     return (
-        <div className='flex flex-row w-full'>
-        <div  className="flex flex-col p-5 self-left items-left gap-6 text-center sm:items-start sm:text-left w-full h-min">
+        <div className={styles.wrap}>
+        <div  className={styles.main}>
             {children}
             </div>
-        <aside className='self-right items-right flex-col w-20%'>
+        <aside className={styles.aside}>
             <div>
-            <AddForm table={table}></AddForm>
-            <DeleteForm table={table} listOfAll={listOfAll}></DeleteForm></div>
+            <AddButton table={table}></AddButton>
+            <DeleteButton table={table} listOfAll={listOfAll}></DeleteButton></div>
       </aside>
         </div>
     )

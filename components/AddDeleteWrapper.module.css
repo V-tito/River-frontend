@@ -1,0 +1,27 @@
+.wrap{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;                    /* p-5 (assuming base unit is 1rem) */
+    align-self: flex-start;           /* self-left */
+    align-items: flex-start;          /* items-left */
+    justify-content: first baseline;
+    gap: 6px;                        /* gap-6 (assuming base unit is 1rem) */
+    text-align: center;               /* text-center */
+    width: 100%;                      /* w-full */
+    min-height: min-content;     
+}
+.aside{
+    display: flex;
+    flex-direction: column;
+    justify-self: right;
+    justify-content: center;
+    background-color: #08371d;
+    width: min-content;
+    padding: 10px;
+    border-radius: 5%;
+}

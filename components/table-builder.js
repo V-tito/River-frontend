@@ -37,7 +37,7 @@ const DataTable = ({data,kind}) => {
                 :(item1[0] =="testBoard" ? <td key={item1[0]} className={styles.td}>{item1[1].name}</td>:null)
               ))}
               <td  className={styles.td}>{String(item.description)}</td>
-              <AlterButton table={kind}obj={item}></AlterButton>
+              <td  className={styles.alterTd}><AlterButton table={kind}obj={item}></AlterButton></td>
             </tr>
           ))
         ) : (

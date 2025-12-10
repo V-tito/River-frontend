@@ -2,10 +2,10 @@
     background-color: #1c5f3a;
     color: #fff;
     cursor: pointer;
-    align-self: flex-start;
+    align-self: center;
     margin:5px;
     margin-top:10px;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5%;
   }
   

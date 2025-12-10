@@ -84,7 +84,7 @@ else{setLoading(false)}
               }
             }
         }
-
+        console.log("isVisible alter",isVisible)
     if (loading) return <p>Form loading...</p>;
     return (
       <Popup open={isVisible} onClose={onClose}>
