@@ -84,7 +84,7 @@ else{setLoading(false)}
               }
             }
         }
-
+        console.log("isVisible alter",isVisible)
     if (loading) return <p>Form loading...</p>;
     return (
       <Popup open={isVisible} onClose={onClose}>
@@ -132,7 +132,7 @@ else{setLoading(false)}
                     )))}
                 </div>
             ))}
-            <button type="submit" className={styles.button}>Создать</button>
+            <button type="submit" className={styles.button}>Отправить</button>
             <button type="reset" className={styles.button} onClick={() => reset()}>Очистить
             </button>
             <button onClick={onClose} className={styles.button}>Закрыть</button>

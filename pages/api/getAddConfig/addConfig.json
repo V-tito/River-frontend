@@ -8,8 +8,8 @@
     {"id": "address", 
         "label": "Адрес:", 
         "type": "number", 
-        "placeholder": "Положительное целое число",
-        "validation":{"required": "Пожалуйста, заполните это поле", "min":1}
+        "placeholder": "Неотрицательное целое число",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":0}
     },
     {"id": "maxInputs", 
         "label": "Число входных портов:", 
@@ -97,8 +97,8 @@
     { "id": "channel", 
         "label": "Канал:", 
         "type": "number", 
-        "placeholder": "Положительное целое число",
-        "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
+        "placeholder": "Неотрицательное целое число",
+        "validation":{"required": "Пожалуйста, заполните это поле", "min":0 }
     },
     { "id": "isOutput", 
         "label": "Вид сигнала:", 
