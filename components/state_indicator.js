@@ -5,48 +5,59 @@ import {useGlobal} from '../app/GlobalState'
 
 const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     const [on,setOn]=useState(false)
+    const[responseWaiting, setResponseWaiting]=useState(false)
     const [checkConstantly,setCheck]=useState(true)
     const [lastCheckTime,setLastCheckTime]=useState(null)
     const{setPollingError}=useGlobal()
     
    useEffect(()=>{
-        
-          //добавить колонку время проверки
-            const fetchCurrentState = async ()=> { //STUB!
+        const fetchCurrentState = async ()=> {
+            if (!responseWaiting){
+                setResponseWaiting(true)
                 let api
                 try {
-                if (board) {
-                    api=new URL(`${process.env.API_URL}/api/river/v1/protocol/nop`)
-                } else {
-                    api=new URL(`${process.env.API_URL}/api/river/v1/protocol/get`)
+                    if (board) {
+                        api=new URL(`${process.env.API_URL}/api/river/v1/protocol/nop`)
+                    } else {
+                        api=new URL(`${process.env.API_URL}/api/river/v1/protocol/get`)
+                    }
+                    api.searchParams.set('id',sig.id)
+                    const response = await fetch (
+                        api.toString(), 
+                        {
+                            method:"GET", 
+                            headers: {'Content-Type': 'application/json',}
+                        }
+                    )
+                    console.log(`tried to get state on api ${api.toString()}`)
+                    if (!response.ok) {
+                        throw new Error(`Ошибка сети:${response.status}`)
+                    }
+                    const result= await response.json()
+                    console.log("received:", result)
+                    setPollingError("ok")
+                    if (!board) {
+                        setOn(result.b)
+                        setLastCheckTime(String(result.a.split('.')[0]))//todo actual key
+                        console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
+                    } else {
+                        setOn(result)
+                    }
+                } catch (err) {
+                    setPollingError(err)
+                    console.log("error polling ",api)
+                    console.log(err)
+                } finally {
+                    setResponseWaiting(false)
                 }
-                api.searchParams.set('id',sig.id)
-                const response = await fetch (api.toString(), 
-                    {method:"GET", 
-                        //body: JSON.stringify({id:sig}),
-                        headers: {'Content-Type': 'application/json',}
-                    })
-                console.log(`tried to get state on api ${api.toString()}`)
-                if (!response.ok){
-                    throw new Error(`Ошибка сети:${response.status}`)
-                }
-                const result= await response.json()
-                console.log("received:", result)
-                setPollingError("ok")
-                if (!board) {setOn(result.b)
-                    setLastCheckTime(String(result.a.split('.')[0]))//todo actual key
-                //console.log("with id",sig,"set state",on,"with last check time",lastCheckTime)
-                }else {setOn(result)}
-        } catch (err) {setPollingError(err)
-            console.log("error polling ",api)
-            console.log(err)
-        }}
+            }
+        }
         fetchCurrentState()
         console.log("first fetch on page w board=",board)
         if (checkConstantly==true) {
-        const intervalId = setInterval(fetchCurrentState, 500); // Fetch every 5 seconds
+        const intervalId = setInterval(fetchCurrentState, 1000); // Fetch every second
         return () => clearInterval(intervalId);}
-    },[sig,board,checkConstantly,setPollingError])
+    },[sig,board,checkConstantly,setPollingError,lastCheckTime,on,responseWaiting])
     const changeCheckSettings = () =>{
         setCheck((prev) => !prev);
     }

@@ -26,7 +26,7 @@ const StateTable = ({data}) => {
                       >
                       </StateIndicator>)
                   :
-                (<StateIndicator sig={item.id} board={true}>
+                (<StateIndicator sig={item} board={true}>
                 </StateIndicator>)}</td>
             </tr>
           )) : (
