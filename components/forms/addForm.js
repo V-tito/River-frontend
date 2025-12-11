@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
-import Modal from "../modal"
+import Modal from "../modals/inlineModal"
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 
@@ -125,10 +125,12 @@ else{setLoading(false)}
                     )))}
                 </div>
             ))}
+            <div className={styles.buttons}>
             <button type="submit" className={styles.button}>Создать</button>
             <button type="reset" className={styles.button} onClick={() => reset()}>
             Очистить
             </button>
+            </div>
             <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
     );}

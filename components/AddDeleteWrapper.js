@@ -1,6 +1,6 @@
-import AddButton from "./AddButon"
-import DeleteButton from "./DeleteButon"
-import styles from "./AddDeleteWrapper.module.css"
+import AddModal from "./modals/addModal"
+import DeleteModal from "./modals/deleteModal"
+import styles from "./addDeleteWrapper.module.css"
 
 const AddDeleteWrapper = ({ table,listOfAll,children }) => {
     return (
@@ -10,8 +10,8 @@ const AddDeleteWrapper = ({ table,listOfAll,children }) => {
             </div>
         <aside className={styles.aside}>
             <div>
-            <AddButton table={table}></AddButton>
-            <DeleteButton table={table} listOfAll={listOfAll}></DeleteButton></div>
+            <AddModal table={table}></AddModal>
+            <DeleteModal table={table} listOfAll={listOfAll}></DeleteModal></div>
       </aside>
         </div>
     )

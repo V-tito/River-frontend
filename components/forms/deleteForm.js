@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
-import ConfirmDeleteModal from "./confirmDeleteModal"
+import ConfirmDeleteModal from "../modals/confirmDeleteModal"
 
 
 const DeleteForm = ({table,listOfAll=[[]]}) => {
@@ -10,24 +10,17 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
   
     const handleChange = (e) => {
         const { id, value } = e.target;
-        console.log(id," - ",value)
         setFormData({ ...formData, [id]: value });
+        setConfirmUrl(`${process.env.API_URL}/api/river/v1/configurator/${table}/${value}`)
         }
 
     const handleSubmit = (e)=>{
         e.preventDefault()
-        setConfirmUrl(`${process.env.API_URL}/api/river/v1/configurator/${table}/${formData.id}`)
-    }
-        
-    const handleReset = (e)=>{
-        e.preventDefault();
-        setFormData([])
     }
 
     console.log(listOfAll)
     if (listOfAll ===undefined) return (<p>Loading...</p>)
-    console.log(listOfAll)
-    return (<div>
+    return (
         <form onSubmit={handleSubmit} className={styles.form}>
             <header className={styles.header}>Удалить элемент</header>
                 <div>
@@ -40,13 +33,9 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
                                 {(listOfAll.map(item=>((item instanceof Array) ? (item.map(piece=><option key={piece.id} value={piece.id}>{piece.name}</option>)):(<option key={item.id} value={item.id}>{item.name}</option>))))}
                             </select>
                 </div>
-            <button type="submit" className={styles.button}>Удалить</button>
-            <button type="reset" className={styles.button} onClick={handleReset}>
-            Очистить
-            </button>
+                <ConfirmDeleteModal state={confirmUrl}></ConfirmDeleteModal>
             <p></p>
         </form>
-        <ConfirmDeleteModal state={confirmUrl} setState={setConfirmUrl}></ConfirmDeleteModal></div>
     );}
 
 export default DeleteForm;

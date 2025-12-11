@@ -63,7 +63,8 @@ const SetDefaultScheme = () => {
                                 {(data.map(item=>(<option key={item.id} value={item.id}>{item.name}</option>)))}
                             </select>
                 </div>
-            <button type="submit" className={styles.button}>Установить</button>
+                <div className={styles.buttons}>
+            <button type="submit" className={styles.button}>Установить</button></div>
         </form>
         <p>Текущая схема: {defaultScheme==null ? "не задана": defaultScheme.name}</p>
         </div>

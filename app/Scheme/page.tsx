@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import DataTable from "../../components/table-builder";
-import AddDeleteWrapper from "../../components/AddDeleteWrapper";
-//import Filter from "../../components/filter";
+import DataView from "../../components/dataView";
+import AddDeleteWrapper from "../../components/addDeleteWrapper";
 
 const Schemelist = () => {
   const [data, setData] = useState(null);
@@ -31,16 +30,14 @@ const Schemelist = () => {
     };
     }
     fetchData();
-}, []); // Empty dependency array means this runs once on component mount
+}, []); 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
-    //<Filter table="scheme"></Filter> goes lower when needed
     <AddDeleteWrapper table="Scheme" listOfAll={data}>
                      <h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
                 Список схем:</h1>
-      
-      <DataTable data={data} kind="Scheme"></DataTable>
+      <DataView data={data} kind="Scheme"></DataView>
       </AddDeleteWrapper>
   );
 };

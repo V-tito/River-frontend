@@ -1,11 +1,8 @@
 "use client";
-//import //logger from "../../..///logger";
 import React, { useEffect, useState } from 'react';
-//import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
-//import Filter from "../../../components/filter";
-import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
-import DataTable from "../../../components/table-builder";
+import AddDeleteWrapper from "../../../components/addDeleteWrapper";
+import DataView from "../../../components/dataView";
 import { useGlobal } from '@/app/GlobalState';
 
 const GroupList = () => {
@@ -20,9 +17,8 @@ const GroupList = () => {
    useEffect(() => {
     const fetchData = async () => {
     try {
-      //logger.debug("signals page: before fetch from api"+`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`)
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,{
-      method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
+      method: 'GET',
     });
     console.log(`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`)
     if (!response.ok) {
@@ -30,34 +26,26 @@ const GroupList = () => {
     }
     const result = await response.json();
     setData(result);
-    //logger.debug("signals page: set data")
-        //logger.debug(result)
   } catch (err: unknown) {
     if (err instanceof Error) {
       setError(err);
-      //logger.debug(`groups page: network error caught ${err.message}`)
   } else{
-    //logger.debug(`groups page: unknown exception on signals page`)
     }
   } finally {
-    //logger.debug("groups page: finished loading")
   setLoading(false);
 };
 }
-//logger.debug(`groups page: trying to fetch data for scheme ${slug}`)
 fetchData();
 
 }, [ slug,params,defaultScheme ]);
-//logger.info(`groups page:entered for scheme ${slug}`)
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 
   return (
-    //
     <AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>
             <h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
                 Список групп сигналов:</h1>
-            <DataTable data={data} kind="GroupOfSignals"></DataTable>
+            <DataView data={data} kind="GroupOfSignals"></DataView>
     </AddDeleteWrapper>
   );
 };

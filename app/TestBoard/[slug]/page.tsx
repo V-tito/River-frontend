@@ -1,10 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-//import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
-//import Filter from "../../../components/filter";
-import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
-import DataTable from "../../../components/table-builder";
+import AddDeleteWrapper from "../../../components/addDeleteWrapper";
+import DataView from "../../../components/dataView";
 import { useGlobal } from '@/app/GlobalState';
 
 const BoardList = () => {
@@ -49,7 +47,7 @@ console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
           <AddDeleteWrapper table="TestBoard" listOfAll={data}>
                         <h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
                 Список плат:</h1>
-            <DataTable data={data} kind="TestBoard"></DataTable>
+            <DataView data={data} kind="TestBoard"></DataView>
             </AddDeleteWrapper>
   );
 };

@@ -1,6 +1,6 @@
-import styles from "./state-table.module.css";
-import StateIndicator from './state_indicator';
-import StateButton from './state_button';
+import styles from "./stateTable.module.css";
+import StateIndicator from './stateIndicator';
+import StateButton from './stateButton';
 
 const StateTable = ({data}) => {
   return (

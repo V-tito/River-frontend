@@ -1,0 +1,58 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center; 
+  }
+  .containerInline {
+    display: inline;
+    width: 100%;
+    border-left: 5px solid crimson;
+    border-top: 5px solid crimson;
+    border-bottom: 5px solid crimson;
+    padding-left: 2px;
+  }
+  
+.closeButton {
+    background-color: crimson;
+    color: #fff;
+    border-radius: 5%;
+    cursor: pointer;
+    place-self: end;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    margin-left:2px
+  }
+  .header{
+    text-align: center;
+    font-size: larger;
+    text-decoration: underline;
+    text-decoration-color: #1c5f3a;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    padding-bottom: 10px;
+    
+  }
+  .menuButton {
+    background-color: #1c5f3a;
+    color: #fff;
+    cursor: pointer;
+    align-self: center;
+    margin:5px;
+    margin-top:10px;
+    padding: 10px;
+    border-radius: 5%;
+    
+  }
+  .alterButton {
+    background-color: #1c5f3a;
+    color: #fff;
+    cursor: pointer;
+    justify-self: left;
+
+    margin:5px;
+    margin-top:10px;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    border-radius: 5%;
+  }

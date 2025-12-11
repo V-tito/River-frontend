@@ -12,11 +12,9 @@ const Modal = ({ state, children }) => {
   if (!isVisible) return null;
 
   return (
-    <div className={styles.modalOverlayStyle}>
-      <div className={styles.modalContentStyle}>
+    <div className={styles.containerInline}>
         {children}
-        <button onClick={onClose} className={styles.closeButtonStyle}>Закрыть</button>
-      </div>
+        <button onClick={onClose} className={styles.closeButton}>Закрыть</button>
     </div>
   );
 };

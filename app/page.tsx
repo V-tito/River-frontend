@@ -1,4 +1,4 @@
-import SetDefaultScheme from "../components/forms/set_default_scheme_form"
+import SetDefaultScheme from "../components/forms/setDefaultSchemeForm"
 
 const Home = () => {
     return (<div><p>Программа тестирования СУЛ &quot;Река&quot;</p>

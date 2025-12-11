@@ -1,7 +1,7 @@
 "use client"
 import { useState,useEffect } from "react"
-import Modal from "./modal"
-import styles from "./state_button.module.css"
+import Modal from "../modals/inlineModal"
+import styles from "./stateButton.module.css"
 
 const StateButton=({sig})=>{
     const [error, setError]=useState(null)

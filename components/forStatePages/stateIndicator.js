@@ -1,7 +1,7 @@
 "use client"
 import { useState,useEffect } from "react"
-import styles from "./state_indicator.module.css"
-import {useGlobal} from '../app/GlobalState'
+import styles from "./stateIndicator.module.css"
+import {useGlobal} from '../../app/GlobalState'
 
 const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     const [on,setOn]=useState(false)

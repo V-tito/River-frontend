@@ -1,17 +1,22 @@
 "use client";
 import { useEffect, useState } from 'react';
-import styles from "./alterForm.module.css"; // Updated import path
-import Modal from "../modal"
-import Popup from 'reactjs-popup';
+import styles from "./form.module.css"; // Updated import path
+import Modal from "../modals/inlineModal"
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
-import "./popup.css"
 
 
 
-const AlterForm = ({table, object,isVisible,setIsVisible}) => {
+const AlterForm = ({table, object}) => {
+  const defaults=(()=>{
+    if (table!="Signal") {
+      return {...object}
+  } else {
+    return {...object,parentGroup:object.parentGroup,testBoard:object.testBoard.id}
+  }
+  })
   const {defaultScheme}=useGlobal()
-  const { register, handleSubmit,reset } = useForm({defaultValues:{...object}});
+  const { register, handleSubmit,reset } = useForm({defaultValues:defaults()});
     const [config, setConfig] = useState([]);
     const [error,setError]=useState(null)
     const [loading, setLoading] = useState(true);
@@ -42,15 +47,11 @@ const AlterForm = ({table, object,isVisible,setIsVisible}) => {
       }
 }
 fetchGroupsAndBoards()
+
 setLoading(false)
     }
 else{setLoading(false)}
   }, [table,defaultScheme]);
-
-
-  const onClose = ()=>{
-    setIsVisible(false)
-  }
 
     const onSubmit = async (data) => { 
         let newFormData={...data}
@@ -75,7 +76,6 @@ else{setLoading(false)}
                   throw new Error(`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`);
                   
                 }
-                onClose()
                 window.location.reload();
               } catch (err) {
                 if (err instanceof Error) {
@@ -84,10 +84,8 @@ else{setLoading(false)}
               }
             }
         }
-        console.log("isVisible alter",isVisible)
     if (loading) return <p>Form loading...</p>;
     return (
-      <Popup open={isVisible} onClose={onClose}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <header className={styles.header}>Изменить элемент</header>
             {config.map(field => (
@@ -132,13 +130,12 @@ else{setLoading(false)}
                     )))}
                 </div>
             ))}
+            <div className={styles.buttons}>
             <button type="submit" className={styles.button}>Отправить</button>
             <button type="reset" className={styles.button} onClick={() => reset()}>Очистить
-            </button>
-            <button onClick={onClose} className={styles.button}>Закрыть</button>
+            </button></div>
             <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
-        </Popup>
     );}
 
 export default AlterForm;
