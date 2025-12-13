@@ -4,13 +4,13 @@ import styles from "./addDeleteWrapper.module.css"
 import  React from "react"
 import PropTypes from 'prop-types';
 const AddDeleteWrapper = ({ table,listOfAll,children }) => {
-    // className={styles.buttons} for aside when buttons
+    // className={styles.asideButtons} for aside when buttons
     return (
         <div className={styles.wrap}>
         <div  className={styles.main}>
             {children}
             </div>
-        <aside> 
+        <aside className={styles.asideForms}> 
             <div>
             <AddForm table={table}></AddForm>
             <DeleteForm table={table} listOfAll={listOfAll}></DeleteForm></div>

@@ -15,7 +15,7 @@
     width: 100%;                      /* w-full */
     min-height: min-content;     
 }
-.buttons{
+.asideButtons{
     display: flex;
     flex-direction: column;
     justify-self: right;
@@ -24,4 +24,9 @@
     width: fit-content;
     padding: 10px;
     border-radius: 5%;
+}
+.asideForms{
+    display: flex;
+    flex-direction: column;
+    width:35%
 }
