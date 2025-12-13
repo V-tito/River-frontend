@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import  React from "react"
 //import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavigationWrapper from "../components/navigation_wrapper"
+import LeftSidebar from "../components/leftSidebar"
 import { GlobalProvider } from './GlobalState';
 
 /*const geistSans = Geist({
@@ -29,11 +30,14 @@ export default function RootLayout({
       <body
         
       ><GlobalProvider>
-        <NavigationWrapper>
+        <LeftSidebar>
          <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
              {children}
           </div>
-          </NavigationWrapper></GlobalProvider>
+         
+          </LeftSidebar>
+
+          </GlobalProvider>
       </body>
     </html>
   );

@@ -1,17 +1,17 @@
 "use client"
-//import //logger from "..///logger";
-import styles from './navigation_wrapper.module.css';  // Import the CSS module for styling
-import NavigationBar from './navigation-bar';
-import ErrorIndicatorBar from './ErrorIndicatorBar';
+import  React from "react"
+import styles from './leftSidebar.module.css';
+import NavigationBar from './leftSidebarContents/navigationBar';
+import ErrorIndicatorBar from './leftSidebarContents/errorIndicatorBar';
 import { usePathname } from 'next/navigation';
 import {useGlobal} from '../app/GlobalState'
-const NavigationWrapper = ({ children }) => {
+import PropTypes from 'prop-types';
+
+const LeftSidebar = ({ children }) => {
   const{defaultScheme,pollingError}=useGlobal()
-  //here i got to get page name
   const pathname=usePathname()
   const pathSegments = pathname.split('/');
     const pagename = pathSegments[pathSegments.length - 1];
-    //logger.debug("pagename",pagename)
   return (
     <div className={styles.navigation_wrapper}>
       <aside className={styles.sidebar}>
@@ -27,4 +27,8 @@ const NavigationWrapper = ({ children }) => {
   );
 };
 
-export default NavigationWrapper;
+LeftSidebar.propTypes={
+    children: PropTypes.node
+}
+
+export default LeftSidebar;

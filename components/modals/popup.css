@@ -1,0 +1,25 @@
+.popup-content {  margin: auto;  
+  background: rgb(255, 255, 255);  
+  width: 40%;  
+  padding: 5px;
+  overflow: hidden;
+  position: absolute !important;
+  z-index: 999;
+  pointer-events: auto;
+  top: 5% !important;
+  left: 30% !important;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: grid;
+}
+.popup-arrow {  color: rgb(255, 255, 255);}[role='tooltip']
+.popup-content { box-shadow: rgba(0, 0, 0, 0.16) 0px 0px 3px;
+overflow: scroll;
+
+}
+.popup-overlay {  background: rgba(0, 0, 0, 0.5);
+  overflow: scroll;
+  position: fixed;}[data-popup='tooltip']
+.popup-overlay {  background: transparent;
+overflow: scroll;
+position: fixed;}

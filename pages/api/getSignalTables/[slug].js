@@ -8,7 +8,7 @@ const fetchGroups = async () => {
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
     console.log("fetched groups",result)
@@ -26,7 +26,7 @@ const fetchSignals = async (groupId)=>{
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
     console.log("fetched signals",result)
@@ -45,9 +45,16 @@ console.log("try mapping")
 if (newGroups.length>0){
 const promises=newGroups.map( async (group) => {
   const temp= await fetchSignals(group.id)
-  console.log ("fetching signals by group names")
-  return { name:String(group.name), temp }
-})
+  console.log ("fetching signals by group names",temp)
+  console.log(temp.reduce((acc, item)=>{
+    acc.push({...item, parentGroup:group.id})
+   return acc}, []))
+  return { name:String(group.name), temp: temp.reduce((acc, item)=>{
+    console.log("item",item)
+    acc.push({...item, parentGroup:group.id})
+   return acc}, [])
+}}
+)
 const results=await Promise.all(promises)
 console.log("mapped",results)
 const newData=results.reduce((acc, { name, temp }) => {

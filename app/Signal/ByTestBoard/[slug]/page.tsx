@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 //import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
 //import Filter from "../../../components/filter";
-import AddDeleteWrapper from "../../../../components/AddDeleteWrapper";
-import DataTable from "../../../../components/table-builder";
+import AddDeleteWrapper from "../../../../components/addDeleteWrapper";
+import DataView from "../../../../components/dataView";
 
 const SignalList = () => {
   const [data, setData] = useState(null);
@@ -18,10 +18,10 @@ const SignalList = () => {
     const fetchData = async () => {
     try {
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/Signal/byTestBoard/${slug}`,{
-      method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
+      method: 'GET',
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
     setData(result);
@@ -45,7 +45,7 @@ fetchData();
     <AddDeleteWrapper table="Signal" listOfAll={data}>
             <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-10 text-black dark:text-zinc-50">
                 Список сигналов платы {slug}:</h1>
-            <DataTable data={data} kind="Signal"></DataTable>
+            <DataView data={data} kind="Signal"></DataView>
     </AddDeleteWrapper>
   );
 };

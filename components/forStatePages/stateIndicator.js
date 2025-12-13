@@ -1,8 +1,8 @@
 "use client"
-import { useState,useEffect } from "react"
-import styles from "./state_indicator.module.css"
-import {useGlobal} from '../app/GlobalState'
-
+import React,{ useState,useEffect } from "react"
+import styles from "./stateIndicator.module.css"
+import {useGlobal} from '../../app/GlobalState'
+import PropTypes from 'prop-types';
 const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     const [on,setOn]=useState(false)
     const[responseWaiting, setResponseWaiting]=useState(false)
@@ -70,4 +70,15 @@ const StateIndicator=({sig, showCheckDisplaySettings=false, board=false})=>{
     </div>)
 }
 //==null||typeof lastCheckTime==='undefined')
+StateIndicator.propTypes={
+    sig:PropTypes.shape({
+        id:PropTypes.number.isRequired,
+        isStraight:PropTypes.bool.isRequired,
+        turnedOnStatusName:PropTypes.string,
+        turnedOffStatusName:PropTypes.string
+    }),
+    board:PropTypes.bool,
+    showCheckDisplaySettings:PropTypes.bool
+
+}
 export default StateIndicator

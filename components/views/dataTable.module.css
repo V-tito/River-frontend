@@ -19,5 +19,12 @@ box-sizing: border-box; /* Include padding and border in the table width */
    /* word-wrap: break-word;*/
     word-break: normal;
     height: min-content;
+}
+.alterTd{
+    display: flex;
     width:min-content;
+    padding: 5px;
+    justify-content: flex-start;
+    align-content: start;
+    justify-items: left;
 }

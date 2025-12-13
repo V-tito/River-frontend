@@ -1,16 +1,17 @@
 .form {
-  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   padding: 20px;
+  margin:10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin:10px;
 }
 
 .label {
   display: block;
   margin-top: 5px;
 }
-
 
 .radio{
   padding-left: 5%;
@@ -24,16 +25,28 @@
   border-radius: 5px;
   background-color: white;
   color: #333;
-  padding: 4px;
+  padding: 5px;
   font-size: smaller;
 }
+.buttons {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: 100%;
+}
 .button {
-  width: fit-content;
-  padding: 4px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+  display: inline;
+    background-color: #1c5f3a;
+    color: #fff;
+    cursor: pointer;
+    margin:5px;
+    margin-top:10px;
+    padding:  5px;
+    width:25%;
+    border-radius: 5%;
+}
+.button:hover {
+  background-color: #124127;
 }
 .option {
   padding: 10px;
@@ -50,18 +63,7 @@
   font-size: smaller;
 }
 
-.button {
-  background-color: #1c5f3a;
-  color: #fff;
-  cursor: pointer;
-  align-self: center;
-  margin:5px;
-  margin-top:10px;
-}
 
-.button:hover {
-  background-color: #124127;
-}
 .header{
   text-align: center;
   font-size: larger;
@@ -70,5 +72,4 @@
   text-decoration-line: underline;
   text-decoration-style: solid;
   padding-bottom: 10px;
-  
 }

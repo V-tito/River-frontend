@@ -1,8 +1,8 @@
 "use client"
-import { useState,useEffect } from "react"
-import Modal from "./modal"
-import styles from "./state_button.module.css"
-
+import React,{ useState,useEffect } from "react"
+import Modal from "../modals/inlineModal"
+import styles from "./stateButton.module.css"
+import PropTypes from 'prop-types';
 const StateButton=({sig})=>{
     const [error, setError]=useState(null)
     const [on,setOn]=useState(() => {
@@ -42,6 +42,14 @@ const StateButton=({sig})=>{
         <Modal state={error}>{error? error.message : ""}</Modal>
         </div>
     )
+}
+StateButton.propTypes={
+    sig:PropTypes.shape({
+        id:PropTypes.number.isRequired,
+        isStraight:PropTypes.bool.isRequired,
+        turnedOnStatusName:PropTypes.string,
+        turnedOffStatusName:PropTypes.string
+    }),
 }
 
 export default StateButton

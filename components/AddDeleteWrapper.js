@@ -1,19 +1,26 @@
-import AddForm from "./forms/add_form"
-import DeleteForm from "./forms/delete_form"
-
+import AddModal from "./modals/addModal"
+import DeleteModal from "./modals/deleteModal"
+import styles from "./addDeleteWrapper.module.css"
+import  React from "react"
+import PropTypes from 'prop-types';
 const AddDeleteWrapper = ({ table,listOfAll,children }) => {
     return (
-        <div className='flex flex-row w-full'>
-        <div  className="flex flex-col  self-left items-left w-full h-min">
+        <div className={styles.wrap}>
+        <div  className={styles.main}>
             {children}
             </div>
-        <aside className='self-right items-right flex-col w-20%'>
+        <aside className={styles.aside}>
             <div>
-            <AddForm table={table}></AddForm>
-            <DeleteForm table={table} listOfAll={listOfAll}></DeleteForm></div>
+            <AddModal table={table}></AddModal>
+            <DeleteModal table={table} listOfAll={listOfAll}></DeleteModal></div>
       </aside>
         </div>
     )
+}
+AddDeleteWrapper.propTypes={
+    table: PropTypes.string.isRequired,
+    listOfAll:PropTypes.arrayOf(PropTypes.shape({})),
+    children:PropTypes.node
 }
 
 export default AddDeleteWrapper

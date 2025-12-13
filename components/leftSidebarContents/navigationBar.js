@@ -1,8 +1,8 @@
 "use client"
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import styles from "./navigation.module.css";
 import Link from 'next/link';
-import { useGlobal } from '../app/GlobalState';
+import { useGlobal } from '../../app/GlobalState';
 import { usePathname } from 'next/navigation';
 
 

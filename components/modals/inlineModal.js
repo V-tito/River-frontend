@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./modal.module.css"
-
+import PropTypes from 'prop-types';
 const Modal = ({ state, children }) => {
   const [isVisible, setIsVisible]=useState(false)
 
@@ -12,16 +12,14 @@ const Modal = ({ state, children }) => {
   if (!isVisible) return null;
 
   return (
-    <div className={styles.modalOverlayStyle}>
-      <div className={styles.modalContentStyle}>
+    <div className={styles.containerInline}>
         {children}
-        <button onClick={onClose} className={styles.closeButtonStyle}>Закрыть</button>
-      </div>
+        <button onClick={onClose} className={styles.closeButton}>Закрыть</button>
     </div>
   );
 };
-
-// Sample styles for the modal
-
-
+Modal.propTypes={
+  state:PropTypes.any,
+  children:PropTypes.node
+}
 export default Modal;

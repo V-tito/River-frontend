@@ -1,7 +1,8 @@
-import styles from "./state-table.module.css";
-import StateIndicator from './state_indicator';
-import StateButton from './state_button';
-
+import styles from "./stateTable.module.css";
+import StateIndicator from './stateIndicator';
+import StateButton from './stateButton';
+import  React from "react"
+import PropTypes from 'prop-types';
 const StateTable = ({data}) => {
   return (
     <table className={styles.table}>
@@ -40,5 +41,7 @@ const StateTable = ({data}) => {
     </table>
   );
 };
-
+StateTable.propTypes={
+  data:PropTypes.arrayOf(PropTypes.shape({}))
+}
 export default StateTable;

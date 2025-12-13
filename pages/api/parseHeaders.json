@@ -8,5 +8,7 @@
 "isOutput":"Входящий/Исходящий",
 "isStraight":"Прямой/Инвертированный",
 "channel":"Канал",
-"comport":"Порт"
+"comport":"Порт",
+"turnedOnStatusName":"Активное состояние",
+"turnedOffStatusName":"Неактивное состояние"
 }]

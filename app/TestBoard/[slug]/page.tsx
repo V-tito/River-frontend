@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-//import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation';
-//import Filter from "../../../components/filter";
-import AddDeleteWrapper from "../../../components/AddDeleteWrapper";
+import AddDeleteWrapper from "../../../components/addDeleteWrapper";
+import DataView from "../../../components/dataView";
 import { useGlobal } from '@/app/GlobalState';
 import DataTiles from "../../../components/tiles-board"
 
@@ -23,7 +22,7 @@ const BoardList = () => {
       method: 'GET',// headers: new Headers({'Content-Type': 'application/json'})
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Ошибка сети ${response.status}`);
     }
     const result = await response.json();
     setData(result);
@@ -39,7 +38,7 @@ const BoardList = () => {
 fetchData();
 console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`)
 
-}, [ slug,params ]);
+}, [ slug,params,defaultScheme ]);
     
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -47,10 +46,9 @@ console.log(`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
   return (
     //
           <AddDeleteWrapper table="TestBoard" listOfAll={data}>
-            <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-                Список плат схемы {defaultScheme.name}:</h1>
-            
-            <DataTiles  data={data}></DataTiles>
+                        <h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+                Список плат:</h1>
+            <DataView data={data} kind="TestBoard"></DataView>
             </AddDeleteWrapper>
   );
 };

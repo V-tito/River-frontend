@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import styles from "./table-builder.module.css";
-import AlterButton from "./alterButton"
-
+import styles from "./dataTable.module.css";
+import AlterModal from "../modals/alterModal"
+import PropTypes from 'prop-types';
 const DataTable = ({data,kind}) => {
   const [config,setConfig]=useState({})
   const aliases={"isOutput":{true:"Исходящий",false:"Входящий"},
@@ -37,7 +37,7 @@ const DataTable = ({data,kind}) => {
                 :(item1[0] =="testBoard" ? <td key={item1[0]} className={styles.td}>{item1[1].name}</td>:null)
               ))}
               <td  className={styles.td}>{String(item.description)}</td>
-              <AlterButton table={kind}obj={item}></AlterButton>
+              <td  className={styles.alterTd}><AlterModal table={kind} obj={item}></AlterModal></td>
             </tr>
           ))
         ) : (
@@ -51,5 +51,12 @@ const DataTable = ({data,kind}) => {
     </table>
   );
 };
+
+
+DataTable.propTypes={
+    data:PropTypes.arrayOf(PropTypes.shape({
+    })),
+    kind: PropTypes.string
+}
 
 export default DataTable;
