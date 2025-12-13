@@ -1,0 +1,52 @@
+{"TestBoard": {"features":[{"id": "address", 
+    "label": "Адрес: ",
+    "long":false
+},
+{"id": "maxInputs", 
+    "label": "Число входных портов: ",
+    "long":false
+},
+{"id": "maxOutputs", 
+    "label": "Число выходов: ",
+    "long":false
+},
+{"id": "protocolVersion", 
+    "label": "Версия протокола: ",
+    "long":false
+}]},
+
+"Scheme": {"features":[
+    { "id": "comport",  
+        "label": "COM-port: ",
+        "long":false
+    }
+    ]},
+"GroupOfSignals": {"features":[
+    ]},
+
+"Signal":{"features":[
+    { "id": "testBoard", 
+        "label": "Плата: ",
+        "long":false
+    },
+    { "id": "channel", 
+        "label": "Канал: ",
+        "long":false
+    },
+    { "id": "turnedOnStatusName", 
+        "label": "Имя активного состояния: ",
+        "long":true
+    },
+    { "id": "turnedOffStatusName", 
+        "label": "Имя неактивного состояния: ",
+        "long":true
+    }
+    ],
+"types":[{ "id": "isOutput", 
+"label": "Вид сигнала: ",
+"alias":{"true":"Исходящий","false":"Входящий"}},
+{ "id": "isStraight", 
+"label": "Тип сигнала: ",
+"alias":{"true":"Прямой","false":"Инвертированный"}
+}]}
+}

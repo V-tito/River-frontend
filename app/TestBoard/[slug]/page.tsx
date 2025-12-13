@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import AddDeleteWrapper from "../../../components/addDeleteWrapper";
 import DataView from "../../../components/dataView";
 import { useGlobal } from '@/app/GlobalState';
-import DataTiles from "../../../components/tiles-board"
 
 const BoardList = () => {
    const defaultScheme=useGlobal()

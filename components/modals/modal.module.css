@@ -5,14 +5,24 @@
     align-items: center; 
   }
   .containerInline {
-    display: inline;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
     width: 100%;
-    border-left: 5px solid crimson;
-    border-top: 5px solid crimson;
-    border-bottom: 5px solid crimson;
     padding-left: 2px;
+    border: 3px dotted crimson
   }
-  
+  .closeButtonInline {
+    background-color: crimson;
+    color: #fff;
+    border-radius: 5%;
+    cursor: pointer;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    margin-left:2px
+  }
 .closeButton {
     background-color: crimson;
     color: #fff;
@@ -42,6 +52,7 @@
     margin-top:10px;
     padding: 10px;
     border-radius: 5%;
+    border: 1px solid white;
     
   }
   .alterButton {
@@ -49,7 +60,7 @@
     color: #fff;
     cursor: pointer;
     justify-self: left;
-
+    
     margin:5px;
     margin-top:10px;
     padding-left: 2vh;

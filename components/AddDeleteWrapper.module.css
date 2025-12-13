@@ -15,13 +15,13 @@
     width: 100%;                      /* w-full */
     min-height: min-content;     
 }
-.aside{
+.buttons{
     display: flex;
     flex-direction: column;
     justify-self: right;
     justify-content: center;
     background-color: #08371d;
-    width: min-content;
+    width: fit-content;
     padding: 10px;
     border-radius: 5%;
 }

@@ -107,7 +107,7 @@ else{setLoading(false)}
                         id={field.id}
                         
                         {...register(field.id,field.validation)}>
-                          <option>Выберите элемент...</option>
+                          <option value={null}>Выберите элемент...</option>
                          {Object.entries(idToNameAliases[field.id]).map(item=>( <option key={item[0]} value={item[0]}>{item[1]}</option>))}
                         </select>) : (field.type=="textarea" ? (
                           <textarea id={field.id}

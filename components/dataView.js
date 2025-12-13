@@ -1,9 +1,10 @@
-import DataTable from "./views/dataTable"
+//import DataTable from "./views/dataTable"
+import DataCards from "./views/cards/dataCards";
 import PropTypes from 'prop-types';
 import React from "react";
 const DataView=({ data, kind})=>{
 return (
-<DataTable data={data} kind={kind}></DataTable>)
+<DataCards data={data} kind={kind}></DataCards>)
 }
 
 DataView.propTypes={

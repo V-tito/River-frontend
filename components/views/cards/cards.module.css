@@ -1,10 +1,11 @@
-.tiles{
+.cards{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap; /* Allows components to wrap onto the next line */
     gap: 16px; /* Space between items */
+    width: 100%;
 }
-.tile {
+.card {
     display: flex;
     flex-direction: column;
     flex: 1 1 250px; /* Grow and shrink with a base size of 300px */

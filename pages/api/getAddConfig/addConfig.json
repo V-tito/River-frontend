@@ -87,7 +87,7 @@
     { "id": "parentGroup", 
         "label": "Выберите группу: ", 
         "type": "select", 
-        "validation":{"required": "Пожалуйста, выберите группу" }
+        "validation":{"required": "Пожалуйста, выберите группу"}
     },
     { "id": "testBoard", 
         "label": "Выберите плату: ", 
