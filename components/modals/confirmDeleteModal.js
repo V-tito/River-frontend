@@ -3,7 +3,7 @@ import styles from "./modal.module.css"
 import Popup from 'reactjs-popup';
 //import 'reactjs-popup/dist/index.css';
 import Modal from "./inlineModal"
-
+import PropTypes from 'prop-types';
 const ConfirmDeleteModal = ({ state }) => {
   const [error,setError]=useState(null)
   console.log("configured url",state)
@@ -44,8 +44,8 @@ const ConfirmDeleteModal = ({ state }) => {
       </Popup>
   );
 };
-
-// Sample styles for the modal
+ConfirmDeleteModal.propTypes={
+    state: PropTypes.string.isRequired}
 
 
 export default ConfirmDeleteModal;

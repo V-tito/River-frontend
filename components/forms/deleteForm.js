@@ -1,8 +1,8 @@
 "use client";
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
 import ConfirmDeleteModal from "../modals/confirmDeleteModal"
-
+import PropTypes from 'prop-types';
 
 const DeleteForm = ({table,listOfAll=[[]]}) => {
     const [formData,setFormData]=useState()
@@ -37,5 +37,10 @@ const DeleteForm = ({table,listOfAll=[[]]}) => {
             <p></p>
         </form>
     );}
+
+    DeleteForm.propTypes={
+        table: PropTypes.string.isRequired,
+        listOfAll:PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({}))),
+    }
 
 export default DeleteForm;

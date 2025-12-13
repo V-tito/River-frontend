@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import StateTable from "../../components/forStatePages/stateTable";
 import { useGlobal } from '../GlobalState';
+import React from "react"
   
 
 const StateOfPlates = () => {
@@ -25,7 +26,6 @@ const StateOfPlates = () => {
     if (err instanceof Error) {
       setError(err);
       setPollingError(err)
-  } else {
   }
   
 } finally {

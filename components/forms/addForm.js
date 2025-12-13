@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
 import Modal from "../modals/inlineModal"
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
-
+import PropTypes from 'prop-types';
 
 
 const AddForm = ({table}) => {
@@ -134,5 +134,8 @@ else{setLoading(false)}
             <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
     );}
+
+AddForm.propTypes={
+    table: PropTypes.string.isRequired}
 
 export default AddForm;

@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import styles from "./form.module.css";
 

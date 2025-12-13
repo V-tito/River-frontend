@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./dataTable.module.css";
 import AlterModal from "../modals/alterModal"
-
+import PropTypes from 'prop-types';
 const DataTable = ({data,kind}) => {
   const [config,setConfig]=useState({})
   const aliases={"isOutput":{true:"Исходящий",false:"Входящий"},
@@ -51,5 +51,12 @@ const DataTable = ({data,kind}) => {
     </table>
   );
 };
+
+
+DataTable.propTypes={
+    data:PropTypes.arrayOf(PropTypes.shape({
+    })),
+    kind: PropTypes.string
+}
 
 export default DataTable;

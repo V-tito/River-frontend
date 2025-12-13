@@ -1,9 +1,12 @@
 "use client"
+import  React from "react"
 import styles from './leftSidebar.module.css';
 import NavigationBar from './leftSidebarContents/navigationBar';
 import ErrorIndicatorBar from './leftSidebarContents/errorIndicatorBar';
 import { usePathname } from 'next/navigation';
 import {useGlobal} from '../app/GlobalState'
+import PropTypes from 'prop-types';
+
 const LeftSidebar = ({ children }) => {
   const{defaultScheme,pollingError}=useGlobal()
   const pathname=usePathname()
@@ -23,5 +26,9 @@ const LeftSidebar = ({ children }) => {
     </div>
   );
 };
+
+LeftSidebar.propTypes={
+    children: PropTypes.node
+}
 
 export default LeftSidebar;

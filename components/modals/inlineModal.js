@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./modal.module.css"
-
+import PropTypes from 'prop-types';
 const Modal = ({ state, children }) => {
   const [isVisible, setIsVisible]=useState(false)
 
@@ -18,8 +18,8 @@ const Modal = ({ state, children }) => {
     </div>
   );
 };
-
-// Sample styles for the modal
-
-
+Modal.propTypes={
+  state:PropTypes.any,
+  children:PropTypes.node
+}
 export default Modal;

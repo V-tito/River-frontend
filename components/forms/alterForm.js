@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from "./form.module.css"; // Updated import path
 import Modal from "../modals/inlineModal"
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
-
+import PropTypes from 'prop-types';
 
 
 const AlterForm = ({table, object}) => {
@@ -137,5 +137,16 @@ else{setLoading(false)}
             <div><Modal state={error}>{error? error.message : ""}</Modal></div>
         </form>
     );}
+
+    
+    AlterForm.propTypes={
+        table: PropTypes.string,
+        object:PropTypes.shape({
+          parentGroup:PropTypes.number,
+          testBoard:PropTypes.shape({
+            id:PropTypes.number
+          })
+        })
+    }
 
 export default AlterForm;

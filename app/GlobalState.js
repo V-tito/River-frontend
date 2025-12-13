@@ -1,7 +1,7 @@
 "use client"
 //import //logger from "..///logger";
 import React, { createContext, useContext, useState,useEffect } from 'react';
-
+import PropTypes from 'prop-types';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
@@ -29,6 +29,7 @@ export const GlobalProvider = ({ children }) => {
         return JSON.parse(storedScheme)}
       } catch (err) 
       {//logger.error("error setting scheme",err.message)
+        console.log(err.message)
         return null}
   }})
 /*
@@ -68,7 +69,9 @@ useEffect(() => {
     </GlobalContext.Provider>
   );
 };
-
+GlobalProvider.propTypes={
+  children:PropTypes.node
+}
 export const useGlobal = () => {
   return useContext(GlobalContext);
 };

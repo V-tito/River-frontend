@@ -29,8 +29,7 @@ const GroupList = () => {
   } catch (err: unknown) {
     if (err instanceof Error) {
       setError(err);
-  } else{
-    }
+  } 
   } finally {
   setLoading(false);
 };
