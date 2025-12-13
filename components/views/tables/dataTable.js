@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./dataTable.module.css";
-import AlterModal from "../modals/alterModal"
+import AlterModal from "../../modals/alterModal"
 import PropTypes from 'prop-types';
 const DataTable = ({data,kind}) => {
   const [config,setConfig]=useState({})
