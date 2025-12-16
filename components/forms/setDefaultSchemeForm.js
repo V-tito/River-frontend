@@ -45,8 +45,8 @@ const SetDefaultScheme = () => {
         console.log(defaultScheme)
     }
 
-    if (error!=null) return <p>Error: {error.message}</p>
-    if (loading) return <p>Loading...</p>
+    if (error!=null) return <p>Ошибка: {error.message}</p>
+    if (loading) return <p>Загрузка...</p>
     console.log(`shemes ${data}`)
     
     return (

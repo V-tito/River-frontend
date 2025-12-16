@@ -31,8 +31,8 @@ const Schemelist = () => {
     }
     fetchData();
 }, []); 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading) return <p>Загрузка...</p>;
+  if (error) return <p>Ошибка: {error.message}</p>;
   return (
     <AddDeleteWrapper table="Scheme" listOfAll={data}>
                      <h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
