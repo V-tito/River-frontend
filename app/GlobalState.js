@@ -1,11 +1,11 @@
-"use client"
+'use client';
 //import //logger from "..///logger";
-import React, { createContext, useContext, useState,useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  /*const fetchScheme = async () => {
+	/*const fetchScheme = async () => {
     const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/Scheme`,{
       method: 'GET',
       //headers: {'Content-Type': 'application/json',}
@@ -18,21 +18,24 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
-  const [pollingError,setPollingError] = useState(null)
-  const [defaultScheme, setDefaultScheme] = useState(()=>{
-    if (typeof window !== 'undefined') {
-      //logger.info("Setting up default scheme")
-    try{
-      const storedScheme = localStorage.getItem('defaultScheme');
-      if(storedScheme){
-        //logger.info("set up default scheme from local storage",storedScheme)
-        return JSON.parse(storedScheme)}
-      } catch (err) 
-      {//logger.error("error setting scheme",err.message)
-        console.log(err.message)
-        return null}
-  }})
-/*
+	const [pollingError, setPollingError] = useState(null);
+	const [defaultScheme, setDefaultScheme] = useState(() => {
+		if (typeof window !== 'undefined') {
+			//logger.info("Setting up default scheme")
+			try {
+				const storedScheme = localStorage.getItem('defaultScheme');
+				if (storedScheme) {
+					//logger.info("set up default scheme from local storage",storedScheme)
+					return JSON.parse(storedScheme);
+				}
+			} catch (err) {
+				//logger.error("error setting scheme",err.message)
+				console.log(err.message);
+				return null;
+			}
+		}
+	});
+	/*
 useEffect(()=>{
   {const fetchDefault=async () => {
       try{
@@ -56,22 +59,24 @@ useEffect(()=>{
   fetchDefault()
   }
 },[])*/
-useEffect(() => {
-  if (defaultScheme !== null) {
-    localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
-    //logger.info("putting default scheme into local storage",defaultScheme)
-  }
-}, [defaultScheme]);
-//logger.info("default scheme befor return",defaultScheme)
-  return (
-    <GlobalContext.Provider value={{ defaultScheme, setDefaultScheme, pollingError,setPollingError }}>
-      {children}
-    </GlobalContext.Provider>
-  );
+	useEffect(() => {
+		if (defaultScheme !== null) {
+			localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
+			//logger.info("putting default scheme into local storage",defaultScheme)
+		}
+	}, [defaultScheme]);
+	//logger.info("default scheme befor return",defaultScheme)
+	return (
+		<GlobalContext.Provider
+			value={{ defaultScheme, setDefaultScheme, pollingError, setPollingError }}
+		>
+			{children}
+		</GlobalContext.Provider>
+	);
 };
-GlobalProvider.propTypes={
-  children:PropTypes.node
-}
+GlobalProvider.propTypes = {
+	children: PropTypes.node,
+};
 export const useGlobal = () => {
-  return useContext(GlobalContext);
+	return useContext(GlobalContext);
 };

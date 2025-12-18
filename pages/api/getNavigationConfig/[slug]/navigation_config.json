@@ -1,0 +1,15 @@
+{"admin":{
+    "common":[],
+    "schemeDependent":[
+    {"id":1,"name":"Списки плат","link":"/admin/TestBoard"},
+    {"id":3,"name":"Списки групп сигналов","link":"/admin/GroupOfSignals"},
+    {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},{"id":0,"name":"Список схем","link":"/admin/Scheme"}
+]}, 
+"shared":{
+    "common":[{"id":2,"name":"Установить схему","link":"/"}],
+    "schemeDependent":[{"id":5,"name":"Состояние сигналов","link":"/StateOfSignals"},
+{"id":6,"name":"Состояние плат","link":"/StateOfBoards"}]},
+"hidden_pages":[
+    
+    ]
+}
