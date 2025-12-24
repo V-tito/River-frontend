@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import styles from './leftSidebar.module.css';
-import NavigationBar from './leftSidebarContents/navigationBar';
-import ErrorIndicatorBar from './leftSidebarContents/errorIndicatorBar';
+import NavigationBar from './navAndTrivial/navigationBar';
+import ErrorIndicatorBar from './navAndTrivial/errorIndicatorBar';
 import { usePathname } from 'next/navigation';
 import { useGlobal } from '../app/GlobalState';
 import PropTypes from 'prop-types';
