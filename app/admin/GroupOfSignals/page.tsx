@@ -6,7 +6,7 @@ const RedirectStub = () => {
 	const { defaultScheme } = useGlobal();
 	const router = useRouter();
 	useEffect(() => {
-		router.push(`/GroupOfSignals/${defaultScheme.id}`);
+		router.push(`/admin/GroupOfSignals/${defaultScheme.id}`);
 	});
 };
 export default RedirectStub;

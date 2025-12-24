@@ -6,25 +6,31 @@ import { useGlobal } from '../../app/GlobalState';
 import { usePathname } from 'next/navigation';
 
 const NavigationBar = () => {
+	const path = usePathname();
 	const [config, setConfig] = useState(
 		JSON.parse(
 			'{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'
 		)
 	);
+	const [currentPath, setCurrentPath] = useState(path);
 	const { defaultScheme } = useGlobal();
-	const currentPath = usePathname();
 
 	useEffect(() => {
+		setCurrentPath(path);
+		console.log(currentPath);
+		console.log(currentPath.split('/'));
+		const profile = currentPath.split('/')[1];
+		console.log('nav profile', profile);
 		const fetchConfig = async () => {
-			const response = await fetch('/api/getNavigationConfig');
+			const response = await fetch(`/api/getNavigationConfig/${profile}`);
 			const data = await response.json();
-			console.log(data);
+			console.log('nav data', data);
 			setConfig(data);
 			console.log(data);
 		};
 
 		fetchConfig();
-	}, []);
+	}, [path]);
 
 	if (config == null)
 		setConfig(JSON.parse('{"id":0,"name":"Home","link":"/"}'));
