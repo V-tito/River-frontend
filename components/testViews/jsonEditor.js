@@ -81,6 +81,8 @@ const JsonEditor = ({ scheme }) => {
 						`Ошибка сети: ${response.status}. ${response.message}.`
 					);
 				}
+				const result = await response.json();
+				setResults([...results, result]);
 			}
 		} catch (err) {
 			if (err instanceof Error) {

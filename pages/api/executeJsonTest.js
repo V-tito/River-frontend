@@ -21,7 +21,9 @@ export default async function handler(req, res) {
 			}
 			const result = await response.json();
 			console.log('received:', result);
-			if (result.b == command.targetValue)
+			console.log(Boolean(command.targetValue));
+			console.log(result.b == command.targetValue);
+			if (result.b == Boolean(command.targetValue))
 				res
 					.status(200)
 					.json(
