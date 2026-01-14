@@ -1,0 +1,13 @@
+[{
+    "action": "check",
+    "signal": "сигнал1",
+    "targetValue": "true"
+},{
+    "action": "set",
+    "signal": "сигнал1",
+    "targetValue": "false"
+},{
+    "action":"wait",
+    "signal": "сигнал1",
+    "targetValue": "false"
+}]
