@@ -18,6 +18,22 @@ export const GlobalProvider = ({ children }) => {
     const res= await result[0];
     return res;
   }*/
+	const [navProfile, setNavProfile] = useState(() => {
+		if (typeof window !== 'undefined') {
+			//logger.info("Setting up default scheme")
+			try {
+				const stored = localStorage.getItem('navProfile');
+				if (stored) {
+					//logger.info("set up default scheme from local storage",storedScheme)
+					return JSON.parse(stored);
+				}
+			} catch (err) {
+				//logger.error("error setting scheme",err.message)
+				console.log(err.message);
+				return null;
+			}
+		}
+	});
 	const [pollingError, setPollingError] = useState(null);
 	const [defaultScheme, setDefaultScheme] = useState(() => {
 		if (typeof window !== 'undefined') {
@@ -65,10 +81,23 @@ useEffect(()=>{
 			//logger.info("putting default scheme into local storage",defaultScheme)
 		}
 	}, [defaultScheme]);
+	useEffect(() => {
+		if (navProfile !== null) {
+			localStorage.setItem('navProfile', JSON.stringify(navProfile));
+			//logger.info("putting default scheme into local storage",defaultScheme)
+		}
+	}, [navProfile]);
 	//logger.info("default scheme befor return",defaultScheme)
 	return (
 		<GlobalContext.Provider
-			value={{ defaultScheme, setDefaultScheme, pollingError, setPollingError }}
+			value={{
+				defaultScheme,
+				setDefaultScheme,
+				pollingError,
+				setPollingError,
+				navProfile,
+				setNavProfile,
+			}}
 		>
 			{children}
 		</GlobalContext.Provider>

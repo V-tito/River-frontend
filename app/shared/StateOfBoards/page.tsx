@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import StateTable from '../../components/forStatePages/stateTable';
-import { useGlobal } from '../GlobalState';
+import StateTable from '../../../components/forStatePages/stateTable';
+import { useGlobal } from '../../GlobalState';
 import React from 'react';
 
 const StateOfPlates = () => {

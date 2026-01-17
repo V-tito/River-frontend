@@ -1,72 +1,42 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
 import styles from './jsonEditor.module.css'; // Updated import path
 
-const JsonEditor = ({ scheme }) => {
+const JsonEditor = () => {
 	const [formData, setFormData] = useState();
-	const [signals, setSignals] = useState();
+	const [filename, setFilename] = useState();
 	const [results, setResults] = useState([]);
 	const [error, setError] = useState(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await fetch(`/api/getSignalTables/${scheme.id}`);
-				const conf = await response.json();
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const newList = conf.list.reduce((acc, item) => {
-					console.log('formatting signals', item);
-					if (item instanceof Array) {
-						console.log('concat', acc.concat(item));
-						acc = acc.concat(item);
-					} else acc.push(item);
-					return acc;
-				}, []);
-				console.log('res', newList);
-				setSignals(newList);
-			} catch (err) {
-				if (err instanceof Error) {
-					setError(err);
-				}
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchData();
-	}, [scheme]);
 
 	const handleChange = e => {
 		setFormData(e.target.value);
 	};
 
+	const validateSignal = async signame => {
+		const params = new URLSearchParams({ name: signame });
+		const response = await fetch(
+			`${
+				process.env.API_URL
+			}/api/river/v1/configurator/Signal/exists?${params.toString()}`
+		);
+		const result = await response.text();
+		if (result == 'true') return true;
+		else return false;
+	};
+
 	const executeScript = async () => {
 		setResults([]);
 		console.log(formData);
-		console.log(signals);
+		console.log(JSON.parse(formData));
+		const data = JSON.parse(formData);
 		try {
-			const data = JSON.parse(formData).reduce((acc, item) => {
+			data.map(item => {
 				console.log('item', item);
-				signals.map(sig => {
-					console.log('sig', sig);
-					console.log('signame', sig.name);
-					console.log(sig.name == item.signal);
-				});
-				const sig = signals.find(signal => signal.name == item.signal);
-				console.log(sig);
-				if (sig != null)
-					acc.push({
-						...item,
-						signal: sig.id,
-					});
-				else throw new Error('Несуществующий сигнал');
-				return acc;
-			}, []);
-			console.log('data', data);
+				if (!validateSignal(item.signal))
+					throw new Error('Несуществующий сигнал');
+			});
 			for (let i = 0; i < data.length; i++) {
 				const entry = data[i];
 
@@ -91,12 +61,67 @@ const JsonEditor = ({ scheme }) => {
 			}
 		}
 	};
-	if (loading) return <div>Загрузка...</div>;
+
+	const saveAsJson = () => {
+		// Convert data to JSON string with formatting
+		const jsonString = JSON.stringify(formData, null, 2);
+
+		// Create a blob from the JSON string
+		const blob = new Blob([jsonString], { type: 'application/json' });
+
+		// Create a download link
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+
+		// Set link properties
+		link.href = url;
+		link.download = filename;
+
+		// Trigger download
+		document.body.appendChild(link);
+		link.click();
+
+		// Clean up
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
+	};
+
+	const handleFileRead = event => {
+		const file = event.target.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+
+		reader.onload = e => {
+			try {
+				const content = e.target.result;
+				console.log(content);
+				setFormData(content);
+				setError(null);
+			} catch (err) {
+				setError(err);
+				console.log('invalid json');
+				setFormData(null);
+			}
+		};
+
+		reader.onerror = () => {
+			setError(new Error('Failed to read file'));
+		};
+
+		reader.readAsText(file);
+	};
+
+	const handleFilenameChange = e => {
+		setFilename(e.target.value);
+		if (!filename.endsWith('.json')) setFilename(`${filename}.json`);
+	};
+
 	return (
 		<div className={styles.main}>
 			<header className={styles.header}>Редактор команд: </header>
 			<textarea
-				className={styles.input}
+				className={styles.editor}
 				value={formData}
 				onChange={handleChange}
 				placeholder={`Введите список команд в формате JSON: 
@@ -110,6 +135,26 @@ const JsonEditor = ({ scheme }) => {
 				Выполнить
 			</button>
 			<Modal state={error}>{error ? error.message : ''}</Modal>
+
+			<p>Загрузить файл с компьютера:</p>
+			<input
+				className={styles.button}
+				type="file"
+				accept=".json,application/json"
+				onChange={handleFileRead}
+			/>
+			<div>
+				<button onClick={saveAsJson} className={styles.button}>
+					Скачать как JSON
+				</button>
+				<input
+					className={styles.input}
+					type="text"
+					placeholder="Имя с расширением .json или без расширения"
+					onChange={handleFilenameChange}
+				/>
+				{filename ? <p>Текущее имя: {filename}</p> : <></>}
+			</div>
 			<div>
 				{results.map((result, i) => (
 					<div key={i}>{JSON.stringify(result)}</div>

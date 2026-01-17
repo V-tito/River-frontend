@@ -7,33 +7,43 @@ import { usePathname } from 'next/navigation';
 
 const NavigationBar = () => {
 	const path = usePathname();
-	const [config, setConfig] = useState(
-		JSON.parse(
-			'{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'
-		)
+	console.log('path', path);
+	const defConfig = JSON.parse(
+		'{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'
 	);
+	const [config, setConfig] = useState(defConfig);
 	const [currentPath, setCurrentPath] = useState(path);
-	const { defaultScheme } = useGlobal();
+	const { defaultScheme, navProfile, setNavProfile } = useGlobal();
 
 	useEffect(() => {
+		console.log('pathInEffect', path);
 		setCurrentPath(path);
-		console.log(currentPath);
-		console.log(currentPath.split('/'));
-		const profile = currentPath.split('/')[1];
-		console.log('nav profile', profile);
+		console.log('currentPath', currentPath);
+		console.log(path.split('/')[1]);
+		let addr;
+		if (path.split('/')[1] != 'shared') {
+			setNavProfile(path.split('/')[1]);
+			console.log('set nav profile');
+			addr = path.split('/')[1];
+		} else addr = navProfile;
+
+		console.log('nav profile', navProfile);
 		const fetchConfig = async () => {
-			const response = await fetch(`/api/getNavigationConfig/${profile}`);
-			const data = await response.json();
-			console.log('nav data', data);
-			setConfig(data);
-			console.log(data);
+			try {
+				const response = await fetch(`/api/getNavigationConfig/${addr}`);
+				const data = await response.json();
+				console.log('nav data', data);
+				setConfig(data);
+				console.log(data);
+			} catch {
+				setConfig(defConfig);
+			}
 		};
 
 		fetchConfig();
 	}, [path]);
-
-	if (config == null)
-		setConfig(JSON.parse('{"id":0,"name":"Home","link":"/"}'));
+	console.log('nav conf', config);
+	console.log('link', `/${navProfile} `);
 
 	return (
 		<div className={styles.sidebar}>
@@ -43,7 +53,9 @@ const NavigationBar = () => {
 						<li
 							className={`${styles.li} ${
 								item.link == currentPath ||
-								(item.link != '/' && currentPath.includes(item.link))
+								(item.link != `/` &&
+									item.link != `/${navProfile}` &&
+									currentPath.includes(item.link))
 									? styles.activeTab
 									: ''
 							}`}
@@ -64,7 +76,7 @@ const NavigationBar = () => {
 										<Link href={item.link}>{item.name}</Link>
 									</li>
 								</div>
-						  ))}
+							))}
 				</ul>
 			</nav>
 		</div>

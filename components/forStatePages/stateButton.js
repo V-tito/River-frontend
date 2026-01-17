@@ -19,14 +19,13 @@ const StateButton = ({ sig }) => {
 	}, [sig, on]);
 	const changeState = async () => {
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/protocol/set`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ id: sig.id, currentValue: !on }),
-					headers: { 'Content-Type': 'application/json' },
-				}
-			);
+			const api = new URL(`${process.env.API_URL}/api/river/v1/protocol/set`);
+			api.searchParams.set('name', sig.name);
+			api.searchParams.set('value', !on);
+			const response = await fetch(api, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+			});
 			console.log(
 				`tried to set signal state with ${JSON.stringify({
 					id: sig.id,
@@ -58,8 +57,8 @@ const StateButton = ({ sig }) => {
 						? sig.turnedOnStatusName
 						: sig.turnedOffStatusName
 					: sig.isStraight
-					? sig.turnedOffStatusName
-					: sig.turnedOnStatusName}
+						? sig.turnedOffStatusName
+						: sig.turnedOnStatusName}
 			</p>
 			<Modal state={error}>{error ? error.message : ''}</Modal>
 		</div>
@@ -68,6 +67,7 @@ const StateButton = ({ sig }) => {
 StateButton.propTypes = {
 	sig: PropTypes.shape({
 		id: PropTypes.number.isRequired,
+		name: PropTypes.string.isRequired,
 		isStraight: PropTypes.bool.isRequired,
 		turnedOnStatusName: PropTypes.string,
 		turnedOffStatusName: PropTypes.string,

@@ -6,9 +6,9 @@
     {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},{"id":0,"name":"Список схем","link":"/admin/Scheme"}
 ]}, 
 "shared":{
-    "common":[{"id":2,"name":"Главная","link":"/"}],
-    "schemeDependent":[{"id":5,"name":"Состояние сигналов","link":"/StateOfSignals"},
-{"id":6,"name":"Состояние плат","link":"/StateOfBoards"}]},
+    "common":[{"id":0,"name":"Главная","link":"/"}],
+    "schemeDependent":[{"id":5,"name":"Состояние сигналов","link":"/shared/StateOfSignals"},
+{"id":6,"name":"Состояние плат","link":"/shared/StateOfBoards"}]},
 "hidden_pages":[
     
     ],

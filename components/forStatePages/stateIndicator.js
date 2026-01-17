@@ -22,10 +22,12 @@ const StateIndicator = ({
 				try {
 					if (board) {
 						api = new URL(`${process.env.API_URL}/api/river/v1/protocol/nop`);
+						api.searchParams.set('id', sig.id);
 					} else {
 						api = new URL(`${process.env.API_URL}/api/river/v1/protocol/get`);
+						api.searchParams.set('name', sig.name);
 					}
-					api.searchParams.set('id', sig.id);
+
 					const response = await fetch(api.toString(), {
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },
@@ -101,13 +103,13 @@ const StateIndicator = ({
 					? board
 						? 'Есть соединение с платой'
 						: sig.isStraight
-						? sig.turnedOnStatusName
-						: sig.turnedOffStatusName
+							? sig.turnedOnStatusName
+							: sig.turnedOffStatusName
 					: board
-					? 'Нет соединения с платой'
-					: sig.isStraight
-					? sig.turnedOffStatusName
-					: sig.turnedOnStatusName}
+						? 'Нет соединения с платой'
+						: sig.isStraight
+							? sig.turnedOffStatusName
+							: sig.turnedOnStatusName}
 			</span>
 			{lastCheckTime == null ? '' : <p>Сигнал получен в {lastCheckTime}</p>}
 		</div>
@@ -117,6 +119,7 @@ const StateIndicator = ({
 StateIndicator.propTypes = {
 	sig: PropTypes.shape({
 		id: PropTypes.number.isRequired,
+		name: PropTypes.string,
 		isStraight: PropTypes.bool.isRequired,
 		turnedOnStatusName: PropTypes.string,
 		turnedOffStatusName: PropTypes.string,

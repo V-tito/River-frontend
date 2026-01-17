@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import StateTable from '../../components/forStatePages/stateTable';
-import { useGlobal } from '../GlobalState';
+import StateTable from '../../../components/forStatePages/stateTable';
+import { useGlobal } from '../../GlobalState';
 interface MyDataType {
 	id: number;
 	name: string;
