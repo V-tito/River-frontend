@@ -23,38 +23,40 @@ const JsonEditor = () => {
 		setPresets(e.target.value);
 	};
 	const setUpPresets = async () => {
-		const data = JSON.parse(presets);
-		setPresetsError(null);
-		try {
-			data.map(item => {
-				console.log('item', item);
-				if (!validateSignal(item.signal))
-					throw new Error('Несуществующий сигнал');
-			});
-			for (let i = 0; i < data.length; i++) {
-				const entry = data[i];
-
-				const response = await fetch(`/api/setupJsonPresets`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(entry),
+		if (presets) {
+			const data = JSON.parse(presets);
+			setPresetsError(null);
+			try {
+				data.map(item => {
+					console.log('item', item);
+					if (!validateSignal(item.signal))
+						throw new Error('Несуществующий сигнал');
 				});
-				if (!response.ok) {
-					console.log(JSON.stringify(entry));
-					throw new Error(
-						`Ошибка сети: ${response.status}. ${response.message}.`
-					);
+				for (let i = 0; i < data.length; i++) {
+					const entry = data[i];
+
+					const response = await fetch(`/api/setupJsonPresets`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(entry),
+					});
+					if (!response.ok) {
+						console.log(JSON.stringify(entry));
+						throw new Error(
+							`Ошибка сети: ${response.status}. ${response.message}.`
+						);
+					}
+					const result = await response.json();
+					console.log('preset', entry, 'executed: ', result);
 				}
-				const result = await response.json();
-				console.log('preset', entry, 'executed: ', result);
+			} catch (err) {
+				setPresetsError(err);
 			}
-		} catch (err) {
-			setPresetsError(err);
 		}
 		if (!presetsError) setPresetsSet(true);
 		console.log('preset error', presetsError, '; set: ', presetsSet);
 	};
-	//const executePresets = async () => {}
+
 	const validateSignal = async signame => {
 		const params = new URLSearchParams({ name: signame });
 		const response = await fetch(
@@ -66,18 +68,46 @@ const JsonEditor = () => {
 		if (result == 'true') return true;
 		else return false;
 	};
+	const executePresets = async () => {
+		console.log('preset trigger');
+		try {
+			setCurrent(JSON.stringify('Предустановка значений'));
+			const response = await fetch(
+				`${process.env.API_URL}/api/river/v1/protocol/executePresets`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+				}
+			);
+			if (!response.ok) {
+				throw new Error(
+					`Ошибка сети: ${response.status}. ${response.message}.`
+				);
+			} else {
+				setResults(prevResults => [
+					...prevResults,
+					'Выполнена предустановка значений',
+				]);
+			}
+		} catch (err) {
+			setError(err);
+		}
+	};
 
 	const executeScript = async () => {
-		setResults([]);
-		console.log(formData);
-		console.log(JSON.parse(formData));
-		const data = JSON.parse(formData);
 		try {
+			console.log(formData);
+			console.log(JSON.parse(formData));
+			const data = JSON.parse(formData);
+			setCurrent(JSON.stringify('Проверка существования сигналов'));
+			if (presets) await executePresets();
 			data.map(item => {
 				console.log('item', item);
 				if (!validateSignal(item.signal))
 					throw new Error('Несуществующий сигнал');
 			});
+			setResults([]);
+
 			for (let i = 0; i < data.length; i++) {
 				const entry = data[i];
 				setCurrent(JSON.stringify(entry));

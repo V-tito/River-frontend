@@ -5,7 +5,7 @@ const Modal = ({ state, children }) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		setIsVisible(state != null);
+		setIsVisible(state != null && state != false);
 	}, [state]);
 
 	const onClose = () => {
