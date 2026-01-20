@@ -57,13 +57,15 @@ export default async function handler(req, res) {
 				}
 				const result = await response.json();
 				console.log('received:', result);
-				if (result.b == command.targetValue)
+				console.log(result.b.toString() == command.targetValue);
+				if (result.b.toString() == command.targetValue) {
 					res
 						.status(200)
 						.json(
 							`Уровень сигнала ${command.signal} равен эталону ${command.targetValue} в момент времени ${result.a}`
 						);
-				else continue;
+					break;
+				} else continue;
 			} catch (err) {
 				console.log('error polling ', api);
 				console.log(err);
@@ -88,6 +90,34 @@ export default async function handler(req, res) {
 				.status(200)
 				.json(
 					`Уровень сигнала ${command.signal} установлен на ${command.targetValue}`
+				);
+		} catch (err) {
+			console.log('error polling ', api);
+			console.log(err);
+			res.status(500).json(`Ошибка: ${err.message}`);
+		}
+	}
+	if (act == 'setPulse') {
+		const api = new URL(
+			`${process.env.API_URL}/api/river/v1/protocol/setPulse`
+		);
+		api.searchParams.set('name', command.signal);
+		api.searchParams.set('value', command.targetValue);
+		api.searchParams.set('pulseTime', command.pulseTime);
+		api.searchParams.set('period', command.period);
+		try {
+			const response = await fetch(api.toString(), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+			});
+			console.log(`tried to set state on api ${api.toString()}`);
+			if (!response.ok) {
+				throw new Error(`Ошибка сети:${response.status}`);
+			}
+			res
+				.status(200)
+				.json(
+					`Создан импульс сигнала ${command.signal} значением ${command.targetValue} длиной ${command.pulseTime} периодичностью ${command.period}`
 				);
 		} catch (err) {
 			console.log('error polling ', api);
