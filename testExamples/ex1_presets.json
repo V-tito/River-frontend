@@ -1,9 +1,0 @@
-[{
-    "signal": "сигнал1",
-    "targetValue": "true"
-},{
-    "signal": "сигнал1",
-    "targetValue": "true",
-    "pulseTime": 1000,
-    "period": 1
-}]

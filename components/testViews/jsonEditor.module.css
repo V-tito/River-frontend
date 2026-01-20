@@ -59,6 +59,7 @@
   .input {
     display: inline;
     width: 100%;
+    word-wrap: break-word;
     padding: 4px;
     border: 1px solid #ccc;
     border-radius: 5px;

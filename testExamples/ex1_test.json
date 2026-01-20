@@ -1,7 +1,7 @@
 [{
     "action": "check",
     "signal": "сигнал1",
-    "targetValue": "true"
+    "expectedValue": "true"
 },{
     "action": "set",
     "signal": "сигнал1",
@@ -9,5 +9,10 @@
 },{
     "action":"wait",
     "signal": "сигнал1",
-    "targetValue": "false"
-}]
+    "expectedValue": "false"
+},{"action":"presetPulse",
+    "signal": "сигнал1",
+    "targetValue": "true",
+    "pulseTime": 1000,
+    "period": 1
+},{"action":"executePresets"}]

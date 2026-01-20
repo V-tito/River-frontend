@@ -10,51 +10,11 @@ const JsonEditor = () => {
 	const [filename, setFilename] = useState();
 	const [current, setCurrent] = useState();
 	const [results, setResults] = useState([]);
-	const [presets, setPresets] = useState([]);
-	const [presetsError, setPresetsError] = useState(null);
 	const [readerError, setReaderError] = useState(null);
 	const [error, setError] = useState(null);
-	const [presetsSet, setPresetsSet] = useState(false);
 
 	const handleEditorChange = e => {
 		setFormData(e.target.value);
-	};
-	const handlePresetsChange = e => {
-		setPresets(e.target.value);
-	};
-	const setUpPresets = async () => {
-		if (presets) {
-			const data = JSON.parse(presets);
-			setPresetsError(null);
-			try {
-				data.map(item => {
-					console.log('item', item);
-					if (!validateSignal(item.signal))
-						throw new Error('Несуществующий сигнал');
-				});
-				for (let i = 0; i < data.length; i++) {
-					const entry = data[i];
-
-					const response = await fetch(`/api/setupJsonPresets`, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(entry),
-					});
-					if (!response.ok) {
-						console.log(JSON.stringify(entry));
-						throw new Error(
-							`Ошибка сети: ${response.status}. ${response.message}.`
-						);
-					}
-					const result = await response.json();
-					console.log('preset', entry, 'executed: ', result);
-				}
-			} catch (err) {
-				setPresetsError(err);
-			}
-		}
-		if (!presetsError) setPresetsSet(true);
-		console.log('preset error', presetsError, '; set: ', presetsSet);
 	};
 
 	const validateSignal = async signame => {
@@ -68,31 +28,6 @@ const JsonEditor = () => {
 		if (result == 'true') return true;
 		else return false;
 	};
-	const executePresets = async () => {
-		console.log('preset trigger');
-		try {
-			setCurrent(JSON.stringify('Предустановка значений'));
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/protocol/executePresets`,
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-				}
-			);
-			if (!response.ok) {
-				throw new Error(
-					`Ошибка сети: ${response.status}. ${response.message}.`
-				);
-			} else {
-				setResults(prevResults => [
-					...prevResults,
-					'Выполнена предустановка значений',
-				]);
-			}
-		} catch (err) {
-			setError(err);
-		}
-	};
 
 	const executeScript = async () => {
 		try {
@@ -100,7 +35,6 @@ const JsonEditor = () => {
 			console.log(JSON.parse(formData));
 			const data = JSON.parse(formData);
 			setCurrent(JSON.stringify('Проверка существования сигналов'));
-			if (presets) await executePresets();
 			data.map(item => {
 				console.log('item', item);
 				if (!validateSignal(item.signal))
@@ -182,73 +116,29 @@ const JsonEditor = () => {
 	};
 
 	const handleFilenameChange = e => {
-		setFilename(e.target.value);
-		if (!filename.endsWith('.json')) setFilename(`${filename}.json`);
+		if (e.target.value) {
+			if (!e.target.value.endsWith('.json')) {
+				setFilename(`${e.target.value}.json`);
+			} else {
+				setFilename(e.target.value);
+			}
+		}
 	};
 
 	return (
 		<div className={styles.main}>
 			<div className={styles.edit}>
 				<header className={styles.header}>Редактор команд: </header>
-				<PopupForm buttonLabel={'Задать начальные значения'}>
-					<textarea
-						className={styles.editor}
-						value={presets}
-						onChange={handlePresetsChange}
-						placeholder={`Введите список команд в формате JSON: 
-        [{
-            "signal": "Имя_сигнала",
-            "targetValue": "true" / "false",
-			//Следующие атрибуты нужно указывать, только если нужно задать импульсную последовательность:
-			"pulseTime": "число",
-			"period": "число" //0 если нужен однократный импульс
-        },...]`}
-					/>
-					<button onClick={() => setUpPresets()} className={styles.button}>
-						Задать
-					</button>
-					<Modal state={presetsError}>
-						{presetsError ? presetsError.message : ''}
-					</Modal>
-					<Modal state={presetsSet}>
-						{presetsSet ? 'Начальные значения установлены успешно' : ''}
-					</Modal>
-					<div className={styles.fileManager}>
-						<PopupForm buttonLabel={'Открыть локальный скрипт'}>
-							<input
-								className={styles.button}
-								type="file"
-								accept=".json,application/json"
-								onChange={e => handleFileRead(e, setPresets)}
-							/>
-							<Modal state={readerError}>
-								{readerError ? readerError.message : ''}
-							</Modal>
-						</PopupForm>
-						<PopupForm buttonLabel={'Скачать скрипт'}>
-							<input
-								className={styles.input}
-								type="text"
-								placeholder="Имя с расширением .json или без расширения"
-								onChange={handleFilenameChange}
-							/>
-							{filename ? <p>Текущее имя: {filename}</p> : <></>}
-							<button onClick={saveAsJson} className={styles.button}>
-								Скачать скрипт как JSON
-							</button>
-						</PopupForm>
-					</div>
-				</PopupForm>
 				<textarea
 					className={styles.editor}
 					value={formData}
 					onChange={handleEditorChange}
 					placeholder={`Введите список команд в формате JSON: 
         [{
-            "action": "check" / "wait" / "set"/"setPulse",
+            "action": "check" / "wait" / "set" / "setPulse" / "preset" / "presetPulse" / "executePresets",
             "signal": "Имя_сигнала",
-            "targetValue": "true" / "false"
-			//только если action - "setPulse":
+            "targetValue"(или "expectedValue" для check и wait): "true" / "false"
+			//только если action - "setPulse" или "presetPulse":
 			"pulseTime": целое число - время в миллисекундах,
 			"period": целое число - время в миллисекундах //0 если нужен однократный импульс
         },...]`}
