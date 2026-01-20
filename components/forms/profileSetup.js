@@ -14,7 +14,7 @@ const ProfileSetup = () => {
 					router.push(`/admin`);
 				}}
 			>
-				admin
+				Настройка
 			</button>
 			<button
 				className={styles.button}
@@ -22,7 +22,7 @@ const ProfileSetup = () => {
 					router.push(`/tester`);
 				}}
 			>
-				tester
+				Тестирование
 			</button>
 		</div>
 	);

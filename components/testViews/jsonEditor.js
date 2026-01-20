@@ -272,7 +272,7 @@ const JsonEditor = () => {
 							{readerError ? readerError.message : ''}
 						</Modal>
 					</PopupForm>
-					<PopupForm buttonLabel={'Скачать скрипт'}>
+					<PopupForm buttonLabel={'Сохранить скрипт'}>
 						<input
 							className={styles.input}
 							type="text"
@@ -281,7 +281,7 @@ const JsonEditor = () => {
 						/>
 						{filename ? <p>Текущее имя: {filename}</p> : <></>}
 						<button onClick={saveAsJson} className={styles.button}>
-							Скачать скрипт как JSON
+							Сохранить скрипт как JSON
 						</button>
 					</PopupForm>
 				</div>
