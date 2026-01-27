@@ -5,6 +5,7 @@ import Modal from '../modals/inlineModal';
 import PopupForm from '../modals/popupForm';
 import styles from './jsonEditor.module.css'; // Updated import path
 import { useSearchParams } from 'next/navigation';
+import FileChooser from '../fileManagement/fileChooserForEditor';
 
 const JsonEditor = ({ scheme }) => {
 	const [formData, setFormData] = useState();
@@ -132,23 +133,30 @@ const JsonEditor = ({ scheme }) => {
 		console.log('results final: ', results, typeof results);
 	};
 
-	const saveAsJson = () => {
-		// Convert data to JSON string with formatting
-		const jsonString = JSON.stringify(formData, null, 2);
-		// Create a blob from the JSON string
-		const blob = new Blob([jsonString], { type: 'application/json' });
-		// Create a download link
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement('a');
-		// Set link properties
-		link.href = url;
-		link.download = filename;
-		// Trigger download
-		document.body.appendChild(link);
-		link.click();
-		// Clean up
-		document.body.removeChild(link);
-		URL.revokeObjectURL(url);
+	const saveToServer = async () => {
+		try {
+			const blob = new Blob([JSON.stringify(formData)], { type: 'text/json' });
+			console.log('blob', blob);
+			const dataToSend = new FormData();
+			dataToSend.append('file', blob, filename);
+			console.log('before', JSON.stringify(dataToSend));
+			const response = await fetch(`/api/files?folder=${scheme}`, {
+				method: 'POST',
+				body: dataToSend,
+			});
+			console.log('after', JSON.stringify(formData));
+			if (!response.ok) {
+				throw new Error(
+					`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
+				);
+			}
+			window.location.reload();
+		} catch (err) {
+			if (err instanceof Error) {
+				setError(err);
+				console.log(`Error: ${err.message}`);
+			}
+		}
 	};
 
 	const handleFileRead = (event, setter) => {
@@ -171,7 +179,7 @@ const JsonEditor = ({ scheme }) => {
 		};
 
 		reader.onerror = () => {
-			setReaderError(new Error('Failed to read file'));
+			setReaderError(new Error('Не удалось прочитать файл'));
 		};
 
 		reader.readAsText(file);
@@ -224,7 +232,7 @@ const JsonEditor = ({ scheme }) => {
 							{readerError ? readerError.message : ''}
 						</Modal>
 					</PopupForm>
-					<PopupForm buttonLabel={'Сохранить скрипт'}>
+					<PopupForm buttonLabel={'Сохранить на сервере'}>
 						<input
 							className={styles.input}
 							type="text"
@@ -232,10 +240,11 @@ const JsonEditor = ({ scheme }) => {
 							onChange={handleFilenameChange}
 						/>
 						{filename ? <p>Текущее имя: {filename}</p> : <></>}
-						<button onClick={saveAsJson} className={styles.button}>
-							Сохранить скрипт как JSON
+						<button onClick={saveToServer} className={styles.button}>
+							Сохранить на сервере
 						</button>
 					</PopupForm>
+					<FileChooser folder={scheme}></FileChooser>
 				</div>
 			</div>
 			<div className={styles.show}>
