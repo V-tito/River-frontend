@@ -45,8 +45,8 @@ const GroupList = () => {
 		};
 		fetchData();
 	}, [slug, params, defaultScheme]);
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
+	if (error) return <p>Ошибка: {error.message}</p>;
 
 	return (
 		<AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>

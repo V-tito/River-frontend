@@ -15,7 +15,8 @@
 "tester":{
         "common":[{"id":7,"name":"Установить схему","link":"/tester"}],
         "schemeDependent":[
-        {"id":8,"name":"Редактор команд","link":"/tester/TestEditor"}
+        {"id":8,"name":"Редактор команд","link":"/tester/TestEditor"},
+        {"id":9,"name":"Файлы тестов","link":"/tester/FileManager"}
     ]
     }
 }

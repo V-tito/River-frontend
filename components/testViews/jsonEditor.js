@@ -1,17 +1,43 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
 import PopupForm from '../modals/popupForm';
 import styles from './jsonEditor.module.css'; // Updated import path
+import { useSearchParams } from 'next/navigation';
 
-const JsonEditor = () => {
+const JsonEditor = ({ scheme }) => {
 	const [formData, setFormData] = useState();
 	const [filename, setFilename] = useState();
 	const [current, setCurrent] = useState();
 	const [results, setResults] = useState([]);
 	const [readerError, setReaderError] = useState(null);
 	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const params = useSearchParams();
+	useEffect(() => {
+		const fetchFile = async () => {
+			try {
+				const response = await fetch(`/api/files/${filename}`, {
+					method: 'GET',
+				});
+				const additionalData = await response.json();
+				if (additionalData.type != 'file') {
+					throw new Error(`${filename} не является файлом`);
+				}
+				const contents = JSON.parse(additionalData.content);
+				setFormData(contents);
+			} catch (err) {
+				setError(err);
+			}
+		};
+
+		if ('filename' in params) {
+			setFilename(params.filename);
+			fetchFile();
+		}
+		setLoading(false);
+	});
 
 	const handleEditorChange = e => {
 		setFormData(e.target.value);
@@ -29,6 +55,23 @@ const JsonEditor = () => {
 		else return false;
 	};
 
+	const executeEntry = async entry => {
+		setCurrent(JSON.stringify(entry));
+		const response = await fetch(`/api/executeJsonTest`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(entry),
+		});
+		if (!response.ok) {
+			console.log(JSON.stringify(entry));
+			throw new Error(`Ошибка сети: ${response.status}. ${response.message}.`);
+		}
+		const result = await response.json();
+		Promise.all(results);
+		setResults(prevResults => [...prevResults, result]);
+		console.log('results after appending', result, ': ', results);
+	};
+
 	const executeScript = async () => {
 		try {
 			console.log(formData);
@@ -44,22 +87,36 @@ const JsonEditor = () => {
 
 			for (let i = 0; i < data.length; i++) {
 				const entry = data[i];
-				setCurrent(JSON.stringify(entry));
-				const response = await fetch(`/api/executeJsonTest`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(entry),
-				});
-				if (!response.ok) {
-					console.log(JSON.stringify(entry));
-					throw new Error(
-						`Ошибка сети: ${response.status}. ${response.message}.`
-					);
+				if (entry.action == 'include') {
+					setCurrent(JSON.stringify(entry));
+					try {
+						const response = await fetch(
+							`/api/files?folder=${scheme}&filename=${entry.filename}`,
+							{
+								method: 'GET',
+								headers: { 'Content-Type': 'application/json' },
+							}
+						);
+						if (!response.ok) {
+							throw new Error(
+								`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
+							);
+						}
+						const additionalData = await response.json();
+						if (additionalData.type != 'file') {
+							throw new Error(`${entry.filename} не является файлом`);
+						}
+						const contents = JSON.parse(additionalData.content);
+						for (let i = 0; i < contents.length; i++) {
+							const content = contents[i];
+							await executeEntry(content);
+						}
+					} catch (err) {
+						setError(err);
+					}
+				} else {
+					await executeEntry(entry);
 				}
-				const result = await response.json();
-				Promise.all(results);
-				setResults(prevResults => [...prevResults, result]);
-				console.log('results after appending', result, ': ', results);
 			}
 		} catch (err) {
 			if (err instanceof Error) {
@@ -124,7 +181,7 @@ const JsonEditor = () => {
 			}
 		}
 	};
-
+	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className={styles.main}>
 			<div className={styles.edit}>
@@ -191,6 +248,7 @@ const JsonEditor = () => {
 	);
 };
 JsonEditor.propTypes = {
+	initName: PropTypes.string,
 	scheme: PropTypes.shape({ id: PropTypes.number }),
 };
 

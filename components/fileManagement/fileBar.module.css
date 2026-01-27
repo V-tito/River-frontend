@@ -1,0 +1,11 @@
+.bar {
+    border-radius: 1%;
+    border-color: black;
+    border-width: 1px;
+    width:max-content;
+    display:flex;
+    flex-direction:row;
+    padding-right:5px;
+    padding-left: 5px;
+    
+}
