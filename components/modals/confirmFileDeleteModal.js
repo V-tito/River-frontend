@@ -3,6 +3,7 @@ import styles from './modal.module.css';
 import Popup from 'reactjs-popup';
 //import 'reactjs-popup/dist/index.css';
 import Modal from './inlineModal';
+import './popup.css';
 import PropTypes from 'prop-types';
 const ConfirmDeleteModal = ({ state }) => {
 	const [error, setError] = useState(null);
@@ -32,8 +33,7 @@ const ConfirmDeleteModal = ({ state }) => {
 			{close => (
 				<div className={styles.container}>
 					<div className={styles.header}> Подтверждение действия </div>
-					Удаление этого элемента повлечет удаление всех зависящих от него
-					элементов. Вы уверены, что хотите продолжить?
+					Удалить файл?
 					<div className={styles.actions}>
 						<button onClick={onConfirm} className={styles.alterButton}>
 							Подтвердить

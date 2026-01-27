@@ -41,7 +41,9 @@ const FileView = ({ folder }) => {
 	return (
 		<div>
 			{Array.isArray(files)
-				? files.map(file => <FileBar key={file} filename={file}></FileBar>)
+				? files.map(file => (
+						<FileBar key={file} folder={folder} filename={file}></FileBar>
+					))
 				: ''}
 			<Modal state={error}>{error ? error.message : ''}</Modal>
 		</div>

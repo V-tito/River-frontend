@@ -1,6 +1,0 @@
-[{"action":"preset",
-    "signal": "сигнал1",
-    "targetValue": "true"
-},
-{"action":"include",
-"filename":"ex1_test.json"}]

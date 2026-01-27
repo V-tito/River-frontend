@@ -31,7 +31,9 @@ export default async function handler(req, res) {
 			fs.writeFile(fullPath, req.body.content);
 		}
 		if (req.method == 'DELETE') {
+			console.log('DELrequest');
 			fs.unlink(fullPath);
+			res.status(200).json({ status: 'deleted successfully' });
 		}
 		// Upload logic
 	} catch (error) {

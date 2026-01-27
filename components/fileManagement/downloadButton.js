@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 const DownloadButton = ({ filepath, filename }) => {
-	const api = `api/files${filepath}`;
+	const api = `/api/files${filepath}`;
 	const onDownload = async () => {
 		const response = await fetch(api, {
 			method: 'GET',

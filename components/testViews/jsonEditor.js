@@ -15,29 +15,34 @@ const JsonEditor = ({ scheme }) => {
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
+	console.log('params', params);
+	console.log(params.get('filename'));
 	useEffect(() => {
-		const fetchFile = async () => {
+		const fetchFile = async path => {
+			console.log(path);
 			try {
-				const response = await fetch(`/api/files/${filename}`, {
+				const response = await fetch(`/api/files${path}`, {
 					method: 'GET',
 				});
 				const additionalData = await response.json();
+				console.log('addata', additionalData);
 				if (additionalData.type != 'file') {
 					throw new Error(`${filename} не является файлом`);
 				}
-				const contents = JSON.parse(additionalData.content);
-				setFormData(contents);
+				setFormData(additionalData.content);
 			} catch (err) {
 				setError(err);
 			}
 		};
 
-		if ('filename' in params) {
-			setFilename(params.filename);
-			fetchFile();
+		if (params.get('filename')) {
+			setFilename(params.get('filename'));
+			fetchFile(
+				`?folder=${params.get('folder') ? params.get('folder') : ''}&filename=${params.get('filename')}`
+			);
 		}
 		setLoading(false);
-	});
+	}, []);
 
 	const handleEditorChange = e => {
 		setFormData(e.target.value);
