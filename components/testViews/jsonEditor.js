@@ -135,7 +135,9 @@ const JsonEditor = ({ scheme }) => {
 
 	const saveToServer = async () => {
 		try {
-			const blob = new Blob([JSON.stringify(formData)], { type: 'text/json' });
+			const blob = new Blob([formData], {
+				type: 'text/json',
+			});
 			console.log('blob', blob);
 			const dataToSend = new FormData();
 			dataToSend.append('file', blob, filename);

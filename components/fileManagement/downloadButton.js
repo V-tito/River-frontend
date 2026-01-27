@@ -6,9 +6,12 @@ const DownloadButton = ({ filepath, filename }) => {
 		const response = await fetch(api, {
 			method: 'GET',
 		});
-		const result = await response.blob();
+		const result = await response.json();
+		const blob = new Blob([result.content], {
+			type: 'text/json',
+		});
 		// Create a download link
-		const url = URL.createObjectURL(result);
+		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		// Set link properties
 		link.href = url;
