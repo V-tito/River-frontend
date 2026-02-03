@@ -59,7 +59,7 @@ const CommandBarEditor = ({ scheme }) => {
 		if (result == 'true') return true;
 		else return false;
 	};
-	const executeEntry = async entry => {
+	const executeEntry = async (entry, id = -1) => {
 		const postCommands = [
 			'preset',
 			'presetPulse',
@@ -104,6 +104,7 @@ const CommandBarEditor = ({ scheme }) => {
 							actionType: postCommands.includes(entry.action)
 								? 'setter'
 								: 'checker',
+							id: id,
 						},
 					]);
 				}
@@ -129,6 +130,7 @@ const CommandBarEditor = ({ scheme }) => {
 						actionType: postCommands.includes(entry.action)
 							? 'setter'
 							: 'checker',
+						id: id,
 					},
 				]);
 				console.log('results after appending', result, ': ', results);
@@ -142,7 +144,7 @@ const CommandBarEditor = ({ scheme }) => {
 			setResults([]);
 			for (let i = 0; i < formData.length; i++) {
 				setCurrent(i);
-				executeEntry(formData[i]);
+				executeEntry(formData[i], i);
 			}
 		} catch (err) {
 			if (err instanceof Error) {
@@ -283,7 +285,7 @@ const CommandBarEditor = ({ scheme }) => {
 							onMouseEnter={() => setIsHovered(i)}
 							onMouseLeave={() => setIsHovered(null)}
 							key={i}
-							className={`${styles[result.actionType]}${isHovered == i ? styles.active : ''}`}
+							className={`${styles[result.actionType]}${isHovered == result.id ? styles.active : ''}`}
 						>
 							{result.timestamp} : {result.res}
 						</p>
