@@ -138,7 +138,7 @@ const AlterForm = ({ table, object }) => {
 						</div>
 					) : field.type == 'select' ? (
 						<select
-							className={styles.input}
+							className={styles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>

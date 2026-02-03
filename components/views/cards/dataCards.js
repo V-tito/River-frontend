@@ -9,7 +9,7 @@ const DataCards = ({ kind, data }) => {
 			{data.length > 0
 				? data.map(item => (
 						<ItemCard key={item.name} type={kind} item={item}></ItemCard>
-				  ))
+					))
 				: null}
 		</div>
 	);

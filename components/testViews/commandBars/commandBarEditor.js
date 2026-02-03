@@ -1,22 +1,23 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../modals/inlineModal';
-import PopupForm from '../modals/popupForm';
-import styles from './editor.module.css'; // Updated import path
+import Modal from '../../modals/inlineModal';
+import PopupForm from '../../modals/popupForm';
+import styles from '../editor.module.css'; // Updated import path
 import { useSearchParams } from 'next/navigation';
-import FileChooser from '../fileManagement/fileChooserForEditor';
-import OpenLocalFileModal from '../modals/openLocalFileModal';
+import FileChooser from '../../fileManagement/fileChooserForEditor';
+import OpenLocalFileModal from '../../modals/openLocalFileModal';
+import CommandBar from './commandBar';
 
-const JsonEditor = ({ scheme }) => {
-	const [formData, setFormData] = useState();
+const CommandBarEditor = ({ scheme }) => {
+	const [formData, setFormData] = useState([]);
 	const [filename, setFilename] = useState();
 	const [current, setCurrent] = useState();
 	const [results, setResults] = useState([]);
 	const [readerError, setReaderError] = useState(null);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [isHovered, setIsHovered] = useState(null);
+	const [isHovered, setIsHovered] = useState();
 	const params = useSearchParams();
 	console.log('params', params);
 	console.log(params.get('filename'));
@@ -32,7 +33,7 @@ const JsonEditor = ({ scheme }) => {
 				if (additionalData.type != 'file') {
 					throw new Error(`${filename} не является файлом`);
 				}
-				setFormData(additionalData.content);
+				setFormData(JSON.parse(additionalData.content));
 			} catch (err) {
 				setError(err);
 			}
@@ -47,10 +48,6 @@ const JsonEditor = ({ scheme }) => {
 		setLoading(false);
 	}, []);
 
-	const handleEditorChange = e => {
-		setFormData(e.target.value);
-	};
-
 	const validateSignal = async signame => {
 		const params = new URLSearchParams({ name: signame });
 		const response = await fetch(
@@ -62,7 +59,6 @@ const JsonEditor = ({ scheme }) => {
 		if (result == 'true') return true;
 		else return false;
 	};
-
 	const executeEntry = async entry => {
 		const postCommands = [
 			'preset',
@@ -72,88 +68,81 @@ const JsonEditor = ({ scheme }) => {
 			'executePresets',
 		];
 		let now;
-		setCurrent(JSON.stringify(entry));
-		if (entry.action == 'wait') {
-			now = new Date();
-			setResults(prevResults => [
-				...prevResults,
-				{
-					res: `Ждем, пока сигнал ${entry.signal} не станет ${entry.expectedValue ? 'активен' : 'неактивен'}`,
-					timestamp: now.toDateString(),
-					actionType: postCommands.includes(entry.action)
-						? 'setter'
-						: 'checker',
-				},
-			]);
+		try {
+			if (!validateSignal(entry.signal))
+				throw new Error('Несуществующий сигнал');
+			if (entry.action == 'include') {
+				const response = await fetch(
+					`/api/files?folder=${scheme}&filename=${entry.filename}`,
+					{
+						method: 'GET',
+						headers: { 'Content-Type': 'application/json' },
+					}
+				);
+				if (!response.ok) {
+					throw new Error(
+						`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
+					);
+				}
+				const additionalData = await response.json();
+				if (additionalData.type != 'file') {
+					throw new Error(`${entry.filename} не является файлом`);
+				}
+				const contents = JSON.parse(additionalData.content);
+				for (let i = 0; i < contents.length; i++) {
+					const content = contents[i];
+					await executeEntry(content);
+				}
+			} else {
+				if (entry.action == 'wait') {
+					now = new Date();
+					setResults(prevResults => [
+						...prevResults,
+						{
+							res: `Ждем, пока сигнал ${entry.signal} не станет ${entry.expectedValue ? 'активен' : 'неактивен'}`,
+							timestamp: now.toDateString(),
+							actionType: postCommands.includes(entry.action)
+								? 'setter'
+								: 'checker',
+						},
+					]);
+				}
+				const response = await fetch(`/api/executeJsonTest`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(entry),
+				});
+				if (!response.ok) {
+					console.log(JSON.stringify(entry));
+					throw new Error(
+						`Ошибка сети: ${response.status}. ${response.message}.`
+					);
+				}
+				const result = await response.json();
+				now = new Date();
+				Promise.all(results);
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: result,
+						timestamp: now.toDateString(),
+						actionType: postCommands.includes(entry.action)
+							? 'setter'
+							: 'checker',
+					},
+				]);
+				console.log('results after appending', result, ': ', results);
+			}
+		} catch (err) {
+			setError(err);
 		}
-		const response = await fetch(`/api/executeJsonTest`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(entry),
-		});
-		if (!response.ok) {
-			console.log(JSON.stringify(entry));
-			throw new Error(`Ошибка сети: ${response.status}. ${response.message}.`);
-		}
-		const result = await response.json();
-		now = new Date();
-		Promise.all(results);
-		setResults(prevResults => [
-			...prevResults,
-			{
-				res: result,
-				timestamp: now.toDateString(),
-				actionType: postCommands.includes(entry.action) ? 'setter' : 'checker',
-			},
-		]);
-		console.log('results after appending', result, ': ', results);
 	};
-
 	const executeScript = async () => {
 		try {
-			console.log(formData);
-			console.log(JSON.parse(formData));
-			const data = JSON.parse(formData);
-			setCurrent(JSON.stringify('Проверка существования сигналов'));
-			data.map(item => {
-				console.log('item', item);
-				if (!validateSignal(item.signal))
-					throw new Error('Несуществующий сигнал');
-			});
 			setResults([]);
-
-			for (let i = 0; i < data.length; i++) {
-				const entry = data[i];
-				if (entry.action == 'include') {
-					setCurrent(JSON.stringify(entry));
-					try {
-						const response = await fetch(
-							`/api/files?folder=${scheme}&filename=${entry.filename}`,
-							{
-								method: 'GET',
-								headers: { 'Content-Type': 'application/json' },
-							}
-						);
-						if (!response.ok) {
-							throw new Error(
-								`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
-							);
-						}
-						const additionalData = await response.json();
-						if (additionalData.type != 'file') {
-							throw new Error(`${entry.filename} не является файлом`);
-						}
-						const contents = JSON.parse(additionalData.content);
-						for (let i = 0; i < contents.length; i++) {
-							const content = contents[i];
-							await executeEntry(content);
-						}
-					} catch (err) {
-						setError(err);
-					}
-				} else {
-					await executeEntry(entry);
-				}
+			for (let i = 0; i < formData.length; i++) {
+				setCurrent(i);
+				executeEntry(formData[i]);
 			}
 		} catch (err) {
 			if (err instanceof Error) {
@@ -163,7 +152,6 @@ const JsonEditor = ({ scheme }) => {
 		}
 		console.log('results final: ', results, typeof results);
 	};
-
 	const saveToServer = async () => {
 		try {
 			const blob = new Blob([formData], {
@@ -191,17 +179,14 @@ const JsonEditor = ({ scheme }) => {
 			}
 		}
 	};
-
 	const handleFileRead = (event, file) => {
 		if (!file) return;
-
 		const reader = new FileReader();
-
 		reader.onload = e => {
 			try {
 				const content = e.target.result;
 				console.log(content);
-				setFormData(content);
+				setFormData(JSON.parse(content));
 				setError(null);
 			} catch (err) {
 				setError(err);
@@ -209,11 +194,9 @@ const JsonEditor = ({ scheme }) => {
 				setFormData(null);
 			}
 		};
-
 		reader.onerror = () => {
 			setReaderError(new Error('Не удалось прочитать файл'));
 		};
-
 		reader.readAsText(file);
 	};
 
@@ -227,25 +210,34 @@ const JsonEditor = ({ scheme }) => {
 		}
 	};
 	if (loading) return <p>Загрузка...</p>;
+	console.log('formdata', formData);
 	return (
 		<div className={styles.main}>
 			<div className={styles.editorBar}>
 				<header className={styles.header}>Редактор команд: </header>
 				<div className={styles.edit}>
-					<textarea
-						className={styles.editor}
-						value={formData}
-						onChange={handleEditorChange}
-						placeholder={`Введите список команд в формате JSON: 
-        [{
-            "action": "check" / "wait" / "set" / "setPulse" / "preset" / "presetPulse" / "executePresets",
-            "signal": "Имя_сигнала",
-            "targetValue"(или "expectedValue" для check и wait): "true" / "false"
-			//только если action - "setPulse" или "presetPulse":
-			"pulseTime": целое число - время в миллисекундах,
-			"period": целое число - время в миллисекундах //0 если нужен однократный импульс
-        },...]`}
-					/>
+					{formData.length > 0
+						? formData.map((item, i) => (
+								<div
+									key={i}
+									onMouseEnter={() => {
+										setIsHovered(i);
+										console.log('hover', i);
+									}}
+									onMouseLeave={() => setIsHovered(null)}
+								>
+									<CommandBar
+										script={formData}
+										setScript={setFormData}
+										index={i}
+										current={current}
+										error={error}
+										key={i}
+										isHovered={isHovered}
+									></CommandBar>
+								</div>
+							))
+						: ''}
 				</div>
 				<button
 					onClick={() => executeScript(formData)}
@@ -276,16 +268,13 @@ const JsonEditor = ({ scheme }) => {
 			</div>
 			<div className={styles.show}>
 				<header className={styles.header}>Результат выполнения: </header>
-				<p className={styles.input}>
-					<b>Выполняется:</b> {current}
-				</p>
 				<div className={styles.editor}>
 					{results.map((result, i) => (
 						<p
 							onMouseEnter={() => setIsHovered(i)}
 							onMouseLeave={() => setIsHovered(null)}
-							className={`${styles[result.actionType]}${isHovered == i ? styles.active : ''}`}
 							key={i}
+							className={`${styles[result.actionType]}${isHovered == i ? styles.active : ''}`}
 						>
 							{result.timestamp} : {result.res}
 						</p>
@@ -295,9 +284,9 @@ const JsonEditor = ({ scheme }) => {
 		</div>
 	);
 };
-JsonEditor.propTypes = {
+CommandBarEditor.propTypes = {
 	initName: PropTypes.string,
 	scheme: PropTypes.shape({ id: PropTypes.number }),
 };
 
-export default JsonEditor;
+export default CommandBarEditor;

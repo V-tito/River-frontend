@@ -1,5 +1,5 @@
 .popup-content {  margin: auto;  
-  background: rgb(255, 255, 255);  
+  background:var(--background);  
   width: 40%;  
   padding: 5px;
   overflow: hidden;

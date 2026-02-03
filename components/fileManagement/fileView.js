@@ -2,16 +2,12 @@ import { React, useEffect, useState } from 'react';
 import FileBar from './fileBar';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
-import styles from './fileBar.module.css';
-import PopupForm from '../modals/popupForm';
+import OpenLocalFileModal from '../modals/openLocalFileModal';
 
 const FileView = ({ folder }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [fileForUpload, setFileForUpload] = useState(null);
-	//const url = new URL(`/api/files?folder=${folder}`);
-	//url.searchParams.set('folder', folder);
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
@@ -41,15 +37,13 @@ const FileView = ({ folder }) => {
 			fetchFiles();
 		}
 	}, []);
-	const handleFileChange = event => {
-		setFileForUpload(event.target.files[0]);
-	};
-	const handleFileUpload = async e => {
+
+	const handleFileUpload = async (e, file) => {
 		e.preventDefault();
 		const formData = new FormData();
-		formData.append('file', fileForUpload);
+		formData.append('file', file);
 		console.log(formData);
-		console.log(fileForUpload.name);
+		console.log(file.name);
 		const response = await fetch(`/api/files?folder=${folder}`, {
 			method: 'POST',
 			body: formData,
@@ -62,7 +56,7 @@ const FileView = ({ folder }) => {
 		}
 		window.location.reload();
 	};
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className="flex flex-row">
 			<div className="flex flex-col">
@@ -72,19 +66,10 @@ const FileView = ({ folder }) => {
 						))
 					: ''}
 				<Modal state={error}>{error ? error.message : ''}</Modal>
+				<OpenLocalFileModal
+					uploadAction={handleFileUpload}
+				></OpenLocalFileModal>
 			</div>
-			<PopupForm buttonLabel={'Загрузить скрипт на сервер'}>
-				<input
-					className={styles.button}
-					type="file"
-					accept=".json,application/json"
-					onChange={e => handleFileChange(e)}
-				/>
-				<button onClick={handleFileUpload} className={styles.button}>
-					Загрузить
-				</button>
-				<Modal state={error}>{error ? error.message : ''}</Modal>
-			</PopupForm>
 		</div>
 	);
 };

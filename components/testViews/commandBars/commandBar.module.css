@@ -1,0 +1,31 @@
+.commandBar {
+  border-radius: 1%;
+  border-color: black;
+  border-width: 1px;
+  width:min-content;
+  display:flex;
+  flex-direction:column;
+  padding-right:5px;
+  padding-left: 5px;
+  
+}
+.select {
+  width:fit-content
+}
+.option{width: min-content;
+background-color: aliceblue;}
+.upcoming{
+  background-color: aliceblue;
+}
+.done{
+  background-color: lightgray;
+}
+.current{
+  background-color: lightgoldenrodyellow;
+}
+.error{background-color: lightcoral;
+
+}
+.active{
+  background-color: yellow !important
+}

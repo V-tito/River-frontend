@@ -92,7 +92,7 @@ const AddForm = ({ table }) => {
 		}
 	};
 
-	if (loading) return <p>Form loading...</p>;
+	if (loading) return <p>Загружается форма...</p>;
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
 			<header className={styles.header}>Добавить элемент</header>
@@ -126,13 +126,15 @@ const AddForm = ({ table }) => {
 						</div>
 					) : field.type == 'select' ? (
 						<select
-							className={styles.input}
+							className={styles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>
-							<option value={null}>Выберите элемент...</option>
+							<option className={styles.option} value={null}>
+								Выберите элемент...
+							</option>
 							{Object.entries(idToNameAliases[field.id]).map(item => (
-								<option key={item[0]} value={item[0]}>
+								<option className={styles.option} key={item[0]} value={item[0]}>
 									{item[1]}
 								</option>
 							))}

@@ -1,5 +1,5 @@
-//import DataTable from "./views/dataTable"
-import JsonEditor from './testViews/jsonEditor';
+//import JsonEditor from './testViews/jsonEditor';
+import CommandBarEditor from './testViews/commandBars/commandBarEditor';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 const TestUI = ({ scheme }) => {
@@ -8,7 +8,7 @@ const TestUI = ({ scheme }) => {
 		setIsClient(true);
 	}, []);
 	if (!isClient) return <p>Loading...</p>;
-	return <JsonEditor scheme={scheme.name}></JsonEditor>;
+	return <CommandBarEditor scheme={scheme.name}></CommandBarEditor>;
 };
 TestUI.propTypes = {
 	scheme: PropTypes.shape({ name: PropTypes.string }),
