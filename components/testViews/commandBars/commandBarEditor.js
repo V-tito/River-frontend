@@ -100,7 +100,7 @@ const CommandBarEditor = ({ scheme }) => {
 						...prevResults,
 						{
 							res: `Ждем, пока сигнал ${entry.signal} не станет ${entry.expectedValue ? 'активен' : 'неактивен'}`,
-							timestamp: now.toDateString(),
+							timestamp: now.toLocaleTimeString(),
 							actionType: postCommands.includes(entry.action)
 								? 'setter'
 								: 'checker',
@@ -125,7 +125,7 @@ const CommandBarEditor = ({ scheme }) => {
 					...prevResults,
 					{
 						res: result,
-						timestamp: now.toDateString(),
+						timestamp: now.toLocaleTimeString(),
 						actionType: postCommands.includes(entry.action)
 							? 'setter'
 							: 'checker',
@@ -149,8 +149,9 @@ const CommandBarEditor = ({ scheme }) => {
 				setError(err);
 				console.log(`Error: ${err.message}`);
 			}
+		} finally {
+			console.log('results final: ', results, typeof results);
 		}
-		console.log('results final: ', results, typeof results);
 	};
 	const saveToServer = async () => {
 		try {
@@ -238,6 +239,14 @@ const CommandBarEditor = ({ scheme }) => {
 								</div>
 							))
 						: ''}
+					<button
+						className={styles.button}
+						onClick={() => {
+							setFormData(prevFormData => [...prevFormData, { action: null }]);
+						}}
+					>
+						Добавить
+					</button>
 				</div>
 				<button
 					onClick={() => executeScript(formData)}

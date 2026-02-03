@@ -52,7 +52,6 @@ const CommandBar = ({
 	console.log('cb triggered with index', index, 'script', script);
 	return (
 		<div
-			onMouseEnter={() => console.log(isHovered, index)}
 			className={`${styles.commandBar} ${current == index ? (error ? styles.error : styles.current) : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
 		>
 			<label>Действие: </label>
@@ -62,9 +61,7 @@ const CommandBar = ({
 				className={styles.select}
 				onChange={updateScript}
 			>
-				<option value={null} className={styles.option}>
-					Действие
-				</option>
+				<option value={null}>Действие</option>
 				{Object.entries(commands).map(item => (
 					<option value={item[0]} key={item[0]}>
 						{item[1]}
@@ -76,6 +73,7 @@ const CommandBar = ({
 						<div key={ind}>
 							<label>{translate[item]}</label>
 							<input
+								className={styles.input}
 								type="text"
 								id={item}
 								value={script[index][item]}
@@ -84,6 +82,12 @@ const CommandBar = ({
 						</div>
 					))
 				: ''}
+			<button
+				className={styles.button}
+				onClick={() => setScript(prev => prev.filter((_, i) => i !== index))}
+			>
+				Удалить команду
+			</button>
 		</div>
 	);
 };
