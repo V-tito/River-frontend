@@ -1,5 +1,5 @@
 //import JsonEditor from './testViews/jsonEditor';
-import CommandBarEditor from './testViews/commandBars/commandBarEditor';
+import Editor from './testViews/editor';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 const TestUI = ({ scheme }) => {
@@ -8,7 +8,7 @@ const TestUI = ({ scheme }) => {
 		setIsClient(true);
 	}, []);
 	if (!isClient) return <p>Loading...</p>;
-	return <CommandBarEditor scheme={scheme.name}></CommandBarEditor>;
+	return <Editor scheme={scheme.name}></Editor>;
 };
 TestUI.propTypes = {
 	scheme: PropTypes.shape({ name: PropTypes.string }),
