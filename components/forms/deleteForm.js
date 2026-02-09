@@ -28,7 +28,7 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 			<div>
 				<label>{'Выберите элемент для удаления:'}</label>
 				<select
-					className={styles.input}
+					className={styles.select}
 					type="number"
 					id="id"
 					required
