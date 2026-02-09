@@ -59,7 +59,7 @@ const SetDefaultScheme = () => {
 				<div>
 					<label>{'Выберите схему:'}</label>
 					<select
-						className={styles.input}
+						className={styles.select}
 						type="number"
 						id="id"
 						required

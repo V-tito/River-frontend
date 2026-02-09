@@ -4,7 +4,6 @@
   width: 100%;
   height:100vh;
   margin:10px;
-  background-color: white;
 
 }
 .show {
@@ -16,19 +15,30 @@
     margin:10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: white;
+    overflow-y: auto;
+  
+  }
+  .editorBar {
+    display: flex;
+    flex-direction: column!important;
+    width: 50%;
+    height:90vh;
+   
+    margin:10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
   
   }
   .edit {
     display: flex;
     flex-direction: column!important;
-    width: 50%;
+    width: 95%;
     height:90vh;
-    padding: 20px;
+   
     margin:10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: white;
+    overflow-y: auto;
   
   }
 
@@ -78,4 +88,13 @@
     text-decoration-line: underline;
     text-decoration-style: solid;
     padding-bottom: 10px;
+  }
+  .setter{
+    background-color: lightskyblue;
+  }
+  .checker{
+    background-color: lightgreen;
+  }
+  .active{
+    background-color: yellow !important
   }

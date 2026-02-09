@@ -6,7 +6,6 @@
   margin:10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: white;
 
 }
 
@@ -17,16 +16,15 @@
 
 .radio{
   padding-left: 5%;
-  background-color: white;
-  color: #333;
   font-size: smaller;
   }
 .select {
-  max-width: 100%;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: white;
-  color: #333;
+  color:var(--foreground);
+  background: var(--background);
+  
   padding: 5px;
   font-size: smaller;
 }
@@ -52,9 +50,9 @@
 }
 .option {
   padding: 10px;
-  background-color: white;
-  color: #333;
-  font-size: smaller;
+  color:var(--foreground);
+  background: var(--background);
+  filter: hue-rotate(20deg);
   }
 
 .input {

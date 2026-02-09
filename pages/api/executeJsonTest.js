@@ -20,6 +20,57 @@ export default async function handler(req, res) {
 			res.status(500).json(err.message);
 		}
 	};
+	function waitTillTimeout(interval = 500, duration = 30000) {
+		let timeoutId;
+		let elapsedTime = 0;
+		const makeRequest = async () => {
+			const api = new URL(`${process.env.API_URL}/api/river/v1/protocol/get`);
+			api.searchParams.set('name', command.signal);
+			try {
+				const response = await fetch(api.toString(), {
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json' },
+				});
+				console.log(`tried to get state on api ${api.toString()}`);
+				if (!response.ok) {
+					throw netError(response);
+				}
+				const result = await response.json();
+				console.log('received:', result);
+				if (result.b.toString() == command.expectedValue) {
+					res
+						.status(200)
+						.json(
+							`Сигнал ${command.signal} ${command.expectedValue ? 'активен' : 'неактивен'} в момент времени ${result.a}`
+						);
+				} else {
+					elapsedTime += interval;
+					if (elapsedTime < duration) {
+						timeoutId = setTimeout(makeRequest, interval);
+					} else {
+						console.log('Polling completed');
+						res
+							.status(200)
+							.json(
+								`Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`
+							);
+					}
+				}
+			} catch (err) {
+				console.log('error polling ', api);
+				console.log(err);
+				clearTimeout(timeoutId);
+				res.status(500).json(err.message);
+			}
+		};
+		makeRequest();
+
+		// Return function to manually stop
+		return () => {
+			clearTimeout(timeoutId);
+			console.log('Polling stopped manually');
+		};
+	}
 	const command = req.body;
 	const act = command.action;
 	const postCommands = [
@@ -105,33 +156,6 @@ export default async function handler(req, res) {
 		}
 	}
 	if (act == 'wait') {
-		const api = new URL(`${process.env.API_URL}/api/river/v1/protocol/get`);
-		api.searchParams.set('name', command.signal);
-		while (true) {
-			try {
-				const response = await fetch(api.toString(), {
-					method: 'GET',
-					headers: { 'Content-Type': 'application/json' },
-				});
-				console.log(`tried to get state on api ${api.toString()}`);
-				if (!response.ok) {
-					throw netError(response);
-				}
-				const result = await response.json();
-				console.log('received:', result);
-				if (result.b.toString() == command.expectedValue) {
-					res
-						.status(200)
-						.json(
-							`Уровень сигнала ${command.signal} равен эталону ${command.expectedValue} в момент времени ${result.a}`
-						);
-					break;
-				} else continue;
-			} catch (err) {
-				console.log('error polling ', api);
-				console.log(err);
-				res.status(500).json(err.message);
-			}
-		}
+		waitTillTimeout(500, command.timeout);
 	}
 }
