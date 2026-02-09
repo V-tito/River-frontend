@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import StateTable from '../../../components/forStatePages/stateTable';
+import IndicatorsTable from '../../../components/forStatePages/indicatorsTable';
 import { useGlobal } from '../../GlobalState';
 import React from 'react';
 
@@ -44,7 +44,7 @@ const StateOfPlates = () => {
 			<h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
 				Состояние плат схемы {defaultScheme.name}:
 			</h1>
-			<StateTable data={data}></StateTable>
+			<IndicatorsTable data={data} board={true}></IndicatorsTable>
 		</div>
 	);
 };

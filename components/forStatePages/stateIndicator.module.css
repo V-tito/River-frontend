@@ -11,9 +11,11 @@
   }
   
   .active {
-    background-color: yellow; /* Yellow when active */
+    background-color: yellow; 
   }
   
   .inactive {
-    background-color: grey; /* Grey when inactive */
+    background-color: grey; 
   }
+  .error{
+    background-color: red; }

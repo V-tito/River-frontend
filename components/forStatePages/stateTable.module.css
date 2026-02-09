@@ -1,9 +1,10 @@
-.table {flex: 1;
+.table {
 box-sizing: border-box; /* Include padding and border in the table width */
     border-collapse: collapse; /* Combine border to avoid double spacing */
     padding: 0%;
     width: 375px;  /* Set a fixed width */
   height: min-content;
+  margin-right:20px
 }
 .th {
     padding: 5px; /* Adjust as needed */
@@ -12,6 +13,7 @@ box-sizing: border-box; /* Include padding and border in the table width */
     word-wrap: break-word;
     background-color: #1c5f3a;
     color:aliceblue;
+    height:min-content
 
 
 }
@@ -25,4 +27,9 @@ box-sizing: border-box; /* Include padding and border in the table width */
 }
 .namer{
     width:100px;
+}
+.h2{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: larger;
+    text-align: center;
 }

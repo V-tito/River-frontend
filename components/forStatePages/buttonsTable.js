@@ -1,9 +1,8 @@
 import styles from './stateTable.module.css';
-import StateIndicator from './stateIndicator';
 import StateButton from './stateButton';
 import React from 'react';
 import PropTypes from 'prop-types';
-const StateTable = ({ data }) => {
+const ButtonsTable = ({ data }) => {
 	return (
 		<table className={styles.table}>
 			<thead>
@@ -18,25 +17,14 @@ const StateTable = ({ data }) => {
 						<tr key={item.id}>
 							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
 							<td className={styles.td}>
-								{'isOutput' in item ? (
-									item.isOutput ? (
-										<StateButton sig={item}></StateButton>
-									) : (
-										<StateIndicator
-											sig={item}
-											//todo change to proper naming
-										></StateIndicator>
-									)
-								) : (
-									<StateIndicator sig={item} board={true}></StateIndicator>
-								)}
+								<StateButton sig={item}></StateButton>
 							</td>
 						</tr>
 					))
 				) : (
 					<tr>
 						<td colSpan="2" className={styles.td}>
-							No data available
+							Данных нет
 						</td>
 					</tr>
 				)}
@@ -44,7 +32,7 @@ const StateTable = ({ data }) => {
 		</table>
 	);
 };
-StateTable.propTypes = {
+ButtonsTable.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.shape({})),
 };
-export default StateTable;
+export default ButtonsTable;

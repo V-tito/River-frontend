@@ -1,50 +1,23 @@
-import styles from './stateTable.module.css';
-import StateIndicator from './stateIndicator';
-import StateButton from './stateButton';
+import IndicatorsTable from './indicatorsTable';
+import ButtonsTable from './buttonsTable';
 import React from 'react';
+import styles from './stateTable.module.css';
 import PropTypes from 'prop-types';
-const StateTable = ({ data }) => {
+const SignalTables = ({ data }) => {
 	return (
-		<table className={styles.table}>
-			<thead>
-				<tr>
-					<th className={styles.th}>Имя</th>
-					<th className={styles.th}>Состояние</th>
-				</tr>
-			</thead>
-			<tbody>
-				{data.length > 0 ? (
-					data.map(item => (
-						<tr key={item.id}>
-							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
-							<td className={styles.td}>
-								{'isOutput' in item ? (
-									item.isOutput ? (
-										<StateButton sig={item}></StateButton>
-									) : (
-										<StateIndicator
-											sig={item}
-											//todo change to proper naming
-										></StateIndicator>
-									)
-								) : (
-									<StateIndicator sig={item} board={true}></StateIndicator>
-								)}
-							</td>
-						</tr>
-					))
-				) : (
-					<tr>
-						<td colSpan="2" className={styles.td}>
-							No data available
-						</td>
-					</tr>
-				)}
-			</tbody>
-		</table>
+		<div className="flex flex-row">
+			<div className="flex flex-col">
+				<h2 className={styles.h2}>Входы</h2>
+				<IndicatorsTable data={data.inputs} board={false}></IndicatorsTable>
+			</div>
+			<div className="flex flex-col">
+				<h2 className={styles.h2}>Выходы</h2>
+				<ButtonsTable data={data.outputs}></ButtonsTable>
+			</div>
+		</div>
 	);
 };
-StateTable.propTypes = {
+SignalTables.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.shape({})),
 };
-export default StateTable;
+export default SignalTables;

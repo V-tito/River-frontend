@@ -7,21 +7,19 @@ import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
 const AlterForm = ({ table, object }) => {
-	const defaults = () => {
-		if (table != 'Signal') {
-			return { ...object };
-		} else {
-			return {
-				...object,
-				parentGroup: object.parentGroup,
-				testBoard: object.testBoard.id,
-			};
-		}
-	};
+	const defaults =
+		table != 'Signal'
+			? { ...object }
+			: {
+					...object,
+					parentGroup: object.parentGroup,
+					testBoard: object.testBoard.id,
+				};
 	const { defaultScheme } = useGlobal();
-	const { register, handleSubmit, reset } = useForm({
-		defaultValues: defaults(),
+	const { register, handleSubmit, reset, watch } = useForm({
+		defaultValues: defaults,
 	});
+	console.log(defaults);
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -31,6 +29,10 @@ const AlterForm = ({ table, object }) => {
 		testBoard: boardToNames,
 		parentGroup: groupToNames,
 	};
+	const watchers = Object.keys(defaults).reduce((acc, key) => {
+		return { ...acc, [key]: watch(key) };
+	}, {});
+	console.log('watchers', watchers);
 
 	useEffect(() => {
 		const fetchConfig = async () => {
@@ -104,7 +106,7 @@ const AlterForm = ({ table, object }) => {
 			}
 		}
 	};
-	if (loading) return <p>Form loading...</p>;
+	if (loading) return <p>Загрузка формы...</p>;
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
 			<header className={styles.header}>Изменить элемент</header>
@@ -121,6 +123,7 @@ const AlterForm = ({ table, object }) => {
 									id={field.id}
 									name={field.label}
 									value="true"
+									checked={String(watchers[field.id]) == 'true'}
 									{...register(field.id, field.validation)}
 								/>{' '}
 								{field.values[0]}
@@ -131,6 +134,7 @@ const AlterForm = ({ table, object }) => {
 									id={field.id}
 									name={field.label}
 									value="false"
+									checked={String(watchers[field.id]) == 'false'}
 									{...register(field.id, field.validation)}
 								/>{' '}
 								{field.values[1]}
@@ -138,6 +142,7 @@ const AlterForm = ({ table, object }) => {
 						</div>
 					) : field.type == 'select' ? (
 						<select
+							value={watchers[field.id]}
 							className={styles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
