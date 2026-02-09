@@ -6,10 +6,9 @@ import { useGlobal } from '../../GlobalState';
 interface MyDataType {
 	id: number;
 	name: string;
-	// Add other fields as necessary
 }
 interface DynamicRecord {
-	[key: string]: []; // Change 'any' to a more specific type if possible
+	[key: string]: [];
 }
 
 const StateOfSignals = () => {
