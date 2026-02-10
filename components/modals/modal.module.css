@@ -60,7 +60,6 @@
     color: #fff;
     cursor: pointer;
     justify-self: left;
-    
     margin:5px;
     margin-top:10px;
     padding-left: 2vh;
@@ -75,4 +74,15 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: smaller;
+  }
+  .fileInput{
+    display: inline;
+    width: 75%;
+    justify-self: center;
+    word-wrap: break-word;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
   }
