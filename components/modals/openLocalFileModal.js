@@ -1,5 +1,5 @@
 'use client';
-import PopupForm from './popupForm';
+import Popup from 'reactjs-popup';
 import Modal from './inlineModal';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -11,20 +11,38 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 		setFile(e.target.files[0]);
 	};
 	return (
-		<PopupForm buttonLabel={'Открыть локальный скрипт'}>
-			<input
-				className={styles.button}
-				type="file"
-				accept=".json,application/json"
-				onChange={e => handleFileChange(e)}
-			/>
-			<button onClick={e => uploadAction(e, file)} className={styles.button}>
-				Загрузить
-			</button>
-			<Modal state={uploadError}>
-				{uploadError ? uploadError.message : ''}
-			</Modal>
-		</PopupForm>
+		<Popup
+			trigger={
+				<button className={styles.menuButton}>Открыть локальный скрипт</button>
+			}
+			closeOnDocumentClick={false}
+		>
+			{close => (
+				<div className={styles.container}>
+					<button onClick={() => close()} className={styles.closeButton}>
+						&times;
+					</button>
+					<input
+						className={styles.button}
+						type="file"
+						accept=".json,application/json"
+						onChange={e => handleFileChange(e)}
+					/>
+					<button
+						onClick={e => {
+							uploadAction(e, file);
+							close();
+						}}
+						className={styles.button}
+					>
+						Загрузить
+					</button>
+					<Modal state={uploadError}>
+						{uploadError ? uploadError.message : ''}
+					</Modal>
+				</div>
+			)}
+		</Popup>
 	);
 };
 
