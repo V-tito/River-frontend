@@ -23,7 +23,7 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 						&times;
 					</button>
 					<input
-						className={styles.button}
+						className={styles.fileInput}
 						type="file"
 						accept=".json,application/json"
 						onChange={e => handleFileChange(e)}
@@ -33,7 +33,7 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 							uploadAction(e, file);
 							close();
 						}}
-						className={styles.button}
+						className={styles.menuButton}
 					>
 						Загрузить
 					</button>

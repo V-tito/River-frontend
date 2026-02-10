@@ -1,12 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './editor.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
 import CommandBarEditor from './commandBars/commandBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
+import { usePersistentData } from '@/hooks/usePersistentData';
+import { useBeforeUnload } from 'react-use';
+
 const Editor = ({ scheme }) => {
 	const [formData, setFormData] = useState([]);
 	const [current, setCurrent] = useState();
@@ -15,6 +18,37 @@ const Editor = ({ scheme }) => {
 	const [error, setError] = useState(null);
 	const [isHovered, setIsHovered] = useState();
 	const params = useSearchParams();
+	const { saveFormData, loadFormData } = usePersistentData({
+		storageKey: 'editor-contents',
+		storageType: 'session',
+	});
+	const router = useRouter();
+
+	// Auto-save on change (with debounce)
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			saveFormData(formData);
+		}, 500); // Debounce 500ms
+
+		return () => clearTimeout(timeoutId);
+	}, [formData, saveFormData]);
+
+	// Save before page unload
+	useBeforeUnload(() => {
+		saveFormData(formData);
+	}, true);
+	useEffect(() => {
+		const handleRouteChange = () => {
+			saveFormData(formData);
+		};
+
+		// Using Next.js router events
+		router.events?.on('routeChangeStart', handleRouteChange);
+
+		return () => {
+			router.events?.off('routeChangeStart', handleRouteChange);
+		};
+	}, [formData, router, saveFormData]);
 	console.log('params', params);
 	const filename = params.get('filename');
 	console.log();
@@ -40,6 +74,12 @@ const Editor = ({ scheme }) => {
 			fetchFile(
 				`?folder=${params.get('folder') ? params.get('folder') : ''}&filename=${params.get('filename')}`
 			);
+		} else {
+			const savedData = loadFormData();
+			if (savedData) {
+				setFormData(savedData);
+				console.log('Form data restored from storage');
+			}
 		}
 		setLoading(false);
 	}, []);
