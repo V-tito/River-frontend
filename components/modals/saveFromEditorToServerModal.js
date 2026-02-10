@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import PopupForm from './popupForm';
+import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	const [filename, setFilename] = useState(
-		initName ? initName : `test-${new Date().toString()}`
+		initName
+			? initName
+			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}`
 	);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
@@ -48,25 +50,43 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	};
 
 	return (
-		<PopupForm buttonLabel={'Сохранить на сервере'}>
-			<input
-				className={styles.input}
-				type="text"
-				placeholder="Имя с расширением .json или без расширения"
-				onChange={handleFilenameChange}
-			/>
-			{filename ? <p>Текущее имя: {filename}</p> : <></>}
-			<button onClick={saveToServer} className={styles.menuButton}>
-				Сохранить на сервере
-			</button>
-			<Modal state={error}>
-				{error
-					? error.message
-						? error.message
-						: 'Неизвестная ошибка'
-					: 'Неизвестная ошибка'}
-			</Modal>
-		</PopupForm>
+		<Popup
+			trigger={
+				<button className={styles.menuButton}>Сохранить на сервере</button>
+			}
+			closeOnDocumentClick={false}
+		>
+			{close => (
+				<div className={styles.container}>
+					<button onClick={() => close()} className={styles.closeButton}>
+						&times;
+					</button>
+					<input
+						className={styles.input}
+						type="text"
+						placeholder="Имя с расширением .json или без расширения"
+						onChange={handleFilenameChange}
+					/>
+					{filename ? <p>Текущее имя: {filename}</p> : <></>}
+					<button
+						onClick={() => {
+							saveToServer();
+							close();
+						}}
+						className={styles.menuButton}
+					>
+						Сохранить на сервере
+					</button>
+					<Modal state={error}>
+						{error
+							? error.message
+								? error.message
+								: 'Неизвестная ошибка'
+							: 'Неизвестная ошибка'}
+					</Modal>
+				</div>
+			)}
+		</Popup>
 	);
 };
 SaveFromEditorToServerModal.propTypes = {

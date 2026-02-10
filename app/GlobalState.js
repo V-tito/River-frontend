@@ -5,30 +5,14 @@ import PropTypes from 'prop-types';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-	/*const fetchScheme = async () => {
-    const response = await fetch(`${process.env.API_URL}/api/river/v1/configurator/Scheme`,{
-      method: 'GET',
-      //headers: {'Content-Type': 'application/json',}
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const result = await response.json();
-    console.log("schemes to set",result);
-    const res= await result[0];
-    return res;
-  }*/
 	const [navProfile, setNavProfile] = useState(() => {
 		if (typeof window !== 'undefined') {
-			//logger.info("Setting up default scheme")
 			try {
 				const stored = localStorage.getItem('navProfile');
 				if (stored) {
-					//logger.info("set up default scheme from local storage",storedScheme)
 					return JSON.parse(stored);
 				}
 			} catch (err) {
-				//logger.error("error setting scheme",err.message)
 				console.log(err.message);
 				return null;
 			}
@@ -51,43 +35,18 @@ export const GlobalProvider = ({ children }) => {
 			}
 		}
 	});
-	/*
-useEffect(()=>{
-  {const fetchDefault=async () => {
-      try{
-      const storedScheme = localStorage.getItem('defaultScheme');
-      console.log("stored",storedScheme)
-      let res;
-    if (storedScheme) {res=JSON.parse(storedScheme);
-      console.log("stored len",Object.keys(res))
-      if (Object.keys(res).length>0) {
-        console.log("set",res)
-        setDefaultScheme (res);
-      }
-    } 
-    res=await fetchScheme()
-    console.log("set",res)
-    return res;}
-    catch(err){
-      console.log("error",err.message)
-      return null}
-  }
-  fetchDefault()
-  }
-},[])*/
+
 	useEffect(() => {
 		if (defaultScheme !== null) {
 			localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
-			//logger.info("putting default scheme into local storage",defaultScheme)
 		}
 	}, [defaultScheme]);
 	useEffect(() => {
 		if (navProfile !== null) {
 			localStorage.setItem('navProfile', JSON.stringify(navProfile));
-			//logger.info("putting default scheme into local storage",defaultScheme)
 		}
 	}, [navProfile]);
-	//logger.info("default scheme befor return",defaultScheme)
+
 	return (
 		<GlobalContext.Provider
 			value={{

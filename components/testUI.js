@@ -1,3 +1,4 @@
+'use client';
 //import JsonEditor from './testViews/jsonEditor';
 import Editor from './testViews/editor';
 import React, { useEffect, useState } from 'react';
