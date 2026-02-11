@@ -98,3 +98,17 @@
   .active{
     background-color: yellow !important
   }
+  @media (prefers-color-scheme: dark) {
+    .setter{
+      background-color: rgb(0, 138, 136);
+    }
+    .checker{
+      background-color: #007328;
+    }
+    .error{background-color: rgb(127, 3, 3);
+    
+    }
+    .active{
+      background-color: rgb(50, 0, 150) !important
+    }
+  }

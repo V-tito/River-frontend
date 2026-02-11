@@ -7,18 +7,22 @@
     flex-direction:row;
     padding-right:5px;
     padding-left: 5px;
-    
+    border:1px solid var(--foreground);
+ 
+}
+.name{
+  margin: auto;
+  padding-right: 10px;
 }
 .button {
     display: inline;
       background-color: #1c5f3a;
       color: #fff;
       cursor: pointer;
-      margin:5px;
-      margin-top:10px;
-      padding:  5px;
       min-width:25%;
       border-radius: 5%;
+      margin:5px;
+      padding: 1px 5px
   }
   .button:hover {
     background-color: #124127;

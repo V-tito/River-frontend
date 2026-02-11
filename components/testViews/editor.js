@@ -181,6 +181,7 @@ const Editor = ({ scheme }) => {
 				setCurrent(i);
 				await executeEntry(formData[i], i);
 			}
+			setCurrent(formData.length);
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);

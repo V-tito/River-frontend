@@ -54,14 +54,26 @@ const CommandBar = ({
 		<div
 			className={`${styles.commandBar} ${current == index ? (error ? styles.error : styles.current) : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
 		>
-			<label>Действие: </label>
+			<div className="flex flex-row w-full">
+				<label className={styles.label}>Действие </label>
+				<div className={styles.deleteContainer}>
+					<button
+						className={styles.button}
+						onClick={() =>
+							setScript(prev => prev.filter((_, i) => i !== index))
+						}
+					>
+						&times;
+					</button>
+				</div>
+			</div>
 			<select
 				id="action"
-				value={script[index].action}
+				value={script[index].action ? script[index].action : ''}
 				className={styles.select}
 				onChange={updateScript}
 			>
-				<option value={null}>Действие</option>
+				<option value={''}>Действие</option>
 				{Object.entries(commands).map(item => (
 					<option value={item[0]} key={item[0]}>
 						{item[1]}
@@ -69,25 +81,21 @@ const CommandBar = ({
 				))}
 			</select>
 			{script[index].action
-				? commandConfig[script[index].action].map((item, ind) => (
-						<div key={ind}>
-							<label>{translate[item]}</label>
-							<input
-								className={styles.input}
-								type="text"
-								id={item}
-								value={script[index][item]}
-								onChange={updateScript}
-							></input>
-						</div>
-					))
+				? script[index].action !== ''
+					? commandConfig[script[index].action].map((item, ind) => (
+							<div key={ind}>
+								<label className={styles.label}>{translate[item]}</label>
+								<input
+									className={styles.input}
+									type="text"
+									id={item}
+									value={script[index][item] ? script[index][item] : ''}
+									onChange={updateScript}
+								></input>
+							</div>
+						))
+					: ''
 				: ''}
-			<button
-				className={styles.button}
-				onClick={() => setScript(prev => prev.filter((_, i) => i !== index))}
-			>
-				Удалить команду
-			</button>
 		</div>
 	);
 };

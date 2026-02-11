@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-const DownloadButton = ({ filepath, filename }) => {
+const DownloadButton = ({ filepath, filename, className = '' }) => {
 	const api = `/api/files${filepath}`;
 	const onDownload = async () => {
 		const response = await fetch(api, {
@@ -23,11 +23,16 @@ const DownloadButton = ({ filepath, filename }) => {
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	};
-	return <button onClick={onDownload}>Загрузить</button>;
+	return (
+		<button className={className} onClick={onDownload}>
+			Загрузить
+		</button>
+	);
 };
 
 DownloadButton.propTypes = {
 	filepath: PropTypes.string,
 	filename: PropTypes.string,
+	className: PropTypes.string,
 };
 export default DownloadButton;

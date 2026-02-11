@@ -9,29 +9,24 @@
     box-sizing: border-box;
 }
 @media (prefers-color-scheme: dark) {
-    .eba.adapt{
-        width: 100%;  
-        padding: 10px;
-        height: 100%;  
-        border-width: 5px;
-        border-radius: 10%;
-        text-align: center;
-        box-sizing: border-box;
-        background-color: #1c5f3a;
-        color: #fff;
-    }
-    .error.adapt{
+    .error{
         color: #fff;
         background-color: #eb1e3a;
         border-color: #eb1e3a;
     }
-    .ok.adapt{
+    .ok{
         color: #fff;
+        background-color: #1c5f3a;
         border-color: #1c5f3a;
+    }
+    .none{
+        color: #fff;
+        background-color: #969696;
+        border-color: #969696;
     }
 }
 .ok{
-    color: #1c5f3a;
+    color: #ffffff;
     border-color: #1c5f3a;
 }
 .error {

@@ -7,13 +7,18 @@ import PropTypes from 'prop-types';
 const FileBar = ({ folder, filename }) => {
 	return (
 		<div className={styles.bar}>
-			<a href={`/tester/TestEditor?folder=${folder}&filename=${filename}`}>
+			<a
+				className={styles.name}
+				href={`/tester/TestEditor?folder=${folder}&filename=${filename}`}
+			>
 				{filename}
 			</a>
 			<DeleteButton
+				className={styles.button}
 				filepath={`?folder=${folder}&filename=${filename}`}
 			></DeleteButton>
 			<DownloadButton
+				className={styles.button}
 				filepath={`?folder=${folder}&filename=${filename}`}
 				filename={filename}
 			></DownloadButton>

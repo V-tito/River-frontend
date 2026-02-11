@@ -5,7 +5,7 @@ import Popup from 'reactjs-popup';
 import Modal from './inlineModal';
 import './popup.css';
 import PropTypes from 'prop-types';
-const ConfirmDeleteModal = ({ state }) => {
+const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
 
@@ -29,7 +29,13 @@ const ConfirmDeleteModal = ({ state }) => {
 	};
 
 	return (
-		<Popup trigger={<button className={styles.menuButton}>Удалить</button>}>
+		<Popup
+			trigger={
+				<button className={buttonStyle ? buttonStyle : styles.menuButton}>
+					Удалить
+				</button>
+			}
+		>
 			{close => (
 				<div className={styles.container}>
 					<div className={styles.header}> Подтверждение действия </div>
@@ -50,6 +56,7 @@ const ConfirmDeleteModal = ({ state }) => {
 };
 ConfirmDeleteModal.propTypes = {
 	state: PropTypes.string.isRequired,
+	buttonStyle: PropTypes.string,
 };
 
 export default ConfirmDeleteModal;
