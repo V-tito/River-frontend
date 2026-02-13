@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CommandBar from './commandBar';
 
 const CommandBarEditor = ({
@@ -11,8 +11,34 @@ const CommandBarEditor = ({
 	isHovered,
 	setIsHovered,
 	current,
-	error,
+	errorIDs,
+	setError,
+	schemeId,
 }) => {
+	const [sigsByGroup, setSigs] = useState();
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		const fetchSigs = async () => {
+			try {
+				const response = await fetch(
+					`/api/getSignalTables/${schemeId}?sortedSignals=true&namesOnly=true`
+				);
+				const conf = await response.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
+				setSigs(conf.data);
+			} catch (err) {
+				if (err instanceof Error) {
+					setError(err);
+				}
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchSigs();
+	}, []);
+	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className={styles.edit}>
 			{formData.length > 0
@@ -30,9 +56,10 @@ const CommandBarEditor = ({
 								setScript={setFormData}
 								index={i}
 								current={current}
-								error={error}
+								errorIDs={errorIDs}
 								key={i}
 								isHovered={isHovered}
+								sigsByGroup={sigsByGroup}
 							></CommandBar>
 						</div>
 					))
@@ -50,12 +77,13 @@ const CommandBarEditor = ({
 };
 CommandBarEditor.propTypes = {
 	initName: PropTypes.string,
-	scheme: PropTypes.shape({ id: PropTypes.number }),
+	schemeId: PropTypes.number,
 	current: PropTypes.number,
-	error: PropTypes.shape,
+	errorIDs: PropTypes.array,
 	isHovered: PropTypes.number,
 	setIsHovered: PropTypes.func,
 	formData: PropTypes.array,
 	setFormData: PropTypes.func,
+	setError: PropTypes.func,
 };
 export default CommandBarEditor;

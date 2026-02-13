@@ -9,7 +9,7 @@ const TestUI = ({ scheme }) => {
 		setIsClient(true);
 	}, []);
 	if (!isClient) return <p>Loading...</p>;
-	return <Editor scheme={scheme.name}></Editor>;
+	return <Editor scheme={scheme}></Editor>;
 };
 TestUI.propTypes = {
 	scheme: PropTypes.shape({ name: PropTypes.string }),

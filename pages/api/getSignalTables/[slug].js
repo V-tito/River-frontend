@@ -1,7 +1,11 @@
 export default function handler(req, res) {
 	let sorted = false;
+	let namesOnly = false;
 	if ('sortedSignals' in req.query) {
 		sorted = req.query.sortedSignals;
+	}
+	if ('namesOnly' in req.query) {
+		namesOnly = req.query.namesOnly;
 	}
 	const fetchGroups = async () => {
 		const slug = req.query.slug;
@@ -55,18 +59,14 @@ export default function handler(req, res) {
 			const promises = newGroups.map(async group => {
 				const temp = await fetchSignals(group.id);
 				console.log('fetching signals by group names', temp);
-				console.log(
-					temp.reduce((acc, item) => {
-						acc.push({ ...item, parentGroup: group.id });
-						return acc;
-					}, [])
-				);
 				if (!sorted) {
 					return {
 						name: String(group.name),
 						temp: temp.reduce((acc, item) => {
 							console.log('item', item);
-							acc.push({ ...item, parentGroup: group.id });
+							acc.push(
+								namesOnly ? item.name : { ...item, parentGroup: group.id }
+							);
 							return acc;
 						}, []),
 					};
@@ -76,14 +76,18 @@ export default function handler(req, res) {
 						outputs: temp.reduce((acc, item) => {
 							console.log('item', item);
 							if (item.isOutput) {
-								acc.push({ ...item, parentGroup: group.id });
+								acc.push(
+									namesOnly ? item.name : { ...item, parentGroup: group.id }
+								);
 							}
 							return acc;
 						}, []),
 						inputs: temp.reduce((acc, item) => {
 							console.log('item', item);
 							if (!item.isOutput) {
-								acc.push({ ...item, parentGroup: group.id });
+								acc.push(
+									namesOnly ? item.name : { ...item, parentGroup: group.id }
+								);
 							}
 							return acc;
 						}, []),
