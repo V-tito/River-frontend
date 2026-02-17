@@ -9,11 +9,9 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 	const [confirmUrl, setConfirmUrl] = useState(null);
 
 	const handleChange = e => {
-		const { id, value } = e.target;
-		setFormData({ ...formData, [id]: value });
-		setConfirmUrl(
-			`${process.env.API_URL}/api/river/v1/configurator/${table}/${value}`
-		);
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
+		setConfirmUrl({ type: table, name: value });
 	};
 
 	const handleSubmit = e => {
@@ -21,7 +19,7 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 	};
 
 	console.log(listOfAll);
-	if (listOfAll === undefined) return <p>Loading...</p>;
+	if (listOfAll === undefined) return <p>Загрузка...</p>;
 	return (
 		<form onSubmit={handleSubmit} className={styles.form}>
 			<header className={styles.header}>Удалить элемент</header>
@@ -38,12 +36,12 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 					{listOfAll.map(item =>
 						item instanceof Array ? (
 							item.map(piece => (
-								<option key={piece.id} value={piece.id}>
+								<option key={piece.id} value={piece.name}>
 									{piece.name}
 								</option>
 							))
 						) : (
-							<option key={item.id} value={item.id}>
+							<option key={item.id} value={item.name}>
 								{item.name}
 							</option>
 						)

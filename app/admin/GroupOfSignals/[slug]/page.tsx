@@ -1,10 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import AddDeleteWrapper from '../../../../components/addDeleteWrapper';
-import DataView from '../../../../components/dataView';
+import AddDeleteWrapper from '@/components/addDeleteWrapper';
+import DataView from '@/components/dataView';
 import { useGlobal } from '@/app/GlobalState';
-
+import { getList } from '@/lib/api_wrap/configAPI';
 const GroupList = () => {
 	const defaultScheme = useGlobal();
 	const [data, setData] = useState(null);
@@ -15,25 +15,13 @@ const GroupList = () => {
 	if (params) {
 		slug = params.slug;
 	} else {
-		slug = '1';
+		slug = defaultScheme.name;
 	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,
-					{
-						method: 'GET',
-					}
-				);
-				console.log(
-					`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${defaultScheme.id}`
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('GroupOfSignals', slug);
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -46,7 +34,7 @@ const GroupList = () => {
 		fetchData();
 	}, [slug, params, defaultScheme]);
 	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>Ошибка: {error.message}</p>;
+	if (error) return <p>{error.message}</p>;
 
 	return (
 		<AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>

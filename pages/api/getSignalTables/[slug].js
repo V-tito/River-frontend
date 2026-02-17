@@ -1,3 +1,4 @@
+import { getList } from '@/lib/api_wrap/configAPI';
 export default function handler(req, res) {
 	let sorted = false;
 	if ('sortedSignals' in req.query) {
@@ -7,16 +8,7 @@ export default function handler(req, res) {
 		const slug = req.query.slug;
 		try {
 			console.log('try fetching groups');
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			}
-			const result = await response.json();
+			const result = await getList('GroupOfSignals', slug);
 			console.log('fetched groups', result);
 			return result;
 		} catch (err) {
@@ -25,19 +17,10 @@ export default function handler(req, res) {
 			}
 		}
 	};
-	const fetchSignals = async groupId => {
+	const fetchSignals = async groupName => {
 		try {
 			console.log('try fetching signals');
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/Signal/byGroup/${groupId}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			}
-			const result = await response.json();
+			const result = await getList('Signal', groupName);
 			console.log('fetched signals', result);
 			return result;
 		} catch (err) {
@@ -53,11 +36,11 @@ export default function handler(req, res) {
 		console.log('try mapping');
 		if (newGroups.length > 0) {
 			const promises = newGroups.map(async group => {
-				const temp = await fetchSignals(group.id);
+				const temp = await fetchSignals(group.name);
 				console.log('fetching signals by group names', temp);
 				console.log(
 					temp.reduce((acc, item) => {
-						acc.push({ ...item, parentGroup: group.id });
+						acc.push({ ...item, parentGroup: group.name });
 						return acc;
 					}, [])
 				);
@@ -66,7 +49,7 @@ export default function handler(req, res) {
 						name: String(group.name),
 						temp: temp.reduce((acc, item) => {
 							console.log('item', item);
-							acc.push({ ...item, parentGroup: group.id });
+							acc.push({ ...item, parentGroup: group.name });
 							return acc;
 						}, []),
 					};
@@ -76,14 +59,14 @@ export default function handler(req, res) {
 						outputs: temp.reduce((acc, item) => {
 							console.log('item', item);
 							if (item.isOutput) {
-								acc.push({ ...item, parentGroup: group.id });
+								acc.push({ ...item, parentGroup: group.name });
 							}
 							return acc;
 						}, []),
 						inputs: temp.reduce((acc, item) => {
 							console.log('item', item);
 							if (!item.isOutput) {
-								acc.push({ ...item, parentGroup: group.id });
+								acc.push({ ...item, parentGroup: group.name });
 							}
 							return acc;
 						}, []),

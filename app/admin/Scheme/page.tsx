@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import DataView from '../../../components/dataView';
 import AddDeleteWrapper from '../../../components/addDeleteWrapper';
+import { getList } from '@/lib/api_wrap/configAPI';
 
 const Schemelist = () => {
 	const [data, setData] = useState(null);
@@ -10,18 +11,9 @@ const Schemelist = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			console.log('try get list');
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/Scheme`,
-					{
-						method: 'GET',
-						//headers: {'Content-Type': 'application/json',}
-					}
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('Scheme');
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {

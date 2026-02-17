@@ -1,16 +1,16 @@
 'use client';
 //import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
-import AddDeleteWrapper from '../../../components/addDeleteWrapper';
-import DataView from '../../../components/dataView';
-import { useGlobal } from '../../GlobalState';
+import AddDeleteWrapper from '@/components/addDeleteWrapper';
+import DataView from '@/components/dataView';
+import { useGlobal } from '@/app/GlobalState';
+import { getList } from '@/lib/api_wrap/configAPI';
 interface MyDataType {
 	id: number;
 	name: string;
-	// Add other fields as necessary
 }
 interface DynamicRecord {
-	[key: string]: []; // Change 'any' to a more specific type if possible
+	[key: string]: [];
 }
 const SignalList = () => {
 	const { defaultScheme } = useGlobal();
@@ -23,13 +23,7 @@ const SignalList = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.id}`
-				);
-				const conf = await response.json();
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
+				const conf = await getList('signal', defaultScheme.name);
 				setData(conf.data);
 				setGroups(conf.groups);
 				setListForDel(conf.list);
@@ -44,8 +38,8 @@ const SignalList = () => {
 		fetchData();
 	}, [defaultScheme]);
 	console.log('data', data);
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
+	if (error) return <p>{error.message}</p>;
 	return (
 		<AddDeleteWrapper
 			table="Signal"

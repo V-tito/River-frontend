@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import styles from './form.module.css';
+import { getList } from '@/lib/api_wrap/configAPI';
 
 const SetDefaultScheme = () => {
 	const { defaultScheme, setDefaultScheme } = useGlobal();
@@ -13,17 +14,7 @@ const SetDefaultScheme = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/Scheme`,
-					{
-						method: 'GET',
-						//headers: {'Content-Type': 'application/json',}
-					}
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('Scheme');
 				setData(result);
 			} catch (err) {
 				setError(err);

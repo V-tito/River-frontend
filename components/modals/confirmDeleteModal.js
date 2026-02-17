@@ -4,6 +4,7 @@ import Popup from 'reactjs-popup';
 //import 'reactjs-popup/dist/index.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
+import { deleteEntity } from '@/lib/api_wrap/configAPI';
 const ConfirmDeleteModal = ({ state }) => {
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
@@ -11,9 +12,7 @@ const ConfirmDeleteModal = ({ state }) => {
 	const onConfirm = async () => {
 		try {
 			console.log('configured url from onconfirm', state);
-			const response = await fetch(state, {
-				method: 'DELETE', //headers: {'Content-Type': 'application/json',}
-			});
+			const response = await deleteEntity(state.type, state.name);
 
 			if (!response.ok) {
 				throw new Error(`Ошибка сети: ${response.status}`);

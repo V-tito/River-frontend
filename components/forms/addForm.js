@@ -5,6 +5,7 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+import { postEntity } from '@/lib/api_wrap/configAPI';
 
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
@@ -68,21 +69,7 @@ const AddForm = ({ table }) => {
 		}
 
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/${table}`,
-				{
-					method: 'POST',
-					body: JSON.stringify(newFormData),
-					headers: { 'Content-Type': 'application/json' },
-				}
-			);
-			console.log('sent ', JSON.stringify(newFormData));
-			if (!response.ok) {
-				console.log(JSON.stringify(newFormData));
-				throw new Error(
-					`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`
-				);
-			}
+			await postEntity(table, JSON.stringify(newFormData));
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {

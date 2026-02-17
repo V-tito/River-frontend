@@ -3,7 +3,8 @@ import StateIndicator from './stateIndicator';
 import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
-const IndicatorsTable = ({ data, board }) => {
+import { getBoardState, getSignalState } from '@/lib/api_wrap/protocol';
+const IndicatorsTable = ({ data, board, group = null }) => {
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const { setPollingError } = useGlobal();
@@ -11,23 +12,17 @@ const IndicatorsTable = ({ data, board }) => {
 	//const [checkConstantly, setCheck] = useState(true);
 	useEffect(() => {
 		const fetchCurrentState = async sig => {
-			let api;
+			let result;
 			let last = Date.now();
 			console.log('fetching', sig.id, 'start', last);
 			try {
 				if (board) {
-					api = new URL(`${process.env.API_URL}/api/river/v1/protocol/nop`);
-					api.searchParams.set('id', sig.id);
+					result = getBoardState(sig.name);
 				} else {
-					api = new URL(`${process.env.API_URL}/api/river/v1/protocol/get`);
-					api.searchParams.set('name', sig.name);
+					result = getSignalState(group, sig.name);
 				}
 				console.log('fetching', sig.id, 'set api in', Date.now() - last);
 				last = Date.now();
-				const response = await fetch(api.toString(), {
-					method: 'GET',
-					headers: { 'Content-Type': 'application/json' },
-				});
 				console.log(
 					'fetching',
 					sig.id,
@@ -35,11 +30,6 @@ const IndicatorsTable = ({ data, board }) => {
 					Date.now() - last
 				);
 				last = Date.now();
-				console.log(`tried to get state on api ${api.toString()}`);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети:${response.status}`);
-				}
-				const result = await response.json();
 				console.log(
 					'fetching',
 					sig.id,
@@ -77,7 +67,6 @@ const IndicatorsTable = ({ data, board }) => {
 				}
 			} catch (err) {
 				setPollingError(err);
-				console.log('error polling ', api);
 				console.log(err);
 				return [
 					sig.name,
@@ -179,5 +168,6 @@ const IndicatorsTable = ({ data, board }) => {
 IndicatorsTable.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.shape({})),
 	board: PropTypes.bool,
+	group: PropTypes.string,
 };
 export default IndicatorsTable;
