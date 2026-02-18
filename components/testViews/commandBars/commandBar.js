@@ -1,6 +1,6 @@
 'use client';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './commandBar.module.css';
 
 const CommandBar = ({
@@ -8,9 +8,11 @@ const CommandBar = ({
 	setScript,
 	index,
 	current,
-	error,
+	errorIDs,
 	isHovered,
+	sigsByGroup,
 }) => {
+	console.log('sigs by group', sigsByGroup);
 	const commandConfig = {
 		check: ['signal', 'expectedValue'],
 		wait: ['signal', 'expectedValue'],
@@ -43,16 +45,21 @@ const CommandBar = ({
 		period: 'Периодичность импульсов',
 	};
 	const updateScript = e => {
+		const val =
+			e.target.id == 'signal' ? `${group}:${e.target.value}` : e.target.value;
 		setScript(
 			script.map((item, i) =>
-				i == index ? { ...item, [e.target.id]: e.target.value } : item
+				i == index ? { ...item, [e.target.id]: val } : item
 			)
 		);
 	};
+	const [group, setGroup] = useState('');
+	console.log(group);
+	console.log(group == '');
 	console.log('cb triggered with index', index, 'script', script);
 	return (
 		<div
-			className={`${styles.commandBar} ${current == index ? (error ? styles.error : styles.current) : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
+			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
 		>
 			<div className="flex flex-row w-full">
 				<label className={styles.label}>Действие </label>
@@ -82,18 +89,68 @@ const CommandBar = ({
 			</select>
 			{script[index].action
 				? script[index].action !== ''
-					? commandConfig[script[index].action].map((item, ind) => (
-							<div key={ind}>
-								<label className={styles.label}>{translate[item]}</label>
-								<input
-									className={styles.input}
-									type="text"
-									id={item}
-									value={script[index][item] ? script[index][item] : ''}
-									onChange={updateScript}
-								></input>
-							</div>
-						))
+					? commandConfig[script[index].action].map((item, ind) =>
+							item == 'signal' ? (
+								<div key={ind} className="flex flex-row">
+									<label className={styles.label}>Группа </label>
+									<select
+										value={group}
+										className={styles.select}
+										onChange={e => setGroup(e.target.value)}
+									>
+										<option value={''}>группа...</option>
+										{sigsByGroup
+											? Object.keys(sigsByGroup).map(item => (
+													<option value={item} key={item}>
+														{item}
+													</option>
+												))
+											: ''}
+									</select>
+									<label className={styles.label}>Сигнал </label>
+									<select
+										id={item}
+										value={
+											script[index][item]
+												? script[index][item].split(':')[1]
+												: ''
+										}
+										className={styles.select}
+										onChange={updateScript}
+										disabled={group == ''}
+									>
+										<option value={''}>сигнал...</option>
+										{group != ''
+											? script[index]['action'].includes('set')
+												? sigsByGroup[group].outputs.map(item => (
+														<option value={item} key={item}>
+															{item}
+														</option>
+													))
+												: [
+														...sigsByGroup[group].outputs,
+														...sigsByGroup[group].inputs,
+													].map(item => (
+														<option value={item} key={item}>
+															{item}
+														</option>
+													))
+											: ''}
+									</select>
+								</div>
+							) : (
+								<div key={ind}>
+									<label className={styles.label}>{translate[item]}</label>
+									<input
+										className={styles.input}
+										type="text"
+										id={item}
+										value={script[index][item] ? script[index][item] : ''}
+										onChange={updateScript}
+									></input>
+								</div>
+							)
+						)
 					: ''
 				: ''}
 		</div>
@@ -109,11 +166,12 @@ CommandBar.propTypes = {
 			pulseTime: PropTypes.string,
 			period: PropTypes.string,
 		})
-	),
-	setScript: PropTypes.func,
+	).isRequired,
+	setScript: PropTypes.func.isRequired,
 	index: PropTypes.number,
 	current: PropTypes.number,
-	error: PropTypes.shape,
+	errorIDs: PropTypes.arrayOf(PropTypes.number),
 	isHovered: PropTypes.number,
+	sigsByGroup: PropTypes.shape.isRequired,
 };
 export default CommandBar;

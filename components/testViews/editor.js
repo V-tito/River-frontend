@@ -17,6 +17,7 @@ const Editor = ({ scheme }) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [isHovered, setIsHovered] = useState();
+	const [errorIDs, setErrorIDs] = useState([]);
 	const params = useSearchParams();
 	const { saveFormData, loadFormData } = usePersistentData({
 		storageKey: 'editor-contents',
@@ -108,7 +109,7 @@ const Editor = ({ scheme }) => {
 				throw new Error('Несуществующий сигнал');
 			if (entry.action == 'include') {
 				const response = await fetch(
-					`/api/files?folder=${scheme}&filename=${entry.filename}`,
+					`/api/files?folder=${scheme.name}&filename=${entry.filename}`,
 					{
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },
@@ -172,6 +173,7 @@ const Editor = ({ scheme }) => {
 			}
 		} catch (err) {
 			setError(err);
+			setErrorIDs([...errorIDs, id]);
 		}
 	};
 	const executeScript = async () => {
@@ -185,6 +187,7 @@ const Editor = ({ scheme }) => {
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
+
 				console.log(`Error: ${err.message}`);
 			}
 		} finally {
@@ -203,7 +206,8 @@ const Editor = ({ scheme }) => {
 					isHovered={isHovered}
 					setIsHovered={setIsHovered}
 					current={current}
-					error={error}
+					errorIDs={errorIDs}
+					schemeId={scheme.id}
 				></CommandBarEditor>
 
 				<button
@@ -217,7 +221,7 @@ const Editor = ({ scheme }) => {
 					formData={formData}
 					setFormData={setFormData}
 					initName={filename}
-					scheme={scheme}
+					scheme={scheme.name}
 				></FileManager>
 			</div>
 
@@ -233,6 +237,6 @@ const Editor = ({ scheme }) => {
 	);
 };
 Editor.propTypes = {
-	scheme: PropTypes.string,
+	scheme: PropTypes.shape({ id: PropTypes.number, name: PropTypes.string }),
 };
 export default Editor;
