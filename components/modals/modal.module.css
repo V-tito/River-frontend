@@ -14,15 +14,6 @@
     padding-left: 2px;
     border: 3px dotted crimson
   }
-  .closeButtonInline {
-    background-color: crimson;
-    color: #fff;
-    border-radius: 5%;
-    cursor: pointer;
-    padding-left: 2vh;
-    padding-right: 2vh;
-    margin-left:2px
-  }
 .closeButton {
     background-color: crimson;
     color: #fff;
@@ -33,16 +24,7 @@
     padding-right: 2vh;
     margin-left:2px
   }
-  .header{
-    text-align: center;
-    font-size: larger;
-    text-decoration: underline;
-    text-decoration-color: #1c5f3a;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    padding-bottom: 10px;
-    
-  }
+  
   .menuButton {
     background-color: #1c5f3a;
     color: #fff;
@@ -85,4 +67,7 @@
     border-radius: 5px;
     text-align: center;
     margin: 5px;
+  }
+  .message{
+    text-align: center;
   }

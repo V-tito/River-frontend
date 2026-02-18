@@ -12,11 +12,7 @@ const ConfirmDeleteModal = ({ state }) => {
 	const onConfirm = async () => {
 		try {
 			console.log('configured url from onconfirm', state);
-			const response = await deleteEntity(state.type, state.name);
-
-			if (!response.ok) {
-				throw new Error(`Ошибка сети: ${response.status}`);
-			}
+		await deleteEntity(state.type, state.name,state.group?state.group:null);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
@@ -31,8 +27,8 @@ const ConfirmDeleteModal = ({ state }) => {
 			{close => (
 				<div className={styles.container}>
 					<div className={styles.header}> Подтверждение действия </div>
-					Удаление этого элемента повлечет удаление всех зависящих от него
-					элементов. Вы уверены, что хотите продолжить?
+					<p className={styles.message}>Удаление этого элемента повлечет удаление всех зависящих от него
+					элементов. Вы уверены, что хотите продолжить?</p>
 					<div className={styles.actions}>
 						<button onClick={onConfirm} className={styles.alterButton}>
 							Подтвердить

@@ -23,7 +23,13 @@ const SignalList = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const conf = await getList('signal', defaultScheme.name);
+				const response = await fetch(
+					`/api/getSignalTables/${defaultScheme.name}`
+				);
+				const conf = await response.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
 				setData(conf.data);
 				setGroups(conf.groups);
 				setListForDel(conf.list);

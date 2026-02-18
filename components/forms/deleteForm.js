@@ -5,13 +5,12 @@ import ConfirmDeleteModal from '../modals/confirmDeleteModal';
 import PropTypes from 'prop-types';
 
 const DeleteForm = ({ table, listOfAll = [[]] }) => {
-	const [formData, setFormData] = useState();
 	const [confirmUrl, setConfirmUrl] = useState(null);
 
 	const handleChange = e => {
 		const { name, value } = e.target;
-		setFormData({ ...formData, [name]: value });
-		setConfirmUrl({ type: table, name: value });
+		console.log(value)
+		setConfirmUrl(table=='Signal'? { type: table, name: value.split(":")[1],group:value.split(":")[0] }:{ type: table, name: value,group:null});
 	};
 
 	const handleSubmit = e => {
@@ -36,12 +35,12 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 					{listOfAll.map(item =>
 						item instanceof Array ? (
 							item.map(piece => (
-								<option key={piece.id} value={piece.name}>
+								<option key={piece.id} value={JSON.stringify({group:piece.parentGroup,id:piece.name})}>
 									{piece.name}
 								</option>
 							))
 						) : (
-							<option key={item.id} value={item.name}>
+							<option key={item.id} value={table=='Signal'?`${item.parentGroup}:${item.name}`:item.name}>
 								{item.name}
 							</option>
 						)

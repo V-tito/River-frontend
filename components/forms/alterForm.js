@@ -84,7 +84,7 @@ const AlterForm = ({ table, object }) => {
 		}
 
 		try {
-			await patchEntity(table, JSON.stringify(newFormData));
+			await patchEntity(table, newFormData);
 			console.log('sent ', JSON.stringify(newFormData));
 			window.location.reload();
 		} catch (err) {
