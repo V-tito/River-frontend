@@ -82,8 +82,8 @@ export default function handler(req, res) {
 				}, {});
 				console.log('reduced', newData);
 				const newList = results.reduce((acc, { temp }) => {
-					acc.push(temp);
-					return acc;
+					//acc.push(temp);
+					return [...acc, ...temp];
 				}, []);
 				console.log('reduced data');
 				res

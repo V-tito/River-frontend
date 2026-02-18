@@ -5,20 +5,23 @@ import ConfirmDeleteModal from '../modals/confirmDeleteModal';
 import PropTypes from 'prop-types';
 
 const DeleteForm = ({ table, listOfAll = [[]] }) => {
-	const [formData, setFormData] = useState();
 	const [confirmUrl, setConfirmUrl] = useState(null);
 
 	const handleChange = e => {
-		const { name, value } = e.target;
-		setFormData({ ...formData, [name]: value });
-		setConfirmUrl({ type: table, name: value });
+		const { value } = e.target;
+		const val = listOfAll.find(item => item.id == value);
+		setConfirmUrl({
+			type: table,
+			name: val.name,
+			group: val.parentGroup ? val.parentGroup : null,
+		});
 	};
 
 	const handleSubmit = e => {
 		e.preventDefault();
 	};
 
-	console.log(listOfAll);
+	console.log('listForDel', listOfAll);
 	if (listOfAll === undefined) return <p>Загрузка...</p>;
 	return (
 		<form onSubmit={handleSubmit} className={styles.form}>
@@ -36,13 +39,13 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 					{listOfAll.map(item =>
 						item instanceof Array ? (
 							item.map(piece => (
-								<option key={piece.id} value={piece.name}>
-									{piece.name}
+								<option key={piece.id} value={piece.id}>
+									{piece.parentGroup ? piece.parentGroup : ''}:{piece.name}
 								</option>
 							))
 						) : (
-							<option key={item.id} value={item.name}>
-								{item.name}
+							<option key={item.id} value={item.id}>
+								{item.parentGroup ? item.parentGroup : ''}:{item.name}
 							</option>
 						)
 					)}
