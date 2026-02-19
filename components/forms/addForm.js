@@ -30,9 +30,8 @@ const AddForm = ({ table }) => {
 		if (table == 'Signal') {
 			const fetchGroupsAndBoards = async () => {
 				try {
-					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`);
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
 					);
 
 					const data = await response.json();
@@ -69,7 +68,7 @@ const AddForm = ({ table }) => {
 		}
 
 		try {
-			await postEntity(table, JSON.stringify(newFormData));
+			await postEntity(table, newFormData);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {

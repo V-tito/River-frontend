@@ -17,7 +17,8 @@ const GroupList = () => {
 	} else {
 		slug = defaultScheme.name;
 	}
-
+console.log('slug',slug)
+console.log(defaultScheme)
 	useEffect(() => {
 		const fetchData = async () => {
 			try {

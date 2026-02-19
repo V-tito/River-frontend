@@ -1,0 +1,38 @@
+.button {
+  display: inline;
+    background-color: #1c5f3a;
+    color: #fff;
+    cursor: pointer;
+    margin:5px;
+    margin-top:10px;
+    padding:  5px;
+    min-width:25%;
+    border-radius: 5%;
+}
+.button:hover {
+  background-color: #124127;
+}
+.option {
+  padding: 10px;
+  color:var(--foreground);
+  background: var(--background);
+  filter: hue-rotate(20deg);
+  }
+  .input {
+  width: 100%;
+  padding: 4px;
+  display: inline;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: smaller;
+}
+.select {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color:var(--foreground);
+  background: var(--background); 
+  padding: 5px;
+  font-size: smaller;
+}

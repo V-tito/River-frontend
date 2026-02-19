@@ -21,7 +21,7 @@ const StateOfSignals = () => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.id}?sortedSignals=true`
+					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
