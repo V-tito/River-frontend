@@ -58,7 +58,10 @@ const AddForm = ({ table }) => {
 			!('signals' in data)
 		) {
 			newFormData = { ...newFormData, signals: [] };
-			newFormData['parentScheme'] = { id: defaultScheme.id };
+			newFormData['parentScheme'] = {
+				id: defaultScheme.id,
+				name: defaultScheme.name,
+			};
 		}
 		if ('parentGroup' in data) {
 			newFormData['parentGroup'] = { id: data.parentGroup };

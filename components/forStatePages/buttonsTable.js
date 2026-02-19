@@ -2,7 +2,7 @@ import styles from './stateTable.module.css';
 import StateButton from './stateButton';
 import React from 'react';
 import PropTypes from 'prop-types';
-const ButtonsTable = ({ data }) => {
+const ButtonsTable = ({ data, group }) => {
 	return (
 		<table className={styles.table}>
 			<thead>
@@ -17,7 +17,7 @@ const ButtonsTable = ({ data }) => {
 						<tr key={item.id}>
 							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
 							<td className={styles.td}>
-								<StateButton sig={item}></StateButton>
+								<StateButton sig={item} group={group}></StateButton>
 							</td>
 						</tr>
 					))
@@ -34,5 +34,6 @@ const ButtonsTable = ({ data }) => {
 };
 ButtonsTable.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.shape({})),
+	group: PropTypes.string,
 };
 export default ButtonsTable;

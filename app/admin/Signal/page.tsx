@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import AddDeleteWrapper from '@/components/addDeleteWrapper';
 import DataView from '@/components/dataView';
 import { useGlobal } from '@/app/GlobalState';
-import { getList } from '@/lib/api_wrap/configAPI';
+
 interface MyDataType {
 	id: number;
 	name: string;

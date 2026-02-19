@@ -50,7 +50,7 @@ const StateOfSignals = () => {
 					<h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
 						Состояние сигналов группы {group.name}:
 					</h1>
-					<StateTable data={data[group.name]}></StateTable>
+					<StateTable data={data[group.name]} group={group.name}></StateTable>
 				</div>
 			))}
 		</div>

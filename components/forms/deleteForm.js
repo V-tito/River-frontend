@@ -15,6 +15,7 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 			name: val.name,
 			group: val.parentGroup ? val.parentGroup : null,
 		});
+		console.log('econfirm data', confirmUrl);
 	};
 
 	const handleSubmit = e => {
