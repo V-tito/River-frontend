@@ -1,6 +1,6 @@
 'use client';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './commandBar.module.css';
 
 const CommandBar = ({
@@ -38,6 +38,7 @@ const CommandBar = ({
 		presetAll: 'Предустановить все',
 	};
 	const translate = {
+		group: 'группа',
 		signal: 'Сигнал',
 		targetValue: 'Целевое значение',
 		expectedValue: 'Ожидаемое значение',
@@ -45,17 +46,12 @@ const CommandBar = ({
 		period: 'Периодичность импульсов',
 	};
 	const updateScript = e => {
-		const val =
-			e.target.id == 'signal' ? `${group}:${e.target.value}` : e.target.value;
 		setScript(
 			script.map((item, i) =>
-				i == index ? { ...item, [e.target.id]: val } : item
+				i == index ? { ...item, [e.target.id]: e.target.value } : item
 			)
 		);
 	};
-	const [group, setGroup] = useState('');
-	console.log(group);
-	console.log(group == '');
 	console.log('cb triggered with index', index, 'script', script);
 	return (
 		<div
@@ -94,9 +90,10 @@ const CommandBar = ({
 								<div key={ind} className="flex flex-row">
 									<label className={styles.label}>Группа </label>
 									<select
-										value={group}
+										value={script[index].group ? script[index].group : ''}
 										className={styles.select}
-										onChange={e => setGroup(e.target.value)}
+										onChange={updateScript}
+										id="group"
 									>
 										<option value={''}>группа...</option>
 										{sigsByGroup
@@ -110,26 +107,22 @@ const CommandBar = ({
 									<label className={styles.label}>Сигнал </label>
 									<select
 										id={item}
-										value={
-											script[index][item]
-												? script[index][item].split(':')[1]
-												: ''
-										}
+										value={script[index][item] ? script[index][item] : ''}
 										className={styles.select}
 										onChange={updateScript}
-										disabled={group == ''}
+										disabled={![undefined, ''].includes(script[index].group)}
 									>
 										<option value={''}>сигнал...</option>
-										{group != ''
+										{![undefined, ''].includes(script[index].group)
 											? script[index]['action'].includes('set')
-												? sigsByGroup[group].outputs.map(item => (
+												? sigsByGroup[script[index].group].outputs.map(item => (
 														<option value={item} key={item}>
 															{item}
 														</option>
 													))
 												: [
-														...sigsByGroup[group].outputs,
-														...sigsByGroup[group].inputs,
+														...sigsByGroup[script[index].group].outputs,
+														...sigsByGroup[script[index].group].inputs,
 													].map(item => (
 														<option value={item} key={item}>
 															{item}
@@ -160,6 +153,7 @@ CommandBar.propTypes = {
 	script: PropTypes.arrayOf(
 		PropTypes.shape({
 			action: PropTypes.string.isRequired,
+			group: PropTypes.string,
 			signal: PropTypes.string,
 			targetValue: PropTypes.string,
 			expectedValue: PropTypes.string,
