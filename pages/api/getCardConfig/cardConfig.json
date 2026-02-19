@@ -16,7 +16,7 @@
 }]},
 
 "Scheme": {"features":[
-    { "id": "comport",  
+    { "id": "comPort",  
         "label": "COM-port: ",
         "long":false
     }

@@ -9,6 +9,7 @@ import { postEntity } from '@/lib/api_wrap/configAPI';
 
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
+	console.log("schemeport",defaultScheme.comPort)
 	const { register, handleSubmit, reset } = useForm();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
@@ -52,6 +53,7 @@ const AddForm = ({ table }) => {
 	}, [table, defaultScheme]);
 
 	const onSubmit = async data => {
+		setError(null)
 		let newFormData = { ...data };
 		if (
 			['GroupOfSignals', 'TestBoard'].includes(table) &&

@@ -38,7 +38,7 @@ export default function handler(req, res) {
 		console.log('fetching all');
 		const newGroups = await fetchGroups();
 		console.log('try mapping');
-		if (newGroups.length > 0) {
+		if (Array.isArray(newGroups)) {if (newGroups.length>0){
 			const promises = newGroups.map(async group => {
 				const temp = await fetchSignals(group.name);
 				console.log('fetching signals by group names', temp);
@@ -102,8 +102,10 @@ export default function handler(req, res) {
 				console.log('reduced data');
 				res.status(200).json({ data: newData, groups: newGroups });
 			}
-		} else {
-			res.status(200).json({ data: {} });
+		}else {
+			res.status(200).json({ data: {}, groups: {} });
+		}} else {
+			res.status(200).json({ data: {}, groups: {} });
 		}
 	};
 	fetchAll();

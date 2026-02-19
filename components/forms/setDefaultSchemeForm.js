@@ -35,7 +35,7 @@ const SetDefaultScheme = () => {
 	};
 	const handleSubmit = () => {
 		console.log(chosenScheme);
-		setDefaultScheme({ id: chosenScheme.id, name: chosenScheme.name });
+		setDefaultScheme({ id: chosenScheme.id, name: chosenScheme.name, comPort:chosenScheme.comPort});
 		console.log(defaultScheme);
 	};
 
