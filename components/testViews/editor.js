@@ -177,6 +177,7 @@ const Editor = ({ scheme }) => {
 		}
 	};
 	const executeScript = async () => {
+		console.log('fd', formData);
 		try {
 			setResults([]);
 			for (let i = 0; i < formData.length; i++) {
