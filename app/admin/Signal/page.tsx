@@ -1,16 +1,16 @@
 'use client';
 //import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
-import AddDeleteWrapper from '../../../components/addDeleteWrapper';
-import DataView from '../../../components/dataView';
-import { useGlobal } from '../../GlobalState';
+import AddDeleteWrapper from '@/components/addDeleteWrapper';
+import DataView from '@/components/dataView';
+import { useGlobal } from '@/app/GlobalState';
+
 interface MyDataType {
 	id: number;
 	name: string;
-	// Add other fields as necessary
 }
 interface DynamicRecord {
-	[key: string]: []; // Change 'any' to a more specific type if possible
+	[key: string]: [];
 }
 const SignalList = () => {
 	const { defaultScheme } = useGlobal();
@@ -24,7 +24,7 @@ const SignalList = () => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.id}`
+					`/api/getSignalTables/${defaultScheme.name}`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
@@ -44,21 +44,21 @@ const SignalList = () => {
 		fetchData();
 	}, [defaultScheme]);
 	console.log('data', data);
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
+	if (error) return <p>{error.message}</p>;
 	return (
 		<AddDeleteWrapper
 			table="Signal"
 			listOfAll={listForDel ?? [[{ id: null, name: 'none' }]]}
 		>
-			{groups.map(group => (
+			{groups.length>0?groups.map(group => (
 				<div key={group.id} className="w-full h-min">
 					<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
 						Список сигналов группы {group.name}:
 					</h1>
 					<DataView data={data[group.name]} kind="Signal"></DataView>
 				</div>
-			))}
+			)):''}
 		</AddDeleteWrapper>
 	);
 };

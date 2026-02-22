@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import IndicatorsTable from '../../../components/forStatePages/indicatorsTable';
 import { useGlobal } from '../../GlobalState';
 import React from 'react';
+import { getList } from '@/lib/api_wrap/configAPI';
 
-const StateOfPlates = () => {
+const StateOfBoards = () => {
 	const { defaultScheme, setPollingError } = useGlobal();
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -13,16 +14,7 @@ const StateOfPlates = () => {
 	useEffect(() => {
 		const fetchBoards = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${defaultScheme.id}`,
-					{
-						method: 'GET',
-					}
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('TestBoard', defaultScheme.name);
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -35,8 +27,8 @@ const StateOfPlates = () => {
 		};
 		fetchBoards();
 	}, [defaultScheme, setPollingError]);
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
+	if (error) return <p>{error.message}</p>;
 
 	return (
 		//
@@ -48,4 +40,4 @@ const StateOfPlates = () => {
 		</div>
 	);
 };
-export default StateOfPlates;
+export default StateOfBoards;

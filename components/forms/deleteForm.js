@@ -5,23 +5,25 @@ import ConfirmDeleteModal from '../modals/confirmDeleteModal';
 import PropTypes from 'prop-types';
 
 const DeleteForm = ({ table, listOfAll = [[]] }) => {
-	const [formData, setFormData] = useState();
 	const [confirmUrl, setConfirmUrl] = useState(null);
 
 	const handleChange = e => {
-		const { id, value } = e.target;
-		setFormData({ ...formData, [id]: value });
-		setConfirmUrl(
-			`${process.env.API_URL}/api/river/v1/configurator/${table}/${value}`
-		);
+		const { value } = e.target;
+		const val = listOfAll.find(item => item.id == value);
+		setConfirmUrl({
+			type: table,
+			name: val.name,
+			group: val.parentGroup ? val.parentGroup : null,
+		});
+		console.log('econfirm data', confirmUrl);
 	};
 
 	const handleSubmit = e => {
 		e.preventDefault();
 	};
 
-	console.log(listOfAll);
-	if (listOfAll === undefined) return <p>Loading...</p>;
+	console.log('listForDel', listOfAll);
+	if (listOfAll === undefined) return <p>Загрузка...</p>;
 	return (
 		<form onSubmit={handleSubmit} className={styles.form}>
 			<header className={styles.header}>Удалить элемент</header>
@@ -39,12 +41,12 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 						item instanceof Array ? (
 							item.map(piece => (
 								<option key={piece.id} value={piece.id}>
-									{piece.name}
+									{piece.parentGroup ? piece.parentGroup : ''}:{piece.name}
 								</option>
 							))
 						) : (
 							<option key={item.id} value={item.id}>
-								{item.name}
+								{item.parentGroup ? item.parentGroup : ''}:{item.name}
 							</option>
 						)
 					)}

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import AddDeleteWrapper from '../../../../components/addDeleteWrapper';
 import DataView from '../../../../components/dataView';
 import { useGlobal } from '@/app/GlobalState';
+import { getList } from '@/lib/api_wrap/configAPI';
 
 const BoardList = () => {
 	const defaultScheme = useGlobal();
@@ -15,22 +16,13 @@ const BoardList = () => {
 	if (params) {
 		slug = params.slug;
 	} else {
-		slug = '1';
+		slug = defaultScheme.name;
 	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`,
-					{
-						method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-					}
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('TestBoard', slug);
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -41,13 +33,10 @@ const BoardList = () => {
 			}
 		};
 		fetchData();
-		console.log(
-			`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`
-		);
 	}, [slug, params, defaultScheme]);
 
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
+	if (error) return <p>Ошибка: {error.message}</p>;
 
 	return (
 		//

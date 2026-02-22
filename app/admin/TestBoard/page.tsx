@@ -7,7 +7,7 @@ const RedirectStub = () => {
 	const { defaultScheme } = useGlobal();
 	const router = useRouter();
 	useEffect(() => {
-		router.push(`/admin/TestBoard/${defaultScheme.id}`);
+		router.push(`/admin/TestBoard/${defaultScheme.name}`);
 	});
 	//return (<div><p>{"Введите номер схемы"}</p><RedirectForm table="TestBoard"></RedirectForm></div>)
 };

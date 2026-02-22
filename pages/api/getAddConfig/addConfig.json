@@ -44,9 +44,9 @@
         "placeholder": "Буквы и цифры без пробелов",
         "validation":{"required": "Пожалуйста, заполните это поле" }
     },
-    { "id": "comport",  
+    { "id": "comPort",  
         "label": "COM-port:", 
-        "type": "number", 
+        "type": "string", 
         "placeholder": "Номер порта подключения",
         "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
     },

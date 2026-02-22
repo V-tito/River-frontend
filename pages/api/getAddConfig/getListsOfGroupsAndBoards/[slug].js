@@ -1,20 +1,11 @@
+import { getList } from '@/lib/api_wrap/configAPI';
 export default function handler(req, res) {
 	const { slug } = req.query;
 	console.log(req.url);
 	console.log('Scheme', slug);
 	const fetchGroups = async slug => {
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error('Ошибка сети');
-			}
-			console.log('fetch groups promise', response);
-			const result = await response.json();
+			const result = await getList('GroupOfSignals', slug);
 			console.log('fetch groups', result);
 			return result;
 		} catch (err) {
@@ -25,17 +16,7 @@ export default function handler(req, res) {
 	};
 	const fetchBoards = async slug => {
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/TestBoard/${slug}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			}
-			console.log('fetch boards promise', response);
-			const result = await response.json();
+			const result = await getList('TestBoard', slug);
 			console.log('fetch boards', result);
 			return result;
 		} catch (err) {

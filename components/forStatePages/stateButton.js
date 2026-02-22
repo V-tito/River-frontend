@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../modals/inlineModal';
 import styles from './stateButton.module.css';
 import PropTypes from 'prop-types';
-const StateButton = ({ sig }) => {
+import { setSignalState } from '@/lib/api_wrap/protocol';
+const StateButton = ({ sig, group }) => {
 	const [error, setError] = useState(null);
 	const [on, setOn] = useState(() => {
 		const savedVariable = localStorage.getItem(`Signal_${sig.id}_state`);
@@ -19,24 +20,8 @@ const StateButton = ({ sig }) => {
 	}, [sig, on]);
 	const changeState = async () => {
 		try {
-			const api = new URL(`${process.env.API_URL}/api/river/v1/protocol/set`);
-			api.searchParams.set('name', sig.name);
-			api.searchParams.set('value', !on);
-			const response = await fetch(api, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-			});
-			console.log(
-				`tried to set signal state with ${JSON.stringify({
-					id: sig.id,
-					currentValue: !on,
-				})}`
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			} else {
-				setOn(!on);
-			}
+			await setSignalState(group, sig.name, !on);
+			setOn(!on);
 		} catch (err) {
 			console.log(err);
 			setError(err);
@@ -72,6 +57,7 @@ StateButton.propTypes = {
 		turnedOnStatusName: PropTypes.string,
 		turnedOffStatusName: PropTypes.string,
 	}),
+	group: PropTypes.string,
 };
 
 export default StateButton;

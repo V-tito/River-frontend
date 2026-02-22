@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import CommandBarEditor from './commandBars/commandBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
-import { usePersistentData } from '@/hooks/usePersistentData';
+import { usePersistentData } from '@/lib/hooks/usePersistentData';
 import { useBeforeUnload } from 'react-use';
 
 const Editor = ({ scheme }) => {

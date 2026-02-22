@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import StateTable from '../../../components/forStatePages/stateTable';
-import { useGlobal } from '../../GlobalState';
+import StateTable from '@/components/forStatePages/stateTable';
+import { useGlobal } from '@/app/GlobalState';
 interface MyDataType {
 	id: number;
 	name: string;
@@ -21,7 +21,7 @@ const StateOfSignals = () => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.id}?sortedSignals=true`
+					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
@@ -50,7 +50,7 @@ const StateOfSignals = () => {
 					<h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
 						Состояние сигналов группы {group.name}:
 					</h1>
-					<StateTable data={data[group.name]}></StateTable>
+					<StateTable data={data[group.name]} group={group.name}></StateTable>
 				</div>
 			))}
 		</div>

@@ -1,3 +1,4 @@
+import { getList } from '@/lib/api_wrap/configAPI';
 export default function handler(req, res) {
 	let sorted = false;
 	let namesOnly = false;
@@ -11,16 +12,7 @@ export default function handler(req, res) {
 		const slug = req.query.slug;
 		try {
 			console.log('try fetching groups');
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/GroupOfSignals/${slug}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			}
-			const result = await response.json();
+			const result = await getList('GroupOfSignals', slug);
 			console.log('fetched groups', result);
 			return result;
 		} catch (err) {
@@ -29,19 +21,10 @@ export default function handler(req, res) {
 			}
 		}
 	};
-	const fetchSignals = async groupId => {
+	const fetchSignals = async groupName => {
 		try {
 			console.log('try fetching signals');
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/Signal/byGroup/${groupId}`,
-				{
-					method: 'GET', // headers: new Headers({'Content-Type': 'application/json'})
-				}
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			}
-			const result = await response.json();
+			const result = await getList('Signal', groupName);
 			console.log('fetched signals', result);
 			return result;
 		} catch (err) {
@@ -55,9 +38,9 @@ export default function handler(req, res) {
 		console.log('fetching all');
 		const newGroups = await fetchGroups();
 		console.log('try mapping');
-		if (newGroups.length > 0) {
+		if (Array.isArray(newGroups)) {if (newGroups.length>0){
 			const promises = newGroups.map(async group => {
-				const temp = await fetchSignals(group.id);
+				const temp = await fetchSignals(group.name);
 				console.log('fetching signals by group names', temp);
 				if (!sorted) {
 					return {
@@ -65,7 +48,7 @@ export default function handler(req, res) {
 						temp: temp.reduce((acc, item) => {
 							console.log('item', item);
 							acc.push(
-								namesOnly ? item.name : { ...item, parentGroup: group.id }
+								namesOnly ? item.name : { ...item, parentGroup: group.name }
 							);
 							return acc;
 						}, []),
@@ -77,7 +60,7 @@ export default function handler(req, res) {
 							console.log('item', item);
 							if (item.isOutput) {
 								acc.push(
-									namesOnly ? item.name : { ...item, parentGroup: group.id }
+									namesOnly ? item.name : { ...item, parentGroup: group.name }
 								);
 							}
 							return acc;
@@ -86,7 +69,7 @@ export default function handler(req, res) {
 							console.log('item', item);
 							if (!item.isOutput) {
 								acc.push(
-									namesOnly ? item.name : { ...item, parentGroup: group.id }
+									namesOnly ? item.name : { ...item, parentGroup: group.name }
 								);
 							}
 							return acc;
@@ -103,8 +86,8 @@ export default function handler(req, res) {
 				}, {});
 				console.log('reduced', newData);
 				const newList = results.reduce((acc, { temp }) => {
-					acc.push(temp);
-					return acc;
+					//acc.push(temp);
+					return [...acc, ...temp];
 				}, []);
 				console.log('reduced data');
 				res
@@ -119,8 +102,10 @@ export default function handler(req, res) {
 				console.log('reduced data');
 				res.status(200).json({ data: newData, groups: newGroups });
 			}
-		} else {
-			res.status(200).json({ data: {} });
+		}else {
+			res.status(200).json({ data: {}, groups: {} });
+		}} else {
+			res.status(200).json({ data: {}, groups: {} });
 		}
 	};
 	fetchAll();

@@ -5,9 +5,11 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+import { postEntity } from '@/lib/api_wrap/configAPI';
 
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
+	console.log("schemeport",defaultScheme.comPort)
 	const { register, handleSubmit, reset } = useForm();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
@@ -29,9 +31,8 @@ const AddForm = ({ table }) => {
 		if (table == 'Signal') {
 			const fetchGroupsAndBoards = async () => {
 				try {
-					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`);
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
 					);
 
 					const data = await response.json();
@@ -52,13 +53,17 @@ const AddForm = ({ table }) => {
 	}, [table, defaultScheme]);
 
 	const onSubmit = async data => {
+		setError(null)
 		let newFormData = { ...data };
 		if (
 			['GroupOfSignals', 'TestBoard'].includes(table) &&
 			!('signals' in data)
 		) {
 			newFormData = { ...newFormData, signals: [] };
-			newFormData['parentScheme'] = { id: defaultScheme.id };
+			newFormData['parentScheme'] = {
+				id: defaultScheme.id,
+				name: defaultScheme.name,
+			};
 		}
 		if ('parentGroup' in data) {
 			newFormData['parentGroup'] = { id: data.parentGroup };
@@ -68,21 +73,7 @@ const AddForm = ({ table }) => {
 		}
 
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/${table}`,
-				{
-					method: 'POST',
-					body: JSON.stringify(newFormData),
-					headers: { 'Content-Type': 'application/json' },
-				}
-			);
-			console.log('sent ', JSON.stringify(newFormData));
-			if (!response.ok) {
-				console.log(JSON.stringify(newFormData));
-				throw new Error(
-					`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`
-				);
-			}
+			await postEntity(table, newFormData);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
