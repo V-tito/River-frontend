@@ -10,6 +10,7 @@ const CommandBar = ({
 	current,
 	errorIDs,
 	isHovered,
+	setIsHovered,
 	sigsByGroup,
 }) => {
 	console.log('sigs by group', sigsByGroup);
@@ -60,6 +61,10 @@ const CommandBar = ({
 	return (
 		<div
 			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
+			onMouseEnter={() => {
+				setIsHovered(index);
+			}}
+			onMouseLeave={() => setIsHovered(null)}
 		>
 			<div className="flex flex-row w-full">
 				<label className={styles.label}>Действие </label>

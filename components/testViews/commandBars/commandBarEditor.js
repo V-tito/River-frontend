@@ -3,12 +3,15 @@
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
 import React, { useRef, useEffect, useState } from 'react';
-import CommandBar from './commandBar';
+//import CommandBar from './commandBar';
+import SortableBar from './sortableBar';
 import { DragDropProvider } from '@dnd-kit/react';
 import { move } from '@dnd-kit/helpers';
-import { useSortable } from '@dnd-kit/react/sortable';
+//
 function getID() {
-	return `${Date.now()}-${Math.random().toString(12).substring(2, 9)}`;
+	const id = `${Date.now()}-${Math.random().toString(12).substring(2, 9)}`;
+	console.log('id', id);
+	return id;
 }
 const CommandBarEditor = ({
 	formData,
@@ -23,22 +26,7 @@ const CommandBarEditor = ({
 	const prevData = useRef(formData);
 	const [sigsByGroup, setSigs] = useState();
 	const [loading, setLoading] = useState(true);
-	function SortableBar({ id, index }) {
-		const { ref } = useSortable({ id, index });
 
-		return (
-			<CommandBar
-				ref={ref}
-				script={formData}
-				setScript={setFormData}
-				index={index}
-				current={current}
-				errorIDs={errorIDs}
-				isHovered={isHovered}
-				sigsByGroup={sigsByGroup}
-			></CommandBar>
-		);
-	}
 	useEffect(() => {
 		const fetchSigs = async () => {
 			try {
@@ -66,45 +54,55 @@ const CommandBarEditor = ({
 	};
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<DragDropProvider
-			onDragStart={() => {
-				prevData.current = formData;
-			}}
-			onDragOver={event => {
-				setFormData(formData => move(formData, event));
-			}}
-			onDragEnd={event => {
-				if (event.canceled) {
-					setFormData(prevData.current);
-					return;
-				}
-			}}
-		>
-			<div className={styles.edit}>
-				{formData.length > 0
-					? formData.map((item, i) => (
-							<div
-								key={i}
-								onMouseEnter={() => {
-									setIsHovered(i);
-									console.log('hover', i);
-								}}
-								onMouseLeave={() => setIsHovered(null)}
-							>
-								{SortableBar(getID(), i)}
-							</div>
-						))
-					: ''}
-				<button
-					className={styles.button}
-					onClick={() => {
-						setFormData(prevFormData => [...prevFormData, { action: null }]);
-					}}
-				>
-					Добавить
-				</button>
-			</div>
-		</DragDropProvider>
+		<div className={styles.edit}>
+			<DragDropProvider
+				onDragStart={() => {
+					console.log('drag start');
+					prevData.current = formData;
+				}}
+				onDragOver={event => {
+					console.log('drag over');
+					console.log(move(formData, event));
+					console.log(event);
+					setFormData(formData => move(formData, event));
+				}}
+				onDragEnd={event => {
+					console.log('drag end');
+					if (event.canceled) {
+						setFormData(prevData.current);
+						return;
+					}
+				}}
+			>
+				<ul>
+					{formData.length > 0
+						? formData.map((item, i) => (
+								<SortableBar
+									key={i}
+									id={getID()}
+									index={i}
+									script={formData}
+									setScript={setFormData}
+									current={current}
+									errorIDs={errorIDs}
+									isHovered={isHovered}
+									setIsHovered={setIsHovered}
+									sigsByGroup={sigsByGroup}
+								></SortableBar>
+							))
+						: ''}
+				</ul>
+			</DragDropProvider>
+			<button
+				className={styles.button}
+				onClick={() => {
+					setFormData(prevFormData => [...prevFormData, { action: null }]);
+					console.log('fd', formData);
+				}}
+			>
+				Добавить
+			</button>
+		</div>
 	);
 };
 CommandBarEditor.propTypes = {

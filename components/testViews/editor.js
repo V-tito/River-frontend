@@ -177,7 +177,7 @@ const Editor = ({ scheme }) => {
 		}
 	};
 	const executeScript = async () => {
-		console.log('fd', formData);
+		console.log('fd on exec', formData);
 		try {
 			setResults([]);
 			for (let i = 0; i < formData.length; i++) {
@@ -208,6 +208,7 @@ const Editor = ({ scheme }) => {
 					setIsHovered={setIsHovered}
 					current={current}
 					errorIDs={errorIDs}
+					setError={setError}
 					schemeId={scheme.id}
 				></CommandBarEditor>
 
