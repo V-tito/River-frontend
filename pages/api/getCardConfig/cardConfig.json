@@ -48,5 +48,38 @@
 { "id": "isStraight", 
 "label": "Тип сигнала: ",
 "alias":{"true":"Прямой","false":"Инвертированный"}
-}]}
-}
+}]},
+"SulSignal":{"features":[
+    { "id": "name", 
+        "label": "Название:", 
+        "long":false
+    },
+    { "id": "parentSul", 
+        "label": "СУЛ: ", 
+        "long":false
+    },
+    { "id": "byteShift", 
+        "label": "Сдвиг в байтах:", 
+        "long":false
+    },
+    { "id": "firstBit", 
+        "label": "Первый бит:", 
+        "long":false
+    },
+    { "id": "lastBit", 
+        "label": "Последний бит:", 
+        "long":false
+    },
+    { "id": "turnedOnStatusName", 
+        "label": "Имя активного состояния:", 
+        "long":true
+    },
+    { "id": "turnedOffStatusName", 
+        "label": "Имя неактивного состояния:", 
+        "long":true
+    },
+    { "id": "description", 
+        "label": "Описание:", 
+        "long":true
+    }
+]}}

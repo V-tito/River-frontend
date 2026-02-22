@@ -8,7 +8,11 @@ const DataCards = ({ kind, data }) => {
 		<div className={styles.cards}>
 			{data.length > 0
 				? data.map(item => (
-						<ItemCard key={item.name} type={kind} item={item}></ItemCard>
+						<ItemCard
+							key={item.name}
+							type={'parentSul' in item ? 'SulSignal' : kind}
+							item={item}
+						></ItemCard>
 					))
 				: null}
 		</div>

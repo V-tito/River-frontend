@@ -129,6 +129,57 @@
         "placeholder": "Развернутое описание сигнала",
         "type": "textarea", 
         "validation":{}
-    }
+    }],
+    "SulSignal":[
+        { "id": "name", 
+            "label": "Название:", 
+            "type": "text", 
+            "placeholder": "Буквы и цифры без пробелов",
+            "validation":{"required": "Пожалуйста, заполните это поле" }
+        },
+        { "id": "parentGroup", 
+            "label": "Выберите группу: ", 
+            "type": "select", 
+            "validation":{"required": "Пожалуйста, выберите группу"}
+        },
+        { "id": "parentSul", 
+            "label": "Выберите СУЛ: ", 
+            "type": "select", 
+            "validation":{"required": "Пожалуйста, выберите плату" } 
+        },
+        { "id": "byteShift", 
+            "label": "Сдвиг в байтах:", 
+            "type": "number", 
+            "placeholder": "Неотрицательное целое число",
+            "validation":{"required": "Пожалуйста, заполните это поле", "min":0 }
+        },
+        { "id": "firstBit", 
+            "label": "Первый бит:", 
+            "type":  "number", 
+            "required": "Пожалуйста, заполните это поле"
+        },
+        { "id": "lastBit", 
+            "label": "Последний бит:", 
+            "type":  "number", 
+            "required": "Пожалуйста, заполните это поле"
+        },
+        { "id": "turnedOnStatusName", 
+            "label": "Имя активного состояния:", 
+            "type": "textarea", 
+            "placeholder": "Поведение системы, когда сигнал активен",
+            "validation":{"required": "Пожалуйста, заполните это поле" }
+        },
+        { "id": "turnedOffStatusName", 
+            "label": "Имя неактивного состояния:", 
+            "type": "textarea", 
+            "placeholder": "Поведение системы, когда сигнал неактивен",
+            "validation":{"required": "Пожалуйста, заполните это поле" }
+        },
+        { "id": "description", 
+            "label": "Описание:", 
+            "placeholder": "Развернутое описание сигнала",
+            "type": "textarea", 
+            "validation":{}
+        }
     ]
 }

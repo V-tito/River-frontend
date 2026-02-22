@@ -1,17 +1,66 @@
 import AddForm from './forms/addForm';
 import DeleteForm from './forms/deleteForm';
 import styles from './addDeleteWrapper.module.css';
-import React from 'react';
+import commonStyles from './common.module.css';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 const AddDeleteWrapper = ({ table, listOfAll, children }) => {
+	const [sul, setSul] = useState(false);
+	const [type, setType] = useState(table);
+	useEffect(() => {
+		if (sul) {
+			if (table == 'Signal') setType('SulSignal');
+			if (table == 'TestBoard') setType('Sul');
+		}
+		if (!sul) {
+			if (table == 'Signal') setType('Signal');
+			if (table == 'TestBoard') setType('TestBoard');
+		}
+	}, [sul]);
 	// className={styles.asideButtons} for aside when buttons
 	return (
 		<div className={styles.wrap}>
 			<div className={styles.main}>{children}</div>
 			<aside className={styles.asideForms}>
 				<div>
-					<AddForm table={table}></AddForm>
-					<DeleteForm table={table} listOfAll={listOfAll}></DeleteForm>
+					{table == 'Signal' ? (
+						<div>
+							<button
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								onClick={e => setSul(false)}
+							>
+								Сигнал тестовой платы
+							</button>
+							<button
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								onClick={e => setSul(true)}
+							>
+								Сигнал СУЛ
+							</button>
+						</div>
+					) : (
+						''
+					)}
+					{table == 'TestBoard' ? (
+						<div>
+							<button
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								onClick={e => setSul(false)}
+							>
+								Тестовая плата
+							</button>
+							<button
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								onClick={e => setSul(true)}
+							>
+								СУЛ
+							</button>
+						</div>
+					) : (
+						''
+					)}
+					<AddForm table={type}></AddForm>
+					<DeleteForm table={type} listOfAll={listOfAll}></DeleteForm>
 				</div>
 			</aside>
 		</div>
