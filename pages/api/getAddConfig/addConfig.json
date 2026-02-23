@@ -36,6 +36,26 @@
         "validation":{}
     }
     ],
+    "Sul": [
+        {"id": "name", 
+            "label": "Название:", 
+            "type": "text", 
+            "placeholder": "Буквы и цифры без пробелов",
+            "validation":{"required": "Пожалуйста, заполните это поле" }
+        },
+        { "id": "comPort",  
+            "label": "COM-port:", 
+            "type": "string", 
+            "placeholder": "Номер порта подключения",
+            "validation":{"required": "Пожалуйста, заполните это поле", "min":1 }
+        },
+        { "id": "description", 
+            "label": "Описание:", 
+            "type": "textarea", 
+            "placeholder": "Развернутое описание платы",
+            "validation":{}
+        }
+        ],
 
 "Scheme": [
     { "id": "name", 
@@ -145,12 +165,12 @@
         { "id": "parentSul", 
             "label": "Выберите СУЛ: ", 
             "type": "select", 
-            "validation":{"required": "Пожалуйста, выберите плату" } 
+            "validation":{"required": "Пожалуйста, выберите СУЛ" } 
         },
         { "id": "byteShift", 
             "label": "Сдвиг в байтах:", 
             "type": "number", 
-            "placeholder": "Неотрицательное целое число",
+            "placeholder": "",
             "validation":{"required": "Пожалуйста, заполните это поле", "min":0 }
         },
         { "id": "firstBit", 

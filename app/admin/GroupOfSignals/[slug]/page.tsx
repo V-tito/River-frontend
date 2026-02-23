@@ -17,8 +17,8 @@ const GroupList = () => {
 	} else {
 		slug = defaultScheme.name;
 	}
-console.log('slug',slug)
-console.log(defaultScheme)
+	console.log('slug', slug);
+	console.log(defaultScheme);
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -38,7 +38,7 @@ console.log(defaultScheme)
 	if (error) return <p>{error.message}</p>;
 
 	return (
-		<AddDeleteWrapper table="GroupOfSignals" listOfAll={data}>
+		<AddDeleteWrapper table="GroupOfSignals">
 			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
 				Список групп сигналов:
 			</h1>

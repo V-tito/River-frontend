@@ -47,18 +47,17 @@ const SignalList = () => {
 	if (loading) return <p>Загрузка...</p>;
 	if (error) return <p>{error.message}</p>;
 	return (
-		<AddDeleteWrapper
-			table="Signal"
-			listOfAll={listForDel ?? [[{ id: null, name: 'none' }]]}
-		>
-			{groups.length>0?groups.map(group => (
-				<div key={group.id} className="w-full h-min">
-					<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-						Список сигналов группы {group.name}:
-					</h1>
-					<DataView data={data[group.name]} kind="Signal"></DataView>
-				</div>
-			)):''}
+		<AddDeleteWrapper table="Signal">
+			{groups.length > 0
+				? groups.map(group => (
+						<div key={group.id} className="w-full h-min">
+							<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+								Список сигналов группы {group.name}:
+							</h1>
+							<DataView data={data[group.name]} kind="Signal"></DataView>
+						</div>
+					))
+				: ''}
 		</AddDeleteWrapper>
 	);
 };

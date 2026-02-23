@@ -6,19 +6,58 @@ import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { postEntity } from '@/lib/api_wrap/configAPI';
+async function postHelper(data, setError, table, defaultScheme) {
+	let newFormData = { ...data };
+	if (
+		['GroupOfSignals', 'TestBoard', 'Sul'].includes(table) &&
+		!('signals' in data)
+	) {
+		newFormData = { ...newFormData, signals: [] };
+		newFormData['parentScheme'] = {
+			id: defaultScheme.id,
+			name: defaultScheme.name,
+		};
+	}
 
+	if ('parentGroup' in data) {
+		newFormData['parentGroup'] = { id: data.parentGroup };
+	}
+	if ('testBoard' in data) {
+		newFormData['testBoard'] = { id: data.testBoard };
+	}
+	if ('parentSul' in data) {
+		newFormData['parentSul'] = { id: data.parentSul };
+	}
+	if (table == 'Signal') {
+		delete newFormData.parentSul;
+	}
+	if (table == 'SulSignal') {
+		delete newFormData.testBoard;
+	}
+	try {
+		await postEntity(table, newFormData);
+		window.location.reload();
+	} catch (err) {
+		if (err instanceof Error) {
+			setError(err);
+			console.log(`Error: ${err.message}`);
+		}
+	}
+}
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
-	console.log("schemeport",defaultScheme.comPort)
+	console.log('schemeport', defaultScheme.comPort);
 	const { register, handleSubmit, reset } = useForm();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [groupToNames, setGroupToNames] = useState({});
 	const [boardToNames, setBoardToNames] = useState({});
+	const [sul, setSul] = useState({});
 	const idToNameAliases = {
 		testBoard: boardToNames,
 		parentGroup: groupToNames,
+		parentSul: sul ? { [sul.id]: sul.name } : {},
 	};
 
 	useEffect(() => {
@@ -26,6 +65,7 @@ const AddForm = ({ table }) => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
 			const data = await response.json();
 			setConfig(data);
+			console.log(data);
 		};
 		fetchConfig();
 		if (table == 'Signal') {
@@ -41,6 +81,7 @@ const AddForm = ({ table }) => {
 					}
 					setBoardToNames(data.boards);
 					setGroupToNames(data.groups);
+					setSul(data.sul);
 				} catch (err) {
 					setError(err);
 				}
@@ -53,34 +94,8 @@ const AddForm = ({ table }) => {
 	}, [table, defaultScheme]);
 
 	const onSubmit = async data => {
-		setError(null)
-		let newFormData = { ...data };
-		if (
-			['GroupOfSignals', 'TestBoard'].includes(table) &&
-			!('signals' in data)
-		) {
-			newFormData = { ...newFormData, signals: [] };
-			newFormData['parentScheme'] = {
-				id: defaultScheme.id,
-				name: defaultScheme.name,
-			};
-		}
-		if ('parentGroup' in data) {
-			newFormData['parentGroup'] = { id: data.parentGroup };
-		}
-		if ('testBoard' in data) {
-			newFormData['testBoard'] = { id: data.testBoard };
-		}
-
-		try {
-			await postEntity(table, newFormData);
-			window.location.reload();
-		} catch (err) {
-			if (err instanceof Error) {
-				setError(err);
-				console.log(`Error: ${err.message}`);
-			}
-		}
+		setError(null);
+		await postHelper(data, setError, table, defaultScheme);
 	};
 
 	if (loading) return <p>Загружается форма...</p>;

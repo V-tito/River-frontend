@@ -4,7 +4,7 @@ import styles from './addDeleteWrapper.module.css';
 import commonStyles from './common.module.css';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-const AddDeleteWrapper = ({ table, listOfAll, children }) => {
+const AddDeleteWrapper = ({ table, children }) => {
 	const [sul, setSul] = useState(false);
 	const [type, setType] = useState(table);
 	useEffect(() => {
@@ -26,13 +26,13 @@ const AddDeleteWrapper = ({ table, listOfAll, children }) => {
 					{table == 'Signal' ? (
 						<div>
 							<button
-								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''} w-50%`}
 								onClick={e => setSul(false)}
 							>
 								Сигнал тестовой платы
 							</button>
 							<button
-								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								className={`${commonStyles.button} ${sul ? commonStyles.active : ''} w-50%`}
 								onClick={e => setSul(true)}
 							>
 								Сигнал СУЛ
@@ -44,13 +44,13 @@ const AddDeleteWrapper = ({ table, listOfAll, children }) => {
 					{table == 'TestBoard' ? (
 						<div>
 							<button
-								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''} w-50%`}
 								onClick={e => setSul(false)}
 							>
 								Тестовая плата
 							</button>
 							<button
-								className={`${commonStyles.button} ${!sul ? commonStyles.active : ''}`}
+								className={`${commonStyles.button} ${sul ? commonStyles.active : ''} w-50%`}
 								onClick={e => setSul(true)}
 							>
 								СУЛ
@@ -60,7 +60,6 @@ const AddDeleteWrapper = ({ table, listOfAll, children }) => {
 						''
 					)}
 					<AddForm table={type}></AddForm>
-					<DeleteForm table={type} listOfAll={listOfAll}></DeleteForm>
 				</div>
 			</aside>
 		</div>

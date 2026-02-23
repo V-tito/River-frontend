@@ -13,7 +13,7 @@ const AlterForm = ({ table, object }) => {
 			? { ...object }
 			: {
 					...object,
-					parentGroup: object.parentGroup,
+					parentGroup: object.parentGroup.id,
 					testBoard: object.testBoard.id,
 				};
 	const { defaultScheme } = useGlobal();

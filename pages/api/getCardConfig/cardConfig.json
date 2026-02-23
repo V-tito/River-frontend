@@ -49,11 +49,10 @@
 "label": "Тип сигнала: ",
 "alias":{"true":"Прямой","false":"Инвертированный"}
 }]},
-"SulSignal":{"features":[
-    { "id": "name", 
-        "label": "Название:", 
-        "long":false
-    },
+"SulSignal":
+{"features":
+[
+   
     { "id": "parentSul", 
         "label": "СУЛ: ", 
         "long":false
@@ -77,9 +76,13 @@
     { "id": "turnedOffStatusName", 
         "label": "Имя неактивного состояния:", 
         "long":true
-    },
-    { "id": "description", 
-        "label": "Описание:", 
-        "long":true
     }
-]}}
+    
+]}, 
+"Sul": {"features":[
+   
+    { "id": "comPort",  
+        "label": "COM-port:", 
+        "long":false
+    }
+    ]}}

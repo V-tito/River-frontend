@@ -14,7 +14,7 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 		const fetchCurrentState = async sig => {
 			let result;
 			let last = Date.now();
-			console.log('fetching', sig.id, 'start', last);
+			console.log('fetching', sig.name, 'start', last);
 			try {
 				if (board) {
 					result = getBoardState(sig.name);
@@ -25,7 +25,7 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 				last = Date.now();
 				console.log(
 					'fetching',
-					sig.id,
+					sig.name,
 					'waiting for response in',
 					Date.now() - last
 				);
@@ -132,25 +132,13 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 						<tr key={item.id}>
 							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
 							<td className={styles.td}>
-								<StateIndicator
+								<SulSigIndicator
 									on={allStates[item.name].on}
-									turnedOnStatusName={
-										!board
-											? item.isStraight
-												? item.turnedOnStatusName
-												: item.turnedOffStatusName
-											: 'Есть соединение с платой'
-									}
-									turnedOffStatusName={
-										!board
-											? item.isStraight
-												? item.turnedOffStatusName
-												: item.turnedOnStatusName
-											: 'Нет соединения с платой'
-									}
+									turnedOnStatusName={item.turnedOnStatusName}
+									turnedOffStatusName={item.turnedOnStatusName}
 									lastCheckTime={allStates[item.name].checked}
 									//todo change to proper naming
-								></StateIndicator>
+								></SulSigIndicator>
 							</td>
 						</tr>
 					))
