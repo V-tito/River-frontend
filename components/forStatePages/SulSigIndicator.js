@@ -15,28 +15,27 @@ import PropTypes from 'prop-types';
 )}*/
 const StateIndicator = memo(function StateIndicator({
 	on,
+	bool=false,
 	turnedOnStatusName,
 	turnedOffStatusName,
 	lastCheckTime,
 }) {
 	return (
 		<div>
-			<div
+			{bool ? <div
 				className={`${styles.indicator} ${
-					on == 1
+					on != 0
 						? styles.active
 						: on == undefined
 							? styles.error
 							: styles.inactive
 				}`}
-			></div>
-			<p>{on}</p>
+			></div>:''}
 			<span>
-				{on != 0
+				{on == undefined
+						? 'Ошибка при получении состояния сигнала': (bool? (on != 0
 					? turnedOnStatusName
-					: on == undefined
-						? 'Ошибка при получении состояния сигнала'
-						: turnedOffStatusName}
+					: turnedOffStatusName):String(on))}
 			</span>
 			{lastCheckTime == null ? '' : <p>Сигнал получен в {lastCheckTime}</p>}
 		</div>

@@ -1,5 +1,6 @@
 import { getList } from '@/lib/api_wrap/configAPI';
 export default function handler(req, res) {
+	console.log('triggered endpoint fetch sul sighals')
 	let namesOnly = false;
 	if ('namesOnly' in req.query) {
 		namesOnly = req.query.namesOnly;
@@ -40,10 +41,10 @@ export default function handler(req, res) {
 			if (newGroups.length > 0) {
 				const promises = newGroups.map(async group => {
 					const sulTemp = await fetchSulSignals(group.name);
-					console.log('fetching sulSignals by group names', temp);
+					console.log('fetching sulSignals by group names', sulTemp);
 					return {
 						name: String(group.name),
-						temp: sulTemp.reduce((acc, item) => {
+						temp: [...sulTemp.reduce((acc, item) => {
 							console.log('item', item);
 							acc.push(
 								namesOnly
@@ -51,10 +52,11 @@ export default function handler(req, res) {
 									: {
 											...item,
 											parentGroup: group.name,
+											bool: item.firstBit==item.lastBit
 										}
 							);
 							return acc;
-						}, []),
+						}, []),]
 					};
 				});
 				const results = await Promise.all(promises);

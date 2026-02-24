@@ -16,7 +16,7 @@ const AddForm = ({ table }) => {
 	const [loading, setLoading] = useState(true);
 	const [groupNames, setGroupNames] = useState([]);
 	const [boardNames, setBoardNames] = useState([]);
-	const [sul, setSul] = useState({});
+	const [sul, setSul] = useState([]);
 	const nameAliases = {
 		testBoard: boardNames,
 		parentGroup: groupNames,
@@ -45,15 +45,17 @@ const AddForm = ({ table }) => {
 					console.log('groups and boards', data);
 					console.log('groups', data.groups);
 					console.log('groupnames', Object.keys(data.groups));
+					console.log('sul',sul)
 					setBoardNames(Object.keys(data.boards));
 					setGroupNames(Object.keys(data.groups));
-					setSul(Object.keys(data.sul));
+					setSul(data.sul?Object.keys(data.sul):[]);
 				} catch (err) {
 					setError(err);
+				} finally {
+					setLoading(false);
 				}
 			};
 			fetchGroupsAndBoards();
-			setLoading(false);
 		} else {
 			setLoading(false);
 		}
@@ -73,6 +75,8 @@ const AddForm = ({ table }) => {
 	};
 
 	if (loading) return <p>Загружается форма...</p>;
+					console.log('groupNames', groupNames);
+					console.log('sulName',sul)
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
 			<header className={styles.header}>Добавить элемент</header>

@@ -10,7 +10,7 @@ const OpenLocalFileModal = ({
 	uploadError = null,
 	label = null,
 }) => {
-	const [file, setFile] = useState();
+	const [file, setFile] = useState(null);
 	const handleFileChange = e => {
 		setFile(e.target.files[0]);
 	};
@@ -40,6 +40,7 @@ const OpenLocalFileModal = ({
 							if (!uploadError) close();
 						}}
 						className={`${styles.button} ${styles.menuButton}`}
+						disabled={!file}
 					>
 						Загрузить
 					</button>
