@@ -24,29 +24,29 @@
     padding-right: 2vh;
     margin-left:2px
   }
-  
-  .menuButton {
-    background-color: #1c5f3a;
+  .button{
     color: #fff;
     cursor: pointer;
-    align-self: center;
     margin:5px;
     margin-top:10px;
-    padding: 10px;
     border-radius: 5%;
     border: 1px solid white;
-    
+    align-self: center;
   }
+  .menuButton {
+    background-color: #1c5f3a;
+    padding: 10px;
+  }
+  
   .alterButton {
     background-color: #1c5f3a;
-    color: #fff;
-    cursor: pointer;
     justify-self: left;
-    margin:5px;
-    margin-top:10px;
     padding-left: 2vh;
     padding-right: 2vh;
-    border-radius: 5%;
+  }
+  .deleteButton{
+    background-color: crimson;
+    padding: 10px;
   }
   .input {
     display: inline;

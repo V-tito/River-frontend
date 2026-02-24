@@ -33,18 +33,6 @@ export default function handler(req, res) {
 			}
 		}
 	};
-	const fetchSulSignals = async groupName => {
-		try {
-			console.log('try fetching sulSignals');
-			const result = await getList('SulSignal', groupName);
-			console.log('fetched sulSignals', result);
-			return result;
-		} catch (err) {
-			if (err instanceof Error) {
-				res.status(500).json({ message: err.message });
-			}
-		}
-	};
 
 	const fetchAll = async () => {
 		console.log('fetching all');
@@ -54,7 +42,6 @@ export default function handler(req, res) {
 			if (newGroups.length > 0) {
 				const promises = newGroups.map(async group => {
 					const temp = await fetchSignals(group.name);
-					const sulTemp = await fetchSulSignals(group.name);
 					console.log('fetching signals by group names', temp);
 					if (!sorted) {
 						return {
@@ -67,19 +54,7 @@ export default function handler(req, res) {
 											? item.name
 											: {
 													...item,
-													parentGroup: { name: group.name, id: group.id },
-												}
-									);
-									return acc;
-								}, []),
-								...sulTemp.reduce((acc, item) => {
-									console.log('item', item);
-									acc.push(
-										namesOnly
-											? item.name
-											: {
-													...item,
-													parentGroup: { name: group.name, id: group.id },
+													parentGroup: group.name,
 												}
 									);
 									return acc;
@@ -93,12 +68,7 @@ export default function handler(req, res) {
 								console.log('item', item);
 								if (item.isOutput) {
 									acc.push(
-										namesOnly
-											? item.name
-											: {
-													...item,
-													parentGroup: { name: group.name, id: group.id },
-												}
+										namesOnly ? item.name : { ...item, parentGroup: group.name }
 									);
 								}
 								return acc;
@@ -107,26 +77,9 @@ export default function handler(req, res) {
 								console.log('item', item);
 								if (!item.isOutput) {
 									acc.push(
-										namesOnly
-											? item.name
-											: {
-													...item,
-													parentGroup: { name: group.name, id: group.id },
-												}
+										namesOnly ? item.name : { ...item, parentGroup: group.name }
 									);
 								}
-								return acc;
-							}, []),
-							sulSigs: sulTemp.reduce((acc, item) => {
-								console.log('item', item);
-								acc.push(
-									namesOnly
-										? item.name
-										: {
-												...item,
-												parentGroup: { name: group.name, id: group.id },
-											}
-								);
 								return acc;
 							}, []),
 						};

@@ -7,10 +7,9 @@ import { useGlobal } from '@/app/GlobalState';
 import { getList } from '@/lib/api_wrap/configAPI';
 
 const BoardList = () => {
-	const defaultScheme = useGlobal();
+	const { defaultScheme, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
 	const [sul, setSul] = useState({});
 	const params = useParams(); // Get URL parameters
 	let slug;
@@ -22,6 +21,7 @@ const BoardList = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setPollingError(null);
 			try {
 				const result = await getList('TestBoard', slug);
 				const Sul = await getList('Sul', slug);
@@ -29,7 +29,7 @@ const BoardList = () => {
 				setSul(Sul);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setPollingError(err);
 				}
 			} finally {
 				setLoading(false);
@@ -39,7 +39,7 @@ const BoardList = () => {
 	}, [slug, params, defaultScheme]);
 
 	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>Ошибка: {error.message}</p>;
+	if (pollingError) return <p>Ошибка: {pollingError.message}</p>;
 
 	return (
 		//

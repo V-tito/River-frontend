@@ -5,45 +5,8 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { postEntity } from '@/lib/api_wrap/configAPI';
-async function postHelper(data, setError, table, defaultScheme) {
-	let newFormData = { ...data };
-	if (
-		['GroupOfSignals', 'TestBoard', 'Sul'].includes(table) &&
-		!('signals' in data)
-	) {
-		newFormData = { ...newFormData, signals: [] };
-		newFormData['parentScheme'] = {
-			id: defaultScheme.id,
-			name: defaultScheme.name,
-		};
-	}
+import { postHelper } from '@/lib/hooks/postPatchHelpers';
 
-	if ('parentGroup' in data) {
-		newFormData['parentGroup'] = { id: data.parentGroup };
-	}
-	if ('testBoard' in data) {
-		newFormData['testBoard'] = { id: data.testBoard };
-	}
-	if ('parentSul' in data) {
-		newFormData['parentSul'] = { id: data.parentSul };
-	}
-	if (table == 'Signal') {
-		delete newFormData.parentSul;
-	}
-	if (table == 'SulSignal') {
-		delete newFormData.testBoard;
-	}
-	try {
-		await postEntity(table, newFormData);
-		window.location.reload();
-	} catch (err) {
-		if (err instanceof Error) {
-			setError(err);
-			console.log(`Error: ${err.message}`);
-		}
-	}
-}
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
 	console.log('schemeport', defaultScheme.comPort);
@@ -51,13 +14,13 @@ const AddForm = ({ table }) => {
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [groupToNames, setGroupToNames] = useState({});
-	const [boardToNames, setBoardToNames] = useState({});
+	const [groupNames, setGroupNames] = useState([]);
+	const [boardNames, setBoardNames] = useState([]);
 	const [sul, setSul] = useState({});
-	const idToNameAliases = {
-		testBoard: boardToNames,
-		parentGroup: groupToNames,
-		parentSul: sul ? { [sul.id]: sul.name } : {},
+	const nameAliases = {
+		testBoard: boardNames,
+		parentGroup: groupNames,
+		parentSul: sul ? sul : [],
 	};
 
 	useEffect(() => {
@@ -79,9 +42,12 @@ const AddForm = ({ table }) => {
 					if (!response.ok) {
 						throw new Error(`Ошибка сети ${response.status}`);
 					}
-					setBoardToNames(data.boards);
-					setGroupToNames(data.groups);
-					setSul(data.sul);
+					console.log('groups and boards', data);
+					console.log('groups', data.groups);
+					console.log('groupnames', Object.keys(data.groups));
+					setBoardNames(Object.keys(data.boards));
+					setGroupNames(Object.keys(data.groups));
+					setSul(Object.keys(data.sul));
 				} catch (err) {
 					setError(err);
 				}
@@ -95,7 +61,15 @@ const AddForm = ({ table }) => {
 
 	const onSubmit = async data => {
 		setError(null);
-		await postHelper(data, setError, table, defaultScheme);
+		try {
+			await postHelper(data, table, defaultScheme);
+			window.location.reload();
+		} catch (err) {
+			if (err instanceof Error) {
+				setError(err);
+				console.log(`Error: ${err.message}`);
+			}
+		}
 	};
 
 	if (loading) return <p>Загружается форма...</p>;
@@ -139,9 +113,9 @@ const AddForm = ({ table }) => {
 							<option className={styles.option} value={null}>
 								Выберите элемент...
 							</option>
-							{Object.entries(idToNameAliases[field.id]).map(item => (
-								<option className={styles.option} key={item[0]} value={item[0]}>
-									{item[1]}
+							{nameAliases[field.id].map(item => (
+								<option className={styles.option} key={item} value={item}>
+									{item}
 								</option>
 							))}
 						</select>

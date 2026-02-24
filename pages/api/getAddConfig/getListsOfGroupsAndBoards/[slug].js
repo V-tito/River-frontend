@@ -49,23 +49,21 @@ export default function handler(req, res) {
 			const resGroups = await fetchGroups(slug);
 			const resSul = await fetchSul(slug);
 			const tempBoardNames = resBoards.reduce((acc, item) => {
-				return (acc = { ...acc, [item.id]: item.name });
+				return (acc = { ...acc, [item.name]: item.id });
 			}, {});
 			console.log(`tempBN:`, tempBoardNames);
 			const tempGroupNames = resGroups.reduce((acc, item) => {
-				return (acc = { ...acc, [item.id]: item.name });
+				return (acc = { ...acc, [item.name]: item.id });
 			}, {});
 			console.log(Object.entries(tempGroupNames));
 			res.status(200).json({
 				boards: tempBoardNames,
 				groups: tempGroupNames,
-				sul: resSul,
+				sul: { [resSul.name]: resSul.id },
 			});
 		} catch (err) {
 			if (err instanceof Error) {
 				res.status(500).json({ message: err.message });
-			} else {
-				res.status(500).json({ message: String(err) });
 			}
 		}
 	};

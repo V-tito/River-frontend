@@ -6,10 +6,9 @@ import DataView from '@/components/dataView';
 import { useGlobal } from '@/app/GlobalState';
 import { getList } from '@/lib/api_wrap/configAPI';
 const GroupList = () => {
-	const defaultScheme = useGlobal();
-	const [data, setData] = useState(null);
+	const { defaultScheme, pollingError, setPollingError } = useGlobal();
+	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
 	const params = useParams(); // Get URL parameters
 	let slug;
 	if (params) {
@@ -21,12 +20,13 @@ const GroupList = () => {
 	console.log(defaultScheme);
 	useEffect(() => {
 		const fetchData = async () => {
+			setPollingError(null);
 			try {
 				const result = await getList('GroupOfSignals', slug);
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setPollingError(err);
 				}
 			} finally {
 				setLoading(false);
@@ -35,7 +35,7 @@ const GroupList = () => {
 		fetchData();
 	}, [slug, params, defaultScheme]);
 	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>{error.message}</p>;
+	if (pollingError) return <p>{pollingError.message}</p>;
 
 	return (
 		<AddDeleteWrapper table="GroupOfSignals">

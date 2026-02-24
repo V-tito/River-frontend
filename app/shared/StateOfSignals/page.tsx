@@ -12,8 +12,9 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
-	const { defaultScheme } = useGlobal();
+	const { defaultScheme, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
+	const [sulData, setSulData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
@@ -34,10 +35,32 @@ const StateOfSignals = () => {
 					setError(err);
 				}
 			} finally {
-				setLoading(false);
+			}
+		};
+		const fetchSulData = async () => {
+			try {
+				const response = await fetch(
+					`/api/getSulSignalTables/${defaultScheme.name}`
+				);
+				const conf = await response.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
+				groups.map(group => {
+					setData(data => ({
+						...data,
+						[group.name]: { ...data[group.name], sulSigs: conf[group.name] },
+					}));
+				});
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					setPollingError(err);
+				}
 			}
 		};
 		fetchData();
+		fetchSulData();
+		setLoading(false);
 	}, [defaultScheme]);
 
 	if (loading) return <p>Загрузка...</p>;

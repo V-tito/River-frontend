@@ -13,15 +13,15 @@ interface DynamicRecord {
 	[key: string]: [];
 }
 const SignalList = () => {
-	const { defaultScheme } = useGlobal();
+	const { defaultScheme, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
+	const [sulData, setSulData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
-	const [listForDel, setListForDel] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setPollingError(null);
 			try {
 				const response = await fetch(
 					`/api/getSignalTables/${defaultScheme.name}`
@@ -31,30 +31,68 @@ const SignalList = () => {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				setData(conf.data);
-				setGroups(conf.groups);
-				setListForDel(conf.list);
+				if (groups.length == 0) setGroups(conf.groups);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setPollingError(err);
 				}
-			} finally {
-				setLoading(false);
+			}
+		};
+		const fetchSulData = async () => {
+			try {
+				const response = await fetch(
+					`/api/getSulSignalTables/${defaultScheme.name}`
+				);
+				const conf = await response.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
+				setSulData(conf.data);
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					setPollingError(err);
+				}
 			}
 		};
 		fetchData();
+		fetchSulData();
+		setLoading(false);
 	}, [defaultScheme]);
 	console.log('data', data);
 	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>{error.message}</p>;
 	return (
 		<AddDeleteWrapper table="Signal">
 			{groups.length > 0
 				? groups.map(group => (
 						<div key={group.id} className="w-full h-min">
-							<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-								Список сигналов группы {group.name}:
-							</h1>
-							<DataView data={data[group.name]} kind="Signal"></DataView>
+							<div>
+								<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+									Список сигналов группы {group.name}:
+								</h1>
+								{data[group.name] ? (
+									<DataView data={data[group.name]} kind="Signal"></DataView>
+								) : pollingError ? (
+									pollingError.message
+								) : (
+									''
+								)}
+							</div>
+
+							<div>
+								<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+									Список сигналов СУЛ группы {group.name}:
+								</h1>
+								{sulData[group.name] ? (
+									<DataView
+										data={sulData[group.name]}
+										kind="SulSignal"
+									></DataView>
+								) : pollingError ? (
+									pollingError.message
+								) : (
+									''
+								)}
+							</div>
 						</div>
 					))
 				: ''}

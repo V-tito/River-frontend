@@ -5,7 +5,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from './modal.module.css';
 
-const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
+const OpenLocalFileModal = ({
+	uploadAction,
+	uploadError = null,
+	label = null,
+}) => {
 	const [file, setFile] = useState();
 	const handleFileChange = e => {
 		setFile(e.target.files[0]);
@@ -13,7 +17,9 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={styles.menuButton}>Открыть локальный скрипт</button>
+				<button className={`${styles.button} ${styles.menuButton}`}>
+					{label ? label : 'Открыть локальный скрипт'}
+				</button>
 			}
 			closeOnDocumentClick={false}
 		>
@@ -31,9 +37,9 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 					<button
 						onClick={e => {
 							uploadAction(e, file);
-							close();
+							if (!uploadError) close();
 						}}
-						className={styles.menuButton}
+						className={`${styles.button} ${styles.menuButton}`}
 					>
 						Загрузить
 					</button>
@@ -49,5 +55,7 @@ const OpenLocalFileModal = ({ uploadAction, uploadError = null }) => {
 OpenLocalFileModal.propTypes = {
 	uploadAction: PropTypes.func,
 	uploadError: PropTypes.any,
+	label: PropTypes.string,
+	children: PropTypes.node,
 };
 export default OpenLocalFileModal;

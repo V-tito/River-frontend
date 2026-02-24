@@ -1,0 +1,19 @@
+[{"name":"сигналИзФайла1","parentGroup":"Группа1","testBoard":"Плата1","channel":"5",
+"isOutput":"true",
+"isStraight":"true",
+"turnedOnStatusName":"yep",
+"turnedOffStatusName":"nope",
+"description":"example"
+},{"name":"сигналИзФайла2","parentGroup":"Группа1","testBoard":"Плата1","channel":"5",
+"isOutput":"false",
+"isStraight":"false",
+"turnedOnStatusName":"yep",
+"turnedOffStatusName":"nope",
+"description":"example"
+},{"name":"СУЛсигналИзФайла1","parentGroup":"Группа1","parentSul":"СУЛ","byteShift":1,
+"firstBit": 1,
+"lastBit": 1,
+"turnedOnStatusName":"yep",
+"turnedOffStatusName":"nope",
+"description":"example"
+}]

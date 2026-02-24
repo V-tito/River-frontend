@@ -6,13 +6,18 @@ import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 import { deleteEntity } from '@/lib/api_wrap/configAPI';
 const ConfirmDeleteModal = ({ state }) => {
+	console.log('confirm delete modal state', state);
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
 
 	const onConfirm = async () => {
 		try {
 			console.log('configured url from onconfirm', state);
-		await deleteEntity(state.type, state.name,state.group?state.group:null);
+			await deleteEntity(
+				state.type,
+				state.name,
+				state.group ? state.group : null
+			);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
@@ -23,12 +28,20 @@ const ConfirmDeleteModal = ({ state }) => {
 	};
 
 	return (
-		<Popup trigger={<button className={styles.menuButton}>Удалить</button>}>
+		<Popup
+			trigger={
+				<button className={`${styles.button} ${styles.deleteButton}`}>
+					Удалить
+				</button>
+			}
+		>
 			{close => (
 				<div className={styles.container}>
 					<div className={styles.header}> Подтверждение действия </div>
-					<p className={styles.message}>Удаление этого элемента повлечет удаление всех зависящих от него
-					элементов. Вы уверены, что хотите продолжить?</p>
+					<p className={styles.message}>
+						Удаление этого элемента повлечет удаление всех зависящих от него
+						элементов. Вы уверены, что хотите продолжить?
+					</p>
 					<div className={styles.actions}>
 						<button onClick={onConfirm} className={styles.alterButton}>
 							Подтвердить

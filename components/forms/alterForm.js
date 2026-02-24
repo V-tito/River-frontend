@@ -6,15 +6,15 @@ import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { patchEntity } from '@/lib/api_wrap/configAPI';
-
+import { patchHelper } from '@/lib/hooks/postPatchHelpers';
 const AlterForm = ({ table, object }) => {
 	const defaults =
 		table != 'Signal'
 			? { ...object }
 			: {
 					...object,
-					parentGroup: object.parentGroup.id,
-					testBoard: object.testBoard.id,
+					parentGroup: object.parentGroup,
+					testBoard: object.testBoard.name,
 				};
 	const { defaultScheme } = useGlobal();
 	const { register, handleSubmit, reset, watch } = useForm({
@@ -24,11 +24,13 @@ const AlterForm = ({ table, object }) => {
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [groupToNames, setGroupToNames] = useState({});
-	const [boardToNames, setBoardToNames] = useState({});
-	const idToNameAliases = {
-		testBoard: boardToNames,
-		parentGroup: groupToNames,
+	const [groupNames, setGroupNames] = useState([]);
+	const [boardNames, setBoardNames] = useState([]);
+	const [sul, setSul] = useState({});
+	const nameAliases = {
+		testBoard: boardNames,
+		parentGroup: groupNames,
+		parentSul: sul ? sul : [],
 	};
 	const watchers = Object.keys(defaults).reduce((acc, key) => {
 		return { ...acc, [key]: watch(key) };
@@ -45,16 +47,17 @@ const AlterForm = ({ table, object }) => {
 		if (table == 'Signal') {
 			const fetchGroupsAndBoards = async () => {
 				try {
-					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`);
+					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.name}`);
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
 					);
 					const data = await response.json();
 					if (!response.ok) {
 						throw new Error(`Ошибка сети ${response.status}`);
 					}
-					setBoardToNames(data.boards);
-					setGroupToNames(data.groups);
+					setBoardNames(Object.keys(data.boards));
+					setGroupNames(Object.keys(data.groups));
+					setSul(Object.keys(data.sul));
 				} catch (err) {
 					setError(err);
 				}
@@ -68,24 +71,8 @@ const AlterForm = ({ table, object }) => {
 	}, [table, defaultScheme]);
 
 	const onSubmit = async data => {
-		let newFormData = { ...data };
-		if (
-			['GroupOfSignals', 'TestBoard'].includes(table) &&
-			!('signals' in data)
-		) {
-			newFormData = { ...newFormData, signals: [] };
-			newFormData['parentScheme'] = { id: defaultScheme.id };
-		}
-		if ('parentGroup' in data) {
-			newFormData['parentGroup'] = { id: data.parentGroup };
-		}
-		if ('testBoard' in data) {
-			newFormData['testBoard'] = { id: data.testBoard };
-		}
-
 		try {
-			await patchEntity(table, newFormData);
-			console.log('sent ', JSON.stringify(newFormData));
+			await patchHelper(data, table, defaultScheme);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
@@ -136,9 +123,9 @@ const AlterForm = ({ table, object }) => {
 							{...register(field.id, field.validation)}
 						>
 							<option>Выберите элемент...</option>
-							{Object.entries(idToNameAliases[field.id]).map(item => (
-								<option key={item[0]} value={item[0]}>
-									{item[1]}
+							{nameAliases[field.id].map(item => (
+								<option className={styles.option} key={item} value={item}>
+									{item}
 								</option>
 							))}
 						</select>
