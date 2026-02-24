@@ -209,7 +209,7 @@ const Editor = ({ scheme }) => {
 					current={current}
 					errorIDs={errorIDs}
 					setError={setError}
-					schemeId={scheme.id}
+					schemeName={scheme.name}
 				></CommandBarEditor>
 
 				<button

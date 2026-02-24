@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
 import React, { useRef, useEffect, useState } from 'react';
 //import CommandBar from './commandBar';
-import SortableBar from './sortableBar';
+import CommandBar from './commandBar';
 import { DragDropProvider } from '@dnd-kit/react';
 import { move } from '@dnd-kit/helpers';
 //
@@ -21,7 +21,7 @@ const CommandBarEditor = ({
 	current,
 	errorIDs,
 	setError,
-	schemeId,
+	schemeName,
 }) => {
 	const prevData = useRef(formData);
 	const [sigsByGroup, setSigs] = useState();
@@ -31,12 +31,13 @@ const CommandBarEditor = ({
 		const fetchSigs = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${schemeId}?sortedSignals=true&namesOnly=true`
+					`/api/getSignalTables/${schemeName}?sortedSignals=true&namesOnly=true`
 				);
-				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
+				const conf = await response.json();
+				console.log('sigsbygroup',conf.data)
 				setSigs(conf.data);
 			} catch (err) {
 				if (err instanceof Error) {
@@ -55,29 +56,9 @@ const CommandBarEditor = ({
 	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className={styles.edit}>
-			<DragDropProvider
-				onDragStart={() => {
-					console.log('drag start');
-					prevData.current = formData;
-				}}
-				onDragOver={event => {
-					console.log('drag over');
-					console.log(move(formData, event));
-					console.log(event);
-					setFormData(formData => move(formData, event));
-				}}
-				onDragEnd={event => {
-					console.log('drag end');
-					if (event.canceled) {
-						setFormData(prevData.current);
-						return;
-					}
-				}}
-			>
-				<ul>
 					{formData.length > 0
 						? formData.map((item, i) => (
-								<SortableBar
+								<CommandBar
 									key={i}
 									id={getID()}
 									index={i}
@@ -88,11 +69,9 @@ const CommandBarEditor = ({
 									isHovered={isHovered}
 									setIsHovered={setIsHovered}
 									sigsByGroup={sigsByGroup}
-								></SortableBar>
+								></CommandBar>
 							))
 						: ''}
-				</ul>
-			</DragDropProvider>
 			<button
 				className={styles.button}
 				onClick={() => {
@@ -107,7 +86,7 @@ const CommandBarEditor = ({
 };
 CommandBarEditor.propTypes = {
 	initName: PropTypes.string,
-	schemeId: PropTypes.number,
+	schemeName: PropTypes.string,
 	current: PropTypes.number,
 	errorIDs: PropTypes.array,
 	isHovered: PropTypes.number,
