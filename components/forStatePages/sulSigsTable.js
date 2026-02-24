@@ -1,10 +1,10 @@
 import styles from './stateTable.module.css';
-import StateIndicator from './stateIndicator';
+
 import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
-import { getBoardState, getSignalState } from '@/lib/api_wrap/protocol';
-const IndicatorsTable = ({ data, board, group = null }) => {
+import { getSignalState } from '@/lib/api_wrap/protocol';
+const SulSigsTable = ({ data, group = null }) => {
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const { setPollingError } = useGlobal();
@@ -14,18 +14,14 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 		const fetchCurrentState = async sig => {
 			let result;
 			let last = Date.now();
-			console.log('fetching', sig.id, 'start', last);
+			console.log('fetching', sig.name, 'start', last);
 			try {
-				if (board) {
-					result = getBoardState(sig.name);
-				} else {
-					result = getSignalState(group, sig.name);
-				}
+				result = getSignalState(group, sig.name);
 				console.log('fetching', sig.id, 'set api in', Date.now() - last);
 				last = Date.now();
 				console.log(
 					'fetching',
-					sig.id,
+					sig.name,
 					'waiting for response in',
 					Date.now() - last
 				);
@@ -39,32 +35,13 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 				console.log('received:', result);
 				setPollingError('ok');
 
-				if (!board) {
-					console.log(
-						'with name',
-						sig.name,
-						'set state',
-						result.value,
-						'with last check time',
-						String(result.freshness.split('.')[0]),
-						'states',
-						allStates
-					);
-					return [
-						sig.name,
-						{
-							on: result.value,
-							checked: String(result.freshness.split('.')[0]),
-						},
-					];
-				} else {
-					return [
-						sig.name,
-						{
-							on: result,
-						},
-					];
-				}
+				return [
+					sig.name,
+					{
+						on: result.value,
+						checked: String(result.freshness.split('.')[0]),
+					},
+				];
 			} catch (err) {
 				setPollingError(err);
 				console.log(err);
@@ -106,12 +83,11 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 			}
 		};
 		fetchAllStates();
-		console.log('first fetch on page w board=', board);
 		//if (checkConstantly == true) {
 		const intervalId = setInterval(fetchAllStates, 1000); // Fetch every second
 		return () => clearInterval(intervalId);
 		//}
-	}, [board, setPollingError]);
+	}, [setPollingError]);
 	//const changeCheckSettings = () => {
 	//	setCheck(prev => !prev);
 	//};
@@ -132,25 +108,13 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 						<tr key={item.id}>
 							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
 							<td className={styles.td}>
-								<StateIndicator
+								<SulSigIndicator
 									on={allStates[item.name].on}
-									turnedOnStatusName={
-										!board
-											? item.isStraight
-												? item.turnedOnStatusName
-												: item.turnedOffStatusName
-											: 'Есть соединение с платой'
-									}
-									turnedOffStatusName={
-										!board
-											? item.isStraight
-												? item.turnedOffStatusName
-												: item.turnedOnStatusName
-											: 'Нет соединения с платой'
-									}
+									turnedOnStatusName={item.turnedOnStatusName}
+									turnedOffStatusName={item.turnedOnStatusName}
 									lastCheckTime={allStates[item.name].checked}
 									//todo change to proper naming
-								></StateIndicator>
+								></SulSigIndicator>
 							</td>
 						</tr>
 					))
@@ -165,9 +129,8 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 		</table>
 	);
 };
-IndicatorsTable.propTypes = {
+SulSigsTable.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.shape({})),
-	board: PropTypes.bool,
 	group: PropTypes.string,
 };
-export default IndicatorsTable;
+export default SulSigsTable;

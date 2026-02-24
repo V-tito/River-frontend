@@ -1,64 +1,101 @@
 'use client';
 //import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
-import AddDeleteWrapper from '../../../components/addDeleteWrapper';
-import DataView from '../../../components/dataView';
-import { useGlobal } from '../../GlobalState';
+import AddDeleteWrapper from '@/components/addDeleteWrapper';
+import DataView from '@/components/dataView';
+import { useGlobal } from '@/app/GlobalState';
+
 interface MyDataType {
 	id: number;
 	name: string;
-	// Add other fields as necessary
 }
 interface DynamicRecord {
-	[key: string]: []; // Change 'any' to a more specific type if possible
+	[key: string]: [];
 }
 const SignalList = () => {
-	const { defaultScheme } = useGlobal();
+	const { defaultScheme, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
+	const [sulData, setSulData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
-	const [listForDel, setListForDel] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setPollingError(null);
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.id}`
+					`/api/getSignalTables/${defaultScheme.name}`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				setData(conf.data);
-				setGroups(conf.groups);
-				setListForDel(conf.list);
+				if (groups.length == 0) setGroups(conf.groups);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setPollingError(err);
 				}
-			} finally {
-				setLoading(false);
+			}
+		};
+		const fetchSulData = async () => {
+			try {
+				const response = await fetch(
+					`/api/getSulSignalTables/${defaultScheme.name}`
+				);
+				const conf = await response.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
+				setSulData(conf.data);
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					setPollingError(err);
+				}
 			}
 		};
 		fetchData();
+		fetchSulData();
+		setLoading(false);
 	}, [defaultScheme]);
 	console.log('data', data);
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (loading) return <p>Загрузка...</p>;
 	return (
-		<AddDeleteWrapper
-			table="Signal"
-			listOfAll={listForDel ?? [[{ id: null, name: 'none' }]]}
-		>
-			{groups.map(group => (
-				<div key={group.id} className="w-full h-min">
-					<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-						Список сигналов группы {group.name}:
-					</h1>
-					<DataView data={data[group.name]} kind="Signal"></DataView>
-				</div>
-			))}
+		<AddDeleteWrapper table="Signal">
+			{groups.length > 0
+				? groups.map(group => (
+						<div key={group.id} className="w-full h-min">
+							<div>
+								<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+									Список сигналов группы {group.name}:
+								</h1>
+								{data[group.name] ? (
+									<DataView data={data[group.name]} kind="Signal"></DataView>
+								) : pollingError ? (
+									pollingError.message
+								) : (
+									''
+								)}
+							</div>
+
+							<div>
+								<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+									Список сигналов СУЛ группы {group.name}:
+								</h1>
+								{sulData[group.name] ? (
+									<DataView
+										data={sulData[group.name]}
+										kind="SulSignal"
+									></DataView>
+								) : pollingError ? (
+									pollingError.message
+								) : (
+									''
+								)}
+							</div>
+						</div>
+					))
+				: ''}
 		</AddDeleteWrapper>
 	);
 };

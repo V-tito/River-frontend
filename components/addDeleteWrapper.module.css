@@ -30,3 +30,8 @@
     flex-direction: column;
     width:35%
 }
+.report {
+    display: flex;
+    flex-direction: column!important;
+    overflow-y: auto;
+  }

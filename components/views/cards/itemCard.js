@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import AlterModal from '../../modals/alterModal';
 import styles from './cards.module.css';
+import commonStyles from '@/components/common.module.css';
 import PropTypes from 'prop-types';
+import ConfirmDeleteModal from '@/components/modals/confirmDeleteModal';
 
 const ItemCard = ({ type, item }) => {
 	const [config, setConfig] = useState({ features: [], types: [] });
 	const [loading, setLoading] = useState(true);
+	console.log('item card with item', item);
 
 	useEffect(() => {
 		const fetchConfig = async () => {
@@ -20,7 +23,7 @@ const ItemCard = ({ type, item }) => {
 		setLoading(false);
 	}, []);
 
-	if (loading) return <p>Card loading...</p>;
+	if (loading) return <p>Загрузка плитки...</p>;
 
 	return (
 		<div className={styles.card}>
@@ -57,7 +60,16 @@ const ItemCard = ({ type, item }) => {
 				</div>
 			) : null}
 			<p className={styles.description}>{item.description}</p>
-			<AlterModal table={type} obj={item}></AlterModal>
+			<div className={commonStyles.buttons}>
+				<AlterModal table={type} obj={item}></AlterModal>
+				<ConfirmDeleteModal
+					state={{
+						type: type,
+						name: item.name,
+						group: item.parentGroup ? item.parentGroup : null,
+					}}
+				></ConfirmDeleteModal>
+			</div>
 		</div>
 	);
 };

@@ -5,18 +5,22 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+import { postHelper } from '@/lib/hooks/postPatchHelpers';
 
 const AddForm = ({ table }) => {
 	const { defaultScheme } = useGlobal();
+	console.log('schemeport', defaultScheme.comPort);
 	const { register, handleSubmit, reset } = useForm();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [groupToNames, setGroupToNames] = useState({});
-	const [boardToNames, setBoardToNames] = useState({});
-	const idToNameAliases = {
-		testBoard: boardToNames,
-		parentGroup: groupToNames,
+	const [groupNames, setGroupNames] = useState([]);
+	const [boardNames, setBoardNames] = useState([]);
+	const [sul, setSul] = useState({});
+	const nameAliases = {
+		testBoard: boardNames,
+		parentGroup: groupNames,
+		parentSul: sul ? sul : [],
 	};
 
 	useEffect(() => {
@@ -24,22 +28,26 @@ const AddForm = ({ table }) => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
 			const data = await response.json();
 			setConfig(data);
+			console.log(data);
 		};
 		fetchConfig();
 		if (table == 'Signal') {
 			const fetchGroupsAndBoards = async () => {
 				try {
-					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.id}`);
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.id}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
 					);
 
 					const data = await response.json();
 					if (!response.ok) {
 						throw new Error(`Ошибка сети ${response.status}`);
 					}
-					setBoardToNames(data.boards);
-					setGroupToNames(data.groups);
+					console.log('groups and boards', data);
+					console.log('groups', data.groups);
+					console.log('groupnames', Object.keys(data.groups));
+					setBoardNames(Object.keys(data.boards));
+					setGroupNames(Object.keys(data.groups));
+					setSul(Object.keys(data.sul));
 				} catch (err) {
 					setError(err);
 				}
@@ -52,37 +60,9 @@ const AddForm = ({ table }) => {
 	}, [table, defaultScheme]);
 
 	const onSubmit = async data => {
-		let newFormData = { ...data };
-		if (
-			['GroupOfSignals', 'TestBoard'].includes(table) &&
-			!('signals' in data)
-		) {
-			newFormData = { ...newFormData, signals: [] };
-			newFormData['parentScheme'] = { id: defaultScheme.id };
-		}
-		if ('parentGroup' in data) {
-			newFormData['parentGroup'] = { id: data.parentGroup };
-		}
-		if ('testBoard' in data) {
-			newFormData['testBoard'] = { id: data.testBoard };
-		}
-
+		setError(null);
 		try {
-			const response = await fetch(
-				`${process.env.API_URL}/api/river/v1/configurator/${table}`,
-				{
-					method: 'POST',
-					body: JSON.stringify(newFormData),
-					headers: { 'Content-Type': 'application/json' },
-				}
-			);
-			console.log('sent ', JSON.stringify(newFormData));
-			if (!response.ok) {
-				console.log(JSON.stringify(newFormData));
-				throw new Error(
-					`Ошибка сети: ${response.status}. Проверьте правильность заполнения формы.`
-				);
-			}
+			await postHelper(data, table, defaultScheme);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
@@ -133,9 +113,9 @@ const AddForm = ({ table }) => {
 							<option className={styles.option} value={null}>
 								Выберите элемент...
 							</option>
-							{Object.entries(idToNameAliases[field.id]).map(item => (
-								<option className={styles.option} key={item[0]} value={item[0]}>
-									{item[1]}
+							{nameAliases[field.id].map(item => (
+								<option className={styles.option} key={item} value={item}>
+									{item}
 								</option>
 							))}
 						</select>

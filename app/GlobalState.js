@@ -46,6 +46,9 @@ export const GlobalProvider = ({ children }) => {
 			localStorage.setItem('navProfile', JSON.stringify(navProfile));
 		}
 	}, [navProfile]);
+	useEffect(() => {
+		setPollingError(null);
+	}, []);
 
 	return (
 		<GlobalContext.Provider

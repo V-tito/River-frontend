@@ -3,7 +3,7 @@ import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
-const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
+const SaveFromVarLocally = ({ formData, initName = null }) => {
 	const [filename, setFilename] = useState(
 		initName
 			? initName
@@ -11,26 +11,23 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
-		console.log('fd passed to saver', formData);
 		try {
 			const blob = new Blob([JSON.stringify(formData)], {
 				type: 'text/json',
 			});
 			console.log('blob', blob);
-			const dataToSend = new FormData();
-			dataToSend.append('file', blob, filename);
-			console.log('before', JSON.stringify(dataToSend));
-			const response = await fetch(`/api/files?folder=${scheme}`, {
-				method: 'POST',
-				body: dataToSend,
-			});
-			console.log('after', JSON.stringify(formData));
-			if (!response.ok) {
-				throw new Error(
-					`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
-				);
-			}
-			window.location.reload();
+			// Create a download link
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			// Set link properties
+			link.href = url;
+			link.download = filename;
+			// Trigger download
+			document.body.appendChild(link);
+			link.click();
+			// Clean up
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
@@ -53,7 +50,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		<Popup
 			trigger={
 				<button className={`${styles.button} ${styles.menuButton}`}>
-					Сохранить на сервере
+					Сохранить
 				</button>
 			}
 			closeOnDocumentClick={false}
@@ -77,7 +74,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 						}}
 						className={`${styles.button} ${styles.menuButton}`}
 					>
-						Сохранить на сервере
+						Сохранить
 					</button>
 					<Modal state={error}>
 						{error
@@ -91,9 +88,9 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		</Popup>
 	);
 };
-SaveFromEditorToServerModal.propTypes = {
+SaveFromVarLocally.propTypes = {
 	initName: PropTypes.string,
 	scheme: PropTypes.shape({ id: PropTypes.number }),
 	formData: PropTypes.array,
 };
-export default SaveFromEditorToServerModal;
+export default SaveFromVarLocally;

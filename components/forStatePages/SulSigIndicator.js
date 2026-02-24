@@ -30,9 +30,9 @@ const StateIndicator = memo(function StateIndicator({
 							: styles.inactive
 				}`}
 			></div>
-
+			<p>{on}</p>
 			<span>
-				{on == 1
+				{on != 0
 					? turnedOnStatusName
 					: on == undefined
 						? 'Ошибка при получении состояния сигнала'

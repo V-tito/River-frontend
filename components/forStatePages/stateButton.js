@@ -3,40 +3,49 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../modals/inlineModal';
 import styles from './stateButton.module.css';
 import PropTypes from 'prop-types';
-const StateButton = ({ sig }) => {
+import { setSignalState, getSignalState } from '@/lib/api_wrap/protocol';
+const StateButton = ({ sig, group }) => {
 	const [error, setError] = useState(null);
-	const [on, setOn] = useState(() => {
-		const savedVariable = localStorage.getItem(`Signal_${sig.id}_state`);
-		if (savedVariable) {
-			console.log('got saved', savedVariable, 'for sig', sig.id);
-			return savedVariable != null ? savedVariable === 'true' : false;
+	const [on, setOn] = useState();
+	useEffect(() => {
+		const fetchCurrentState = () => {
+			let result;
+			try {
+				result = getSignalState(group, sig.name);
+				return {
+					on: result.value,
+					checked: result.freshness
+						? String(result.freshness.split('.')[0])
+						: '',
+				};
+			} catch (err) {
+				setError(err);
+				console.log(err);
+				return {
+					on: undefined,
+					checked: null,
+				};
+			}
+		};
+		const initialState = fetchCurrentState();
+		if (initialState != undefined) {
+			setOn(initialState === 1);
+		} else {
+			const savedVariable = localStorage.getItem(`Signal_${sig.id}_state`);
+			if (savedVariable) {
+				console.log('got saved', savedVariable, 'for sig', sig.id);
+				return savedVariable != null ? savedVariable === 1 : false;
+			}
 		}
-	});
-
+	}, []);
 	useEffect(() => {
 		localStorage.setItem(`Signal_${sig.id}_state`, on);
 		console.log('saved', on, 'for sig', sig.id);
 	}, [sig, on]);
 	const changeState = async () => {
 		try {
-			const api = new URL(`${process.env.API_URL}/api/river/v1/protocol/set`);
-			api.searchParams.set('name', sig.name);
-			api.searchParams.set('value', !on);
-			const response = await fetch(api, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-			});
-			console.log(
-				`tried to set signal state with ${JSON.stringify({
-					id: sig.id,
-					currentValue: !on,
-				})}`
-			);
-			if (!response.ok) {
-				throw new Error(`Ошибка сети ${response.status}`);
-			} else {
-				setOn(!on);
-			}
+			await setSignalState(group, sig.name, !on);
+			setOn(!on);
 		} catch (err) {
 			console.log(err);
 			setError(err);
@@ -72,6 +81,7 @@ StateButton.propTypes = {
 		turnedOnStatusName: PropTypes.string,
 		turnedOffStatusName: PropTypes.string,
 	}),
+	group: PropTypes.string,
 };
 
 export default StateButton;

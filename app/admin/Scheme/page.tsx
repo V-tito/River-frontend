@@ -2,30 +2,24 @@
 import React, { useEffect, useState } from 'react';
 import DataView from '../../../components/dataView';
 import AddDeleteWrapper from '../../../components/addDeleteWrapper';
+import { getList } from '@/lib/api_wrap/configAPI';
+import { useGlobal } from '@/app/GlobalState';
 
 const Schemelist = () => {
-	const [data, setData] = useState(null);
+	const { pollingError, setPollingError } = useGlobal();
+	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<Error | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setPollingError(null);
+			console.log('try get list');
 			try {
-				const response = await fetch(
-					`${process.env.API_URL}/api/river/v1/configurator/Scheme`,
-					{
-						method: 'GET',
-						//headers: {'Content-Type': 'application/json',}
-					}
-				);
-				if (!response.ok) {
-					throw new Error(`Ошибка сети ${response.status}`);
-				}
-				const result = await response.json();
+				const result = await getList('Scheme');
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setPollingError(err);
 				}
 			} finally {
 				setLoading(false);
@@ -34,9 +28,9 @@ const Schemelist = () => {
 		fetchData();
 	}, []);
 	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>Ошибка: {error.message}</p>;
+	if (pollingError) return <p>Ошибка: {pollingError.message}</p>;
 	return (
-		<AddDeleteWrapper table="Scheme" listOfAll={data}>
+		<AddDeleteWrapper table="Scheme">
 			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
 				Список схем:
 			</h1>

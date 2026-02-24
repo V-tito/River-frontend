@@ -8,7 +8,11 @@ import './popup.css';
 const PopupForm = ({ buttonLabel, children }) => {
 	return (
 		<Popup
-			trigger={<button className={styles.menuButton}>{buttonLabel}</button>}
+			trigger={
+				<button className={`${styles.button} ${styles.menuButton}`}>
+					{buttonLabel}
+				</button>
+			}
 			closeOnDocumentClick={false}
 		>
 			{close => (

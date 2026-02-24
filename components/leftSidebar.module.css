@@ -14,7 +14,7 @@
   
   .main {
     flex: 1;  /* Take the remaining space */
-    padding: 20px;  /* Main content padding */
+    padding: 5px 5px 10px 10px;  /* Main content padding */
     justify-self: right;
     width:100%;  
   }
