@@ -10,17 +10,17 @@
 }
 @media (prefers-color-scheme: dark) {
     .error{
-        color: #fff;
+        color: #fff!important;
         background-color: #eb1e3a;
         border-color: #eb1e3a;
     }
     .ok{
-        color: #fff;
+        color: #fff!important;
         background-color: #1c5f3a;
         border-color: #1c5f3a;
     }
     .none{
-        color: #fff;
+        color: #fff!important;
         background-color: #969696;
         border-color: #969696;
     }

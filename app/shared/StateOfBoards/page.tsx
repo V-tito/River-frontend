@@ -15,6 +15,7 @@ const StateOfBoards = () => {
 		const fetchBoards = async () => {
 			try {
 				const result = await getList('TestBoard', defaultScheme.name);
+				console.log('list of boards from sp',result)
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -29,7 +30,7 @@ const StateOfBoards = () => {
 	}, [defaultScheme, setPollingError]);
 	if (loading) return <p>Загрузка...</p>;
 	if (error) return <p>{error.message}</p>;
-
+console.log('list of boards before sp render',data)
 	return (
 		//
 		<div>

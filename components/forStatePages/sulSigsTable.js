@@ -1,5 +1,5 @@
 import styles from './stateTable.module.css';
-
+import SulSigIndicator from './SulSigIndicator'
 import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
@@ -16,23 +16,11 @@ const SulSigsTable = ({ data, group = null }) => {
 			let last = Date.now();
 			console.log('fetching', sig.name, 'start', last);
 			try {
-				result = getSignalState(group, sig.name);
-				console.log('fetching', sig.id, 'set api in', Date.now() - last);
+				console.log('fetching', sig.name, 'set api in', Date.now() - last);
+				
+				result = await getSignalState(group, sig.name);
 				last = Date.now();
-				console.log(
-					'fetching',
-					sig.name,
-					'waiting for response in',
-					Date.now() - last
-				);
-				last = Date.now();
-				console.log(
-					'fetching',
-					sig.id,
-					'waiting for result in',
-					Date.now() - last
-				);
-				console.log('received:', result);
+				console.log('received ss:', result);
 				setPollingError('ok');
 
 				return [

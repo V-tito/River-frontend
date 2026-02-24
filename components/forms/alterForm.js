@@ -5,7 +5,6 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { patchEntity } from '@/lib/api_wrap/configAPI';
 import { patchHelper } from '@/lib/hooks/postPatchHelpers';
 const AlterForm = ({ table, object }) => {
 	const defaults =

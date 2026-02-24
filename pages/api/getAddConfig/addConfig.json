@@ -170,18 +170,20 @@
         { "id": "byteShift", 
             "label": "Сдвиг в байтах:", 
             "type": "number", 
-            "placeholder": "",
-            "validation":{"required": "Пожалуйста, заполните это поле", "min":0 }
+            "placeholder": "Целое число от 4 до 30",
+            "validation":{"required": "Пожалуйста, заполните это поле", "min":4,"max":30 }
         },
         { "id": "firstBit", 
             "label": "Первый бит:", 
             "type":  "number", 
-            "required": "Пожалуйста, заполните это поле"
+            "placeholder": "Целое число от 0 до 7",
+            "validation":{"required": "Пожалуйста, заполните это поле", "min":0,"max":7 }
         },
         { "id": "lastBit", 
             "label": "Последний бит:", 
             "type":  "number", 
-            "required": "Пожалуйста, заполните это поле"
+            "placeholder": "Целое число от 0 до 7",
+            "validation":{"required": "Пожалуйста, заполните это поле", "min":0,"max":7 }
         },
         { "id": "turnedOnStatusName", 
             "label": "Имя активного состояния:", 

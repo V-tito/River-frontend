@@ -10,6 +10,7 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 	const { setPollingError } = useGlobal();
 	const [loading, setLoading] = useState(true);
 	//const [checkConstantly, setCheck] = useState(true);
+	console.log('list of boards from it')
 	useEffect(() => {
 		const fetchCurrentState = async sig => {
 			let result;
@@ -17,9 +18,9 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 			console.log('fetching', sig.id, 'start', last);
 			try {
 				if (board) {
-					result = getBoardState(sig.name);
+					result = await getBoardState(sig.name);
 				} else {
-					result = getSignalState(group, sig.name);
+					result = await getSignalState(group, sig.name);
 				}
 				console.log('fetching', sig.id, 'set api in', Date.now() - last);
 				last = Date.now();

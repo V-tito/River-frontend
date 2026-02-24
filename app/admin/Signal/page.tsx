@@ -23,15 +23,18 @@ const SignalList = () => {
 		const fetchData = async () => {
 			setPollingError(null);
 			try {
+				console.log('trying to fetch sigs')
 				const response = await fetch(
 					`/api/getSignalTables/${defaultScheme.name}`
 				);
+				console.log('end fetch sigs')
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
+				console.log('fetched sigs',conf.data)
 				setData(conf.data);
-				if (groups.length == 0) setGroups(conf.groups);
+				setGroups(conf.groups);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
 					setPollingError(err);
@@ -40,15 +43,19 @@ const SignalList = () => {
 		};
 		const fetchSulData = async () => {
 			try {
+				console.log('trying to fetch sul sigs')
 				const response = await fetch(
 					`/api/getSulSignalTables/${defaultScheme.name}`
 				);
+				console.log('end fetch sul sigs')
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
+				console.log('fetched sul sigs',conf.data)
 				setSulData(conf.data);
 			} catch (err: unknown) {
+				console.log('error fetch sul sigs')
 				if (err instanceof Error) {
 					setPollingError(err);
 				}

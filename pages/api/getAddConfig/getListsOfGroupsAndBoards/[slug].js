@@ -59,7 +59,7 @@ export default function handler(req, res) {
 			res.status(200).json({
 				boards: tempBoardNames,
 				groups: tempGroupNames,
-				sul: { [resSul.name]: resSul.id },
+				sul: resSul?{ [resSul.name]: resSul.id }:null,
 			});
 		} catch (err) {
 			if (err instanceof Error) {
