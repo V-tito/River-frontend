@@ -65,7 +65,18 @@ const CommandBar = ({
 			) {
 				script[index].sul = 'SulSignal';
 			} else {
-				script[index].sul = 'Signal';
+				if ((
+				sigsByGroup[script[index].group].inputs.find(
+					item => item.name == script[index].signal
+				) != undefined
+			)|(
+				sigsByGroup[script[index].group].outputs.find(
+					item => item.name == script[index].signal
+				) != undefined
+			))
+				{script[index].sul = 'Signal';}else{
+					script[index].signal=''
+				}
 			}
 			console.log('triggered set sul', script[index]);
 		}
@@ -146,7 +157,7 @@ const CommandBar = ({
 										<option value={''}>сигнал...</option>
 										{((![undefined, ''].includes(script[index].group))&(sigsByGroup!=undefined))?((sigsByGroup[script[index].group]!=undefined)
 											? (script[index]['action'].includes('set')
-												? sigsByGroup[script[index].group].inputs.map(item => (
+												? sigsByGroup[script[index].group].outputs.map(item => (
 														<option value={item.name} key={item.name}>
 															{item.name}
 														</option>

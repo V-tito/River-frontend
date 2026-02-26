@@ -124,8 +124,9 @@ const Editor = ({ scheme }) => {
 				}
 			} else {
 				if (entry.action == 'executePresets') {entry.scheme=scheme.name}
-				if (entry.signal) {
-					if (!validateSignal(entry.signal, entry.group, entry.sul))
+				if ("signal" in entry) {
+					const exists=validateSignal(entry.signal, entry.group, entry.sul)
+					if (!exists)
 						throw new Error('Несуществующий сигнал');
 				}
 				if (entry.action == 'wait') {
