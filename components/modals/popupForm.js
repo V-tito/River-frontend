@@ -9,7 +9,9 @@ const PopupForm = ({ buttonLabel, children }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={`${styles.button} ${styles.menuButton}`}>
+				<button
+					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+				>
 					{buttonLabel}
 				</button>
 			}
@@ -17,7 +19,10 @@ const PopupForm = ({ buttonLabel, children }) => {
 		>
 			{close => (
 				<div className={styles.container}>
-					<button onClick={() => close()} className={styles.closeButton}>
+					<button
+						onClick={() => close()}
+						className={`${styles.button} ${styles.closeButton}`}
+					>
 						&times;
 					</button>
 					{children}

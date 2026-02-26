@@ -17,7 +17,9 @@ const OpenLocalFileModal = ({
 	return (
 		<Popup
 			trigger={
-				<button className={`${styles.button} ${styles.menuButton}`}>
+				<button
+					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+				>
 					{label ? label : 'Открыть локальный скрипт'}
 				</button>
 			}
@@ -25,7 +27,10 @@ const OpenLocalFileModal = ({
 		>
 			{close => (
 				<div className={styles.container}>
-					<button onClick={() => close()} className={styles.closeButton}>
+					<button
+						onClick={() => close()}
+						className={`${styles.button} ${styles.closeButton}`}
+					>
 						&times;
 					</button>
 					<input
@@ -39,7 +44,7 @@ const OpenLocalFileModal = ({
 							uploadAction(e, file);
 							if (!uploadError) close();
 						}}
-						className={`${styles.button} ${styles.menuButton}`}
+						className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
 						disabled={!file}
 					>
 						Загрузить

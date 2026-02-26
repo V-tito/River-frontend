@@ -49,7 +49,9 @@ const SaveFromVarLocally = ({ formData, initName = null }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={`${styles.button} ${styles.menuButton}`}>
+				<button
+					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+				>
 					Сохранить
 				</button>
 			}
@@ -72,7 +74,7 @@ const SaveFromVarLocally = ({ formData, initName = null }) => {
 							saveToServer();
 							close();
 						}}
-						className={`${styles.button} ${styles.menuButton}`}
+						className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
 					>
 						Сохранить
 					</button>

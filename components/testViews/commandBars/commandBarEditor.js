@@ -51,7 +51,7 @@ const CommandBarEditor = ({
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const tempGroups = conf.groups;
-				console.log('temp groups',conf)
+				console.log('temp groups', conf);
 				const tempData = conf.data;
 				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
 				const tempData2 = tempGroups.reduce((acc, group) => {
@@ -78,11 +78,10 @@ const CommandBarEditor = ({
 				setSigs(tempData2);
 			} catch (err) {
 				if (err instanceof Error) {
-					setSigs({})
+					setSigs({});
 					setError(err);
 				}
 			} finally {
-				
 				setLoading(false);
 			}
 		};
@@ -93,37 +92,38 @@ const CommandBarEditor = ({
 		<div className={styles.edit}>
 			{formData.length > 0
 				? formData.map((item, i) => (
-					<div key={i}>
-		
-					<button
-					
-				className={styles.button}
-				onClick={() => {
-					setFormData(prevFormData => prevFormData.toSpliced(i,0,{ action: null }));
-					setErrorIDs(prevErrorIDs=>prevErrorIDs.map(item=>(item>=i)?item++:item))
-					
-				}}
-			>
-				Добавить
-			</button>
-						<CommandBar
-							id={getID()}
-							index={i}
-							script={formData}
-							setScript={setFormData}
-							current={current}
-							errorIDs={errorIDs}
-							isHovered={isHovered}
-							setIsHovered={setIsHovered}
-							sigsByGroup={sigsByGroup}
-						></CommandBar></div>
+						<div key={i} className="flex flex-col w-full">
+							<button
+								className={styles.button}
+								onClick={() => {
+									setFormData(prevFormData =>
+										prevFormData.toSpliced(i, 0, { action: null })
+									);
+									setErrorIDs(prevErrorIDs =>
+										prevErrorIDs.map(item => (item >= i ? item++ : item))
+									);
+								}}
+							>
+								Добавить
+							</button>
+							<CommandBar
+								id={getID()}
+								index={i}
+								script={formData}
+								setScript={setFormData}
+								current={current}
+								errorIDs={errorIDs}
+								isHovered={isHovered}
+								setIsHovered={setIsHovered}
+								sigsByGroup={sigsByGroup}
+							></CommandBar>
+						</div>
 					))
 				: ''}
 			<button
 				className={styles.button}
 				onClick={() => {
 					setFormData(prevFormData => [...prevFormData, { action: null }]);
-					console.log('fd', formData);
 				}}
 			>
 				Добавить

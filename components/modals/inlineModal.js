@@ -16,7 +16,10 @@ const Modal = ({ state, children }) => {
 	return (
 		<div className={styles.containerInline}>
 			{children}
-			<button onClick={onClose} className={styles.closeButton}>
+			<button
+				onClick={onClose}
+				className={`${styles.button} ${styles.deleteButtonInline}`}
+			>
 				Закрыть
 			</button>
 		</div>

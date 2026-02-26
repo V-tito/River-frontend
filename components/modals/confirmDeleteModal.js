@@ -30,7 +30,9 @@ const ConfirmDeleteModal = ({ state }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={`${styles.button} ${styles.deleteButton}`}>
+				<button
+					className={`${styles.button} ${styles.buttonFlex} ${styles.deleteButton}`}
+				>
 					Удалить
 				</button>
 			}

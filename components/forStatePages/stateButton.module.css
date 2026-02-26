@@ -1,5 +1,5 @@
 .button{
-    width:75px;
+    width:max-content;
     padding: 2%;
     border-radius: 10%;
     font-weight: bold;

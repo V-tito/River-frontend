@@ -52,7 +52,9 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={`${styles.button} ${styles.menuButton}`}>
+				<button
+					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+				>
 					Сохранить на сервере
 				</button>
 			}
@@ -75,7 +77,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 							saveToServer();
 							close();
 						}}
-						className={`${styles.button} ${styles.menuButton}`}
+						className={`${styles.button}  ${styles.buttonFlex} ${styles.menuButton}`}
 					>
 						Сохранить на сервере
 					</button>
