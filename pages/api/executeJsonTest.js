@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 	if (act == 'executePresets') {
 		message = 'Запущены пресеты';
 		try {
-			await protocol.executePresets();
+			await protocol.executePresets(command.scheme);
 			res.status(200).json(message);
 		} catch (err) {
 			res.status(500).json(err.message);

@@ -75,10 +75,10 @@ export default function handler(req, res) {
 					.status(200)
 					.json({ data: newData, groups: newGroups, list: newList });
 			} else {
-				res.status(200).json({ data: {}, groups: {} });
+				res.status(200).json({ data: {}, groups: []});
 			}
 		} else {
-			res.status(200).json({ data: {}, groups: {} });
+			res.status(200).json({ data: {}, groups: []});
 		}
 	};
 	fetchAll();

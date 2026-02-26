@@ -16,7 +16,7 @@
   margin-bottom: 5px;
   width: 100%;
 }
-.button {
+.deleteButton {
   place-self: end;
   background-color: darkred;
   cursor: pointer;

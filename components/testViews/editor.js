@@ -123,6 +123,7 @@ const Editor = ({ scheme }) => {
 					await executeEntry(content);
 				}
 			} else {
+				if (entry.action == 'executePresets') {entry.scheme=scheme.name}
 				if (entry.signal) {
 					if (!validateSignal(entry.signal, entry.group, entry.sul))
 						throw new Error('Несуществующий сигнал');
@@ -219,6 +220,7 @@ const Editor = ({ scheme }) => {
 					setIsHovered={setIsHovered}
 					current={current}
 					errorIDs={errorIDs}
+					setErrorIDs={setErrorIDs}
 					setError={setError}
 					schemeName={scheme.name}
 				></CommandBarEditor>

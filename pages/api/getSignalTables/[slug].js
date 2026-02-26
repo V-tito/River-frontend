@@ -111,7 +111,7 @@ export default function handler(req, res) {
 					res.status(200).json({ data: newData, groups: newGroups });
 				}
 			} else {
-				res.status(200).json({ data: {}, groups: {} });
+				res.status(200).json({ data: {}, groups: [] });
 			}
 		} else {
 			res.status(500).json({message:"failed fetching groups"});

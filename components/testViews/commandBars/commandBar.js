@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import styles from './commandBar.module.css';
+import commonStyles from '@/components/common.module.css'
 
 const CommandBar = ({
 	script,
@@ -13,7 +14,9 @@ const CommandBar = ({
 	setIsHovered,
 	sigsByGroup,
 }) => {
-	console.log('sigs by group', sigsByGroup);
+	console.log('sigs by group in command bar', sigsByGroup);
+	console.log('group is undef', [undefined, ''].includes(script[index].group), 'group', script[index].group)
+	console.log("sigsByGroup[script[index].group]",sigsByGroup[script[index].group])
 	const commandConfig = {
 		check: ['signal', 'expectedValue'],
 		wait: ['signal', 'expectedValue'],
@@ -76,6 +79,7 @@ const CommandBar = ({
 	};
 	console.log('cb triggered with index', index, 'script', script);
 	return (
+		
 		<div
 			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
 			onMouseEnter={() => {
@@ -83,11 +87,12 @@ const CommandBar = ({
 			}}
 			onMouseLeave={() => setIsHovered(null)}
 		>
+			
 			<div className="flex flex-row w-full">
 				<label className={styles.label}>Действие </label>
 				<div className={styles.deleteContainer}>
 					<button
-						className={styles.button}
+						className={styles.deleteButton}
 						onClick={() =>
 							setScript(prev => prev.filter((_, i) => i !== index))
 						}
@@ -139,9 +144,9 @@ const CommandBar = ({
 										disabled={[undefined, ''].includes(script[index].group)}
 									>
 										<option value={''}>сигнал...</option>
-										{![undefined, ''].includes(script[index].group)
-											? script[index]['action'].includes('set')
-												? sigsByGroup[script[index].group].outputs.map(item => (
+										{((![undefined, ''].includes(script[index].group))&(sigsByGroup!=undefined))?((sigsByGroup[script[index].group]!=undefined)
+											? (script[index]['action'].includes('set')
+												? sigsByGroup[script[index].group].inputs.map(item => (
 														<option value={item.name} key={item.name}>
 															{item.name}
 														</option>
@@ -154,14 +159,16 @@ const CommandBar = ({
 														<option value={item.name} key={item.name}>
 															{item.name}
 														</option>
-													))
-											: ''}
+													)))
+											: <option value={null}>'sigs by group.group undef'</option>):<option value={null}>{`sigs by group ${sigsByGroup} undef or group undef. group: ${script[index].group}`}</option>}
 									</select>
 								</div>
 							) : ['targetValue', 'expectedValue'].includes(item) ? (
 								<div key={ind}>
 									<label className={styles.label}>{translate[item]}</label>
-									{sigsByGroup[script[index].group].sulSigs.find(
+									{((![undefined, ''].includes(script[index].group))&(sigsByGroup!=undefined))?
+									((sigsByGroup[script[index].group]!=undefined)?(
+									sigsByGroup[script[index].group].sulSigs.find(
 										item => item.name == script[index].signal
 									) != undefined ? (
 										!sigsByGroup[script[index].group].sulSigs.find(
@@ -219,7 +226,7 @@ const CommandBar = ({
 											/>{' '}
 											Неактивен
 										</div>
-									)}
+									)):('')):('')}
 								</div>
 							) : (
 								<input
