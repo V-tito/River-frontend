@@ -1,6 +1,6 @@
 import * as protocol from '@/lib/api_wrap/protocol';
 export default async function handler(req, res) {
-	function waitTillTimeout(interval = 500, duration = 30000) {
+	async function waitTillTimeout(interval = 500, duration = 30000) {
 		let timeoutId;
 		let elapsedTime = 0;
 		const makeRequest = async () => {
@@ -10,11 +10,11 @@ export default async function handler(req, res) {
 					command.signal
 				);
 				console.log('received:', result);
-				if (result.b.toString() == command.expectedValue) {
+				if (result.value == command.expectedValue) {
 					res
 						.status(200)
 						.json(
-							`Сигнал ${command.signal} ${command.expectedValue ? 'активен' : 'неактивен'} в момент времени ${result.a}`
+							`Сигнал ${command.signal} ${command.expectedValue ? 'активен' : 'неактивен'} в момент времени ${result.freshness}`
 						);
 				} else {
 					elapsedTime += interval;
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 				res.status(500).json(err.message);
 			}
 		};
-		makeRequest();
+		await makeRequest();
 
 		// Return function to manually stop
 		return () => {
@@ -122,7 +122,7 @@ export default async function handler(req, res) {
 				command.signal
 			);
 			console.log('received:', result);
-			if (result.b == Boolean(command.expectedValue))
+			if (result.value == command.expectedValue)
 				res
 					.status(200)
 					.json(
@@ -141,6 +141,6 @@ export default async function handler(req, res) {
 		}
 	}
 	if (act == 'wait') {
-		waitTillTimeout(500, command.timeout);
+		await waitTillTimeout(500, command.timeout);
 	}
 }

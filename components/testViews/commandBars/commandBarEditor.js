@@ -23,22 +23,57 @@ const CommandBarEditor = ({
 	setError,
 	schemeName,
 }) => {
-	const prevData = useRef(formData);
 	const [sigsByGroup, setSigs] = useState();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchSigs = async () => {
 			try {
+				console.log(
+					'try fetching signals on api',
+					`/api/getSignalTables/${schemeName}?sortedSignals=true`
+				);
 				const response = await fetch(
-					`/api/getSignalTables/${schemeName}?sortedSignals=true&namesOnly=true`
+					`/api/getSignalTables/${schemeName}?sortedSignals=true`
 				);
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const conf = await response.json();
-				console.log('sigsbygroup',conf.data)
-				setSigs(conf.data);
+				console.log('sigsbygroup', conf.data);
+				console.log('groups', conf.groups);
+				const sulResponse = await fetch(
+					`/api/getSulSignalTables/${schemeName}`
+				);
+				const sulConf = await sulResponse.json();
+				if (!response.ok) {
+					throw new Error(`Ошибка сети ${response.status}`);
+				}
+				const tempGroups = conf.groups;
+				const tempData = conf.data;
+				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
+				const tempData2 = tempGroups.reduce((acc, group) => {
+					console.log(
+						'data w upd, in theory',
+						{
+							...acc,
+							[group.name]: {
+								...acc[group.name],
+								sulSigs: sulConf.data[group.name],
+							},
+						},
+						tempData
+					);
+					return {
+						...acc,
+						[group.name]: {
+							...acc[group.name],
+							sulSigs: sulConf.data[group.name],
+						},
+					};
+				}, tempData);
+				console.log('aggregated data', tempData2);
+				setSigs(tempData2);
 			} catch (err) {
 				if (err instanceof Error) {
 					setError(err);
@@ -49,29 +84,25 @@ const CommandBarEditor = ({
 		};
 		fetchSigs();
 	}, []);
-	SortableBar.propTypes = {
-		id: PropTypes.string,
-		index: PropTypes.number,
-	};
 	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className={styles.edit}>
-					{formData.length > 0
-						? formData.map((item, i) => (
-								<CommandBar
-									key={i}
-									id={getID()}
-									index={i}
-									script={formData}
-									setScript={setFormData}
-									current={current}
-									errorIDs={errorIDs}
-									isHovered={isHovered}
-									setIsHovered={setIsHovered}
-									sigsByGroup={sigsByGroup}
-								></CommandBar>
-							))
-						: ''}
+			{formData.length > 0
+				? formData.map((item, i) => (
+						<CommandBar
+							key={i}
+							id={getID()}
+							index={i}
+							script={formData}
+							setScript={setFormData}
+							current={current}
+							errorIDs={errorIDs}
+							isHovered={isHovered}
+							setIsHovered={setIsHovered}
+							sigsByGroup={sigsByGroup}
+						></CommandBar>
+					))
+				: ''}
 			<button
 				className={styles.button}
 				onClick={() => {

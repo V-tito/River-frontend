@@ -1,21 +1,21 @@
 [{
     "action": "check",
-    "group":"Группа",
+    "group":"Группа1",
     "signal": "сигнал1",
     "expectedValue": "true"
 },{
     "action": "set",
-    "group":"Группа",
+    "group":"Группа1",
     "signal": "сигнал1",
     "targetValue": "false"
 },{
     "action":"wait",
-    "group":"Группа",
+    "group":"Группа1",
     "signal": "сигнал1",
     "expectedValue": "false"
 },{"action":"presetPulse",
     "signal": "сигнал1",
-    "group":"Группа",
+    "group":"Группа1",
     "targetValue": "true",
     "pulseTime": 1000,
     "period": 1

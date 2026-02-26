@@ -44,6 +44,15 @@
   color:var(--foreground);
   background: var(--background);
 }
+.radio {
+display:inline;   
+  margin-left:10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: smaller;
+  color:var(--foreground);
+  background: var(--background);
+}
 .upcoming{
   background-color: lightgray;
 }

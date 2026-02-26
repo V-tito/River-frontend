@@ -9,6 +9,7 @@ import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
 import { usePersistentData } from '@/lib/hooks/usePersistentData';
 import { useBeforeUnload } from 'react-use';
+import { checkExistence } from '@/lib/api_wrap/configAPI';
 
 const Editor = ({ scheme }) => {
 	const [formData, setFormData] = useState([]);
@@ -84,16 +85,10 @@ const Editor = ({ scheme }) => {
 		}
 		setLoading(false);
 	}, []);
-	const validateSignal = async signame => {
-		const params = new URLSearchParams({ name: signame });
-		const response = await fetch(
-			`${
-				process.env.API_URL
-			}/api/river/v1/configurator/Signal/exists?${params.toString()}`
-		);
-		const result = await response.text();
-		if (result == 'true') return true;
-		else return false;
+	const validateSignal = async (signame, group, subtype) => {
+		const result = await checkExistence(subtype, signame, group);
+		console.log('validate res', result);
+		return result;
 	};
 	const executeEntry = async (entry, id = -1) => {
 		const postCommands = [
@@ -105,8 +100,6 @@ const Editor = ({ scheme }) => {
 		];
 		let now;
 		try {
-			if (!validateSignal(entry.signal))
-				throw new Error('Несуществующий сигнал');
 			if (entry.action == 'include') {
 				const response = await fetch(
 					`/api/files?folder=${scheme.name}&filename=${entry.filename}`,
@@ -130,6 +123,10 @@ const Editor = ({ scheme }) => {
 					await executeEntry(content);
 				}
 			} else {
+				if (entry.signal) {
+					if (!validateSignal(entry.signal, entry.group, entry.sul))
+						throw new Error('Несуществующий сигнал');
+				}
 				if (entry.action == 'wait') {
 					now = new Date();
 					setResults(prevResults => [
@@ -149,6 +146,7 @@ const Editor = ({ scheme }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(entry),
 				});
+				console.log('sent', entry);
 				if (!response.ok) {
 					console.log(JSON.stringify(entry));
 					throw new Error(
@@ -173,13 +171,26 @@ const Editor = ({ scheme }) => {
 			}
 		} catch (err) {
 			setError(err);
-			setErrorIDs([...errorIDs, id]);
+			setErrorIDs(errorIDs => [...errorIDs, id]);
+			now = new Date();
+			setResults(prevResults => [
+				...prevResults,
+				{
+					res: `Ошибка: ${err.message}`,
+					timestamp: now.toLocaleTimeString(),
+					actionType: postCommands.includes(entry.action)
+						? 'setter'
+						: 'checker',
+					id: id,
+				},
+			]);
 		}
 	};
 	const executeScript = async () => {
 		console.log('fd on exec', formData);
 		try {
 			setResults([]);
+			setErrorIDs([]);
 			for (let i = 0; i < formData.length; i++) {
 				setCurrent(i);
 				await executeEntry(formData[i], i);

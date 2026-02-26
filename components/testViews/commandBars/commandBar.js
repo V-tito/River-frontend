@@ -1,6 +1,6 @@
 'use client';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './commandBar.module.css';
 
 const CommandBar = ({
@@ -46,6 +46,27 @@ const CommandBar = ({
 		pulseTime: 'Длительность импульса',
 		period: 'Периодичность импульсов',
 	};
+	useEffect(() => {
+		if (!sigsByGroup[script[index].group]) {
+			setScript(
+				script.map((item, i) => (i == index ? { ...item, group: '' } : item))
+			);
+		}
+	}, []);
+	useEffect(() => {
+		if (sigsByGroup[script[index].group]) {
+			if (
+				sigsByGroup[script[index].group].sulSigs.find(
+					item => item.name == script[index].signal
+				) != undefined
+			) {
+				script[index].sul = 'SulSignal';
+			} else {
+				script[index].sul = 'Signal';
+			}
+			console.log('triggered set sul', script[index]);
+		}
+	}, [script[index].signal]);
 	const updateScript = e => {
 		setScript(
 			script.map((item, i) =>
@@ -115,38 +136,100 @@ const CommandBar = ({
 										value={script[index][item] ? script[index][item] : ''}
 										className={styles.select}
 										onChange={updateScript}
-										disabled={![undefined, ''].includes(script[index].group)}
+										disabled={[undefined, ''].includes(script[index].group)}
 									>
 										<option value={''}>сигнал...</option>
 										{![undefined, ''].includes(script[index].group)
 											? script[index]['action'].includes('set')
 												? sigsByGroup[script[index].group].outputs.map(item => (
-														<option value={item} key={item}>
-															{item}
+														<option value={item.name} key={item.name}>
+															{item.name}
 														</option>
 													))
 												: [
 														...sigsByGroup[script[index].group].outputs,
 														...sigsByGroup[script[index].group].inputs,
+														...sigsByGroup[script[index].group].sulSigs,
 													].map(item => (
-														<option value={item} key={item}>
-															{item}
+														<option value={item.name} key={item.name}>
+															{item.name}
 														</option>
 													))
 											: ''}
 									</select>
 								</div>
-							) : (
+							) : ['targetValue', 'expectedValue'].includes(item) ? (
 								<div key={ind}>
 									<label className={styles.label}>{translate[item]}</label>
-									<input
-										className={styles.input}
-										type="text"
-										id={item}
-										value={script[index][item] ? script[index][item] : ''}
-										onChange={updateScript}
-									></input>
+									{sigsByGroup[script[index].group].sulSigs.find(
+										item => item.name == script[index].signal
+									) != undefined ? (
+										!sigsByGroup[script[index].group].sulSigs.find(
+											item => item.name == script[index].signal
+										).bool ? (
+											<input
+												className={styles.input}
+												type="number"
+												id={item}
+												value={script[index][item] ? script[index][item] : ''}
+												onChange={updateScript}
+											></input>
+										) : (
+											<div>
+												<input
+													type="radio"
+													id={item}
+													value={1}
+													onChange={updateScript}
+													checked={script[index][item] == 1}
+													className={styles.radio}
+												>
+													Активен{' '}
+												</input>{' '}
+												<input
+													className={styles.radio}
+													s
+													type="radio"
+													id={item}
+													value={0}
+													onChange={updateScript}
+													checked={script[index][item] == 0}
+												/>{' '}
+												Неактивен
+											</div>
+										)
+									) : (
+										<div>
+											<input
+												type="radio"
+												className={styles.radio}
+												id={item}
+												value={1}
+												onChange={updateScript}
+												checked={script[index][item] == 1}
+											/>{' '}
+											Активен
+											<input
+												type="radio"
+												className={styles.radio}
+												id={item}
+												value={0}
+												onChange={updateScript}
+												checked={script[index][item] == 0}
+											/>{' '}
+											Неактивен
+										</div>
+									)}
 								</div>
+							) : (
+								<input
+									key={ind}
+									className={styles.input}
+									type="number"
+									id={item}
+									value={script[index][item] ? script[index][item] : ''}
+									onChange={updateScript}
+								></input>
 							)
 						)
 					: ''

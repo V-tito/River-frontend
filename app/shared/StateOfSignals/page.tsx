@@ -35,20 +35,29 @@ const StateOfSignals = () => {
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
-				const tempGroups=conf.groups;
-				const tempData=conf.data
-				console.log('data',tempData,'sul',sulConf,'groups',tempGroups)
-				const tempData2=tempGroups.reduce((acc:DynamicRecord,group:MyDataType) => {
-					console.log('data w upd, in theory',{
-						...acc,
-						[group.name]: { ...acc[group.name], sulSigs: sulConf.data[group.name] },
-					})
-					return{
-						...acc,
-						[group.name]: { ...acc[group.name], sulSigs: sulConf.data[group.name] },
-					}
-				},tempData);
-				console.log('aggregated data',tempData2)
+				const tempGroups = conf.groups;
+				const tempData = conf.data;
+				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
+				const tempData2 = tempGroups.reduce(
+					(acc: DynamicRecord, group: MyDataType) => {
+						console.log('data w upd, in theory', {
+							...acc,
+							[group.name]: {
+								...acc[group.name],
+								sulSigs: sulConf.data[group.name],
+							},
+						});
+						return {
+							...acc,
+							[group.name]: {
+								...acc[group.name],
+								sulSigs: sulConf.data[group.name],
+							},
+						};
+					},
+					tempData
+				);
+				console.log('aggregated data', tempData2);
 				setData(tempData2);
 				setGroups(conf.groups);
 			} catch (err: unknown) {
@@ -58,28 +67,15 @@ const StateOfSignals = () => {
 			} finally {
 			}
 		};
-		const fetchSulData = async () => {
-			try {
-				
-			} catch (err: unknown) {
-				if (err instanceof Error) {
-					setPollingError(err);
-				}
-			}
-		};
-		const fetchAll=async()=>{
-		await fetchData();
-		await fetchSulData();
-		return
-		}
+
 		//fetchAll()
-		fetchData()
+		fetchData();
 		setLoading(false);
 	}, [defaultScheme]);
 
 	if (loading) return <p>Загрузка...</p>;
 	if (error) return <p>Ошибка: {error.message}</p>;
-console.log('data',data)
+	console.log('data', data);
 	return (
 		<div className="flex flex-row">
 			{groups.map(group => (
