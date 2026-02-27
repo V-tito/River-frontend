@@ -25,16 +25,17 @@
   .button{
     color: #fff;
     cursor: pointer;
-    border-radius: 5%;
-    border: 1px solid white;
+    margin:5px;
     
   }
   .button:disabled{
     cursor:not-allowed
   }
   .buttonFlex{
-    margin:5px;
+    
     margin-top:10px;
+    border-radius: 5%;
+    border: 1px solid white;
   }
   .menuButton {
     background-color: #1c5f3a;

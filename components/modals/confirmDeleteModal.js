@@ -45,10 +45,16 @@ const ConfirmDeleteModal = ({ state }) => {
 						элементов. Вы уверены, что хотите продолжить?
 					</p>
 					<div className={styles.actions}>
-						<button onClick={onConfirm} className={styles.alterButton}>
+						<button
+							onClick={onConfirm}
+							className={`${styles.button}  ${styles.alterButton}`}
+						>
 							Подтвердить
 						</button>
-						<button onClick={() => close()} className={styles.closeButton}>
+						<button
+							onClick={() => close()}
+							className={`${styles.button}  ${styles.closeButton}`}
+						>
 							Отменить
 						</button>
 						<Modal state={error}>{error ? error.message : ''}</Modal>

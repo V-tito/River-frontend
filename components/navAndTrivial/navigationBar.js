@@ -19,7 +19,7 @@ const NavigationBar = () => {
 		console.log('pathInEffect', path);
 		setCurrentPath(path);
 		console.log('currentPath', currentPath);
-		console.log(path.split('/')[1]);
+		console.log('split path', path.split('/')[1]);
 		let addr;
 		if (path.split('/')[1] != 'shared') {
 			setNavProfile(path.split('/')[1]);

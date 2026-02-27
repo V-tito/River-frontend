@@ -4,13 +4,14 @@ import { IncomingForm } from 'formidable';
 import path from 'path';
 
 export const config = {
+	runtime: 'nodejs',
 	api: {
 		bodyParser: false, // Disable body parsing to handle file upload
 	},
 };
 
 export default async function handler(req, res) {
-	const safeBasePath = 'vault'; // Configured server path
+	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
 	const relativePath = req.query.folder || '';
 	const filename = req.query.filename ? req.query.filename : '';
 	console.log(typeof relativePath);

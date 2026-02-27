@@ -1,6 +1,6 @@
 import { getList } from '@/lib/api_wrap/configAPI';
 export default function handler(req, res) {
-	console.log('triggered endpoint fetch sul sighals')
+	console.log('triggered endpoint fetch sul sighals');
 	let namesOnly = false;
 	if ('namesOnly' in req.query) {
 		namesOnly = req.query.namesOnly;
@@ -42,22 +42,31 @@ export default function handler(req, res) {
 				const promises = newGroups.map(async group => {
 					const sulTemp = await fetchSulSignals(group.name);
 					console.log('fetching sulSignals by group names', sulTemp);
-					return {
-						name: String(group.name),
-						temp: [...sulTemp.reduce((acc, item) => {
-							console.log('item', item);
-							acc.push(
-								namesOnly
-									? item.name
-									: {
-											...item,
-											parentGroup: group.name,
-											bool: item.firstBit==item.lastBit
-										}
-							);
-							return acc;
-						}, []),]
-					};
+					if (sulTemp != undefined) {
+						return {
+							name: String(group.name),
+							temp: [
+								...sulTemp.reduce((acc, item) => {
+									console.log('item', item);
+									acc.push(
+										namesOnly
+											? item.name
+											: {
+													...item,
+													parentGroup: group.name,
+													bool: item.firstBit == item.lastBit,
+												}
+									);
+									return acc;
+								}, []),
+							],
+						};
+					} else {
+						return {
+							name: String(group.name),
+							temp: [],
+						};
+					}
 				});
 				const results = await Promise.all(promises);
 				console.log('mapped', results);
@@ -66,19 +75,13 @@ export default function handler(req, res) {
 					return acc;
 				}, {});
 				console.log('reduced', newData);
-				const newList = results.reduce((acc, { temp }) => {
-					//acc.push(temp);
-					return [...acc, ...temp];
-				}, []);
 				console.log('reduced data');
-				res
-					.status(200)
-					.json({ data: newData, groups: newGroups, list: newList });
+				res.status(200).json({ data: newData, groups: newGroups });
 			} else {
-				res.status(200).json({ data: {}, groups: []});
+				res.status(200).json({ data: {}, groups: [] });
 			}
 		} else {
-			res.status(200).json({ data: {}, groups: []});
+			res.status(200).json({ data: {}, groups: [] });
 		}
 	};
 	fetchAll();

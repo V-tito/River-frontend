@@ -1,0 +1,15 @@
+ [
+    {"name": "ПлатаИзФайла", 
+       "address": 1, 
+        "maxInputs":32,
+        "maxOutputs": 24,
+        "protocolVersion": 1,
+        "description": "тестовая плата из файла" 
+        
+    },
+    
+        {"name": "СУЛизФайла",
+        "comPort":"COM1", 
+        "description": "СУЛ из файла"
+        }
+        ]

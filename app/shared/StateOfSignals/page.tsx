@@ -38,31 +38,37 @@ const StateOfSignals = () => {
 				const tempGroups = conf.groups;
 				const tempData = conf.data;
 				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
-				const tempData2 = tempGroups.reduce(
-					(acc: DynamicRecord, group: MyDataType) => {
-						console.log('data w upd, in theory', {
-							...acc,
-							[group.name]: {
-								...acc[group.name],
-								sulSigs: sulConf.data[group.name],
-							},
-						});
-						return {
-							...acc,
-							[group.name]: {
-								...acc[group.name],
-								sulSigs: sulConf.data[group.name],
-							},
-						};
-					},
-					tempData
-				);
-				console.log('aggregated data', tempData2);
-				setData(tempData2);
+				if (sulConf.data != undefined) {
+					const tempData2 = tempGroups.reduce(
+						(acc: DynamicRecord, group: MyDataType) => {
+							console.log('data w upd, in theory', {
+								...acc,
+								[group.name]: {
+									...acc[group.name],
+									sulSigs: sulConf.data[group.name],
+								},
+							});
+							return {
+								...acc,
+								[group.name]: {
+									...acc[group.name],
+									sulSigs: sulConf.data[group.name],
+								},
+							};
+						},
+						tempData
+					);
+					console.log('aggregated data', tempData2);
+					setData(tempData2);
+				} else {
+					setData(tempData);
+				}
 				setGroups(conf.groups);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
-					setError(err);
+					setError(
+						new Error(`Ошибка при загрузке данных с сервера: ${err.message}`)
+					);
 				}
 			} finally {
 			}
@@ -77,12 +83,9 @@ const StateOfSignals = () => {
 	if (error) return <p>Ошибка: {error.message}</p>;
 	console.log('data', data);
 	return (
-		<div className="flex flex-row">
+		<div className="flex flex-col">
 			{groups.map(group => (
 				<div key={group.id} className="w-full h-min">
-					<h1 className="text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-						Состояние сигналов группы {group.name}:
-					</h1>
 					<StateTable data={data[group.name]} group={group.name}></StateTable>
 				</div>
 			))}
