@@ -15,7 +15,7 @@ const StateOfBoards = () => {
 		const fetchBoards = async () => {
 			try {
 				const result = await getList('TestBoard', defaultScheme.name);
-				console.log('list of boards from sp',result)
+				console.log('list of boards from sp', result);
 				setData(result);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -30,12 +30,12 @@ const StateOfBoards = () => {
 	}, [defaultScheme, setPollingError]);
 	if (loading) return <p>Загрузка...</p>;
 	if (error) return <p>{error.message}</p>;
-console.log('list of boards before sp render',data)
+	console.log('list of boards before sp render', data);
 	return (
 		//
-		<div>
-			<h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-				Состояние плат схемы {defaultScheme.name}:
+		<div className="w-full">
+			<h1 className="w-full text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+				Состояние тестовых плат схемы {defaultScheme.name}:
 			</h1>
 			<IndicatorsTable data={data} board={true}></IndicatorsTable>
 		</div>

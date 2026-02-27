@@ -1,14 +1,14 @@
 {"admin":{
     "common":[{"id":2,"name":"Установить схему","link":"/admin"}],
     "schemeDependent":[
-    {"id":1,"name":"Списки плат","link":"/admin/TestBoard"},
-    {"id":3,"name":"Списки групп сигналов","link":"/admin/GroupOfSignals"},
+    {"id":1,"name":"СУЛ и тестовые платы","link":"/admin/TestBoard"},
+    {"id":3,"name":"Группы сигналов","link":"/admin/GroupOfSignals"},
     {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},{"id":0,"name":"Список схем","link":"/admin/Scheme"}
 ]}, 
 "shared":{
     "common":[{"id":0,"name":"Главная","link":"/"}],
     "schemeDependent":[{"id":5,"name":"Состояние сигналов","link":"/shared/StateOfSignals"},
-{"id":6,"name":"Состояние плат","link":"/shared/StateOfBoards"}]},
+{"id":6,"name":"Состояние тестовых плат","link":"/shared/StateOfBoards"}]},
 "hidden_pages":[
     
     ],

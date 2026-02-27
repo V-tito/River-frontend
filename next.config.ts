@@ -6,9 +6,8 @@ const nextConfig: NextConfig = {
       API_URL: "http://localhost:8080",
     },
     serverExternalPackages: ["pino", "pino-pretty"],
-    output: 'standalone',
-    //outputFileTracingRoot: path.join(__dirname, '../../'),
+    output: 'standalone'
     
-    }
+    };
 
 export default nextConfig;

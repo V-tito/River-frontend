@@ -12,6 +12,7 @@ export const config = {
 
 export default async function handler(req, res) {
 	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
+	console.log('base path', safeBasePath);
 	const relativePath = req.query.folder || '';
 	const filename = req.query.filename ? req.query.filename : '';
 	console.log(typeof relativePath);

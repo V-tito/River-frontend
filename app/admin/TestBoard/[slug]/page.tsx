@@ -49,7 +49,7 @@ const BoardList = () => {
 			</h1>
 			<DataView data={[sul]} kind="Sul"></DataView>
 			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-				Список плат:
+				Список тестовых плат:
 			</h1>
 			<DataView data={data} kind="TestBoard"></DataView>
 		</AddDeleteWrapper>
