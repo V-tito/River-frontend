@@ -4,7 +4,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './editor.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
-import CommandBarEditor from './commandBars/commandBarEditor';
+//import CommandBarEditor from './commandBars/commandBarEditor';
+import SortableBarEditor from './commandBars/sortableBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
 import { usePersistentData } from '@/lib/hooks/usePersistentData';
@@ -123,11 +124,12 @@ const Editor = ({ scheme }) => {
 					await executeEntry(content);
 				}
 			} else {
-				if (entry.action == 'executePresets') {entry.scheme=scheme.name}
-				if ("signal" in entry) {
-					const exists=validateSignal(entry.signal, entry.group, entry.sul)
-					if (!exists)
-						throw new Error('Несуществующий сигнал');
+				if (entry.action == 'executePresets') {
+					entry.scheme = scheme.name;
+				}
+				if ('signal' in entry) {
+					const exists = validateSignal(entry.signal, entry.group, entry.sul);
+					if (!exists) throw new Error('Несуществующий сигнал');
 				}
 				if (entry.action == 'wait') {
 					now = new Date();
@@ -214,7 +216,7 @@ const Editor = ({ scheme }) => {
 		<div className={styles.main}>
 			<div className={styles.editorBar}>
 				<header className={styles.header}>Редактор команд: </header>
-				<CommandBarEditor
+				<SortableBarEditor
 					formData={formData}
 					setFormData={setFormData}
 					isHovered={isHovered}
@@ -224,7 +226,7 @@ const Editor = ({ scheme }) => {
 					setErrorIDs={setErrorIDs}
 					setError={setError}
 					schemeName={scheme.name}
-				></CommandBarEditor>
+				></SortableBarEditor>
 
 				<button
 					onClick={() => executeScript(formData)}
