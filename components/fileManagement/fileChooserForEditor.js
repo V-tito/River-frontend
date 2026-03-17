@@ -38,7 +38,7 @@ const FileChooser = ({ folder }) => {
 			fetchFiles();
 		}
 	}, []);
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <p>Загрузка...</p>;
 	return (
 		<PopupForm buttonLabel={'Открыть файл с сервера'}>
 			<p>Нажмите на название файла, чтобы открыть</p>

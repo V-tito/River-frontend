@@ -17,9 +17,11 @@ const SortableBarEditor = ({
 	setError,
 	schemeName,
 }) => {
+	const [files, setFiles] = useState([]);
 	const [sigsByGroup, setSigs] = useState();
 	const [loading, setLoading] = useState(true);
 	const [version, setVersion] = useState(0);
+	useEffect(() => {}, []);
 	useEffect(() => {
 		const fetchSigs = async () => {
 			try {
@@ -74,11 +76,41 @@ const SortableBarEditor = ({
 					setSigs({});
 					setError(err);
 				}
-			} finally {
-				setLoading(false);
 			}
 		};
-		fetchSigs();
+		const fetchFiles = async () => {
+			try {
+				const response = await fetch(`/api/files?folder=${schemeName}`, {
+					method: 'GET',
+				});
+				console.log(response.ok);
+				console.log(response);
+				if (!response.ok) {
+					throw new Error(
+						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
+					);
+				}
+				const result = await response.json();
+				console.log('res', result);
+				const fileList = result.files;
+				setFiles(fileList);
+				console.log('resfiles', fileList);
+				console.log('resfilesIsArray', Array.isArray(fileList));
+				return;
+			} catch (err) {
+				setError(err);
+				return;
+			}
+		};
+		const fetchAll = async () => {
+			if (schemeName !== undefined) {
+				await fetchFiles();
+			}
+			console.log('before fetching sigs');
+			await fetchSigs();
+			setLoading(false);
+		};
+		fetchAll();
 	}, []);
 	if (loading) return <p>Загрузка...</p>;
 	return (
@@ -99,6 +131,19 @@ const SortableBarEditor = ({
 								const newData = [...items];
 								const [removed] = newData.splice(initialIndex, 1);
 								newData.splice(index, 0, removed);
+								setErrorIDs(prev =>
+									prev.map(item =>
+										item == initialIndex
+											? index
+											: initialIndex > index
+												? (item >= index) & (item < initialIndex)
+													? item + 1
+													: item
+												: (item > initialIndex) & (item <= index)
+													? item - 1
+													: item
+									)
+								);
 								console.log('new fd', newData);
 								return newData;
 							});
@@ -120,6 +165,7 @@ const SortableBarEditor = ({
 									isHovered={isHovered}
 									setIsHovered={setIsHovered}
 									sigsByGroup={sigsByGroup}
+									filenames={files}
 								></SortableBar>
 							))
 						: ''}

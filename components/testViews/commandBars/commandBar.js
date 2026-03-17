@@ -13,6 +13,7 @@ const CommandBar = ({
 	isHovered,
 	setIsHovered,
 	sigsByGroup,
+	filenames,
 }) => {
 	console.log('sigs by group in command bar', sigsByGroup);
 	console.log(
@@ -20,10 +21,6 @@ const CommandBar = ({
 		[undefined, ''].includes(script[index].group),
 		'group',
 		script[index].group
-	);
-	console.log(
-		'sigsByGroup[script[index].group]',
-		sigsByGroup[script[index].group]
 	);
 	const commandConfig = {
 		check: ['signal', 'expectedValue'],
@@ -268,6 +265,23 @@ const CommandBar = ({
 									) : (
 										''
 									)}
+								</div>
+							) : item == 'script' ? (
+								<div key={ind} className="flex flex-row">
+									<label className={styles.label}>Скрипт с сервера: </label>
+									<select
+										value={script[index].script ? script[index].script : ''}
+										className={styles.select}
+										onChange={updateScript}
+										id="script"
+									>
+										<option value={''}>скрипт...</option>
+										{filenames.map(item => (
+											<option value={item} key={item}>
+												{item}
+											</option>
+										))}
+									</select>
 								</div>
 							) : (
 								<input

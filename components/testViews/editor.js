@@ -103,7 +103,7 @@ const Editor = ({ scheme }) => {
 		try {
 			if (entry.action == 'include') {
 				const response = await fetch(
-					`/api/files?folder=${scheme.name}&filename=${entry.filename}`,
+					`/api/files?folder=${scheme.name}&filename=${entry.script}`,
 					{
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },
