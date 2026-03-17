@@ -1,20 +1,23 @@
 'use client';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './commandBar.module.css';
-import commonStyles from '@/components/common.module.css';
+import { BarContext } from './barEditor';
 
-const CommandBar = ({
-	script,
-	setScript,
-	index,
-	current,
-	errorIDs,
-	isHovered,
-	setIsHovered,
-	sigsByGroup,
-	filenames,
-}) => {
+const CommandBar = ({ index }) => {
+	let {
+		formData,
+		setFormData,
+		current,
+		errorIDs,
+		isHovered,
+		setIsHovered,
+		sigsByGroup,
+		files,
+	} = useContext(BarContext);
+	let script = formData;
+	let setScript = setFormData;
+	let filenames = files;
 	console.log('sigs by group in command bar', sigsByGroup);
 	console.log(
 		'group is undef',
