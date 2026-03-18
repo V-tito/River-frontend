@@ -1,5 +1,4 @@
 'use client';
-
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
 import React, { createContext, useEffect, useState } from 'react';

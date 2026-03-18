@@ -8,9 +8,15 @@ import PropTypes from 'prop-types';
 import { postHelper } from '@/lib/hooks/postPatchHelpers';
 
 const AddForm = ({ table }) => {
+	const defaults =
+		table == 'TestBoard'
+			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
+			: {};
 	const { defaultScheme } = useGlobal();
 	console.log('schemeport', defaultScheme.comPort);
-	const { register, handleSubmit, reset } = useForm();
+	const { register, handleSubmit, reset } = useForm({
+		defaultValues: defaults,
+	});
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -45,10 +51,10 @@ const AddForm = ({ table }) => {
 					console.log('groups and boards', data);
 					console.log('groups', data.groups);
 					console.log('groupnames', Object.keys(data.groups));
-					console.log('sul',sul)
+					console.log('sul', sul);
 					setBoardNames(Object.keys(data.boards));
 					setGroupNames(Object.keys(data.groups));
-					setSul(data.sul?Object.keys(data.sul):[]);
+					setSul(data.sul ? Object.keys(data.sul) : []);
 				} catch (err) {
 					setError(err);
 				} finally {
@@ -75,8 +81,8 @@ const AddForm = ({ table }) => {
 	};
 
 	if (loading) return <p>Загружается форма...</p>;
-					console.log('groupNames', groupNames);
-					console.log('sulName',sul)
+	console.log('groupNames', groupNames);
+	console.log('sulName', sul);
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
 			<header className={styles.header}>Добавить элемент</header>

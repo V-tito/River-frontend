@@ -102,6 +102,16 @@ const Editor = ({ scheme }) => {
 		let now;
 		try {
 			if (entry.action == 'include') {
+				now = new Date();
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Подгружаем скрипт ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 				const response = await fetch(
 					`/api/files?folder=${scheme.name}&filename=${entry.script}`,
 					{
@@ -118,11 +128,29 @@ const Editor = ({ scheme }) => {
 				if (additionalData.type != 'file') {
 					throw new Error(`${entry.filename} не является файлом`);
 				}
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Начинаем исполнение скрипта ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 				const contents = JSON.parse(additionalData.content);
 				for (let i = 0; i < contents.length; i++) {
 					const content = contents[i];
-					await executeEntry(content);
+					await executeEntry(content, id);
 				}
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Выполнен скрипт ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 			} else {
 				if (entry.action == 'executePresets') {
 					entry.scheme = scheme.name;

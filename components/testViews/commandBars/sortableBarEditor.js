@@ -1,7 +1,7 @@
 'use client';
 
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SortableBar from './sortableBar';
 import BarEditor from './barEditor';
 import { DragDropProvider } from '@dnd-kit/react';

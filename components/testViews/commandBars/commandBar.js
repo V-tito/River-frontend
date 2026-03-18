@@ -197,7 +197,6 @@ const CommandBar = ({ index }) => {
 								</div>
 							) : ['targetValue', 'expectedValue'].includes(item) ? (
 								<div key={ind}>
-									<label className={styles.label}>{translate[item]}</label>
 									{![undefined, ''].includes(script[index].group) &
 									(sigsByGroup != undefined) ? (
 										sigsByGroup[script[index].group] != undefined ? (
@@ -207,17 +206,25 @@ const CommandBar = ({ index }) => {
 												!sigsByGroup[script[index].group].sulSigs.find(
 													item => item.name == script[index].signal
 												).bool ? (
-													<input
-														className={styles.input}
-														type="number"
-														id={item}
-														value={
-															script[index][item] ? script[index][item] : ''
-														}
-														onChange={updateScript}
-													></input>
+													<div>
+														<label className={styles.label}>
+															{translate[item]}
+														</label>
+														<input
+															className={styles.input}
+															type="number"
+															id={item}
+															value={
+																script[index][item] ? script[index][item] : ''
+															}
+															onChange={updateScript}
+														></input>
+													</div>
 												) : (
 													<div>
+														<label className={styles.label}>
+															{translate[item]}
+														</label>
 														<input
 															type="radio"
 															id={item}
@@ -242,6 +249,9 @@ const CommandBar = ({ index }) => {
 												)
 											) : (
 												<div>
+													<label className={styles.label}>
+														{translate[item]}
+													</label>
 													<input
 														type="radio"
 														className={styles.radio}
