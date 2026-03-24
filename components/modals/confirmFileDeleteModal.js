@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styles from './modal.module.css';
 import Popup from 'reactjs-popup';
-//import 'reactjs-popup/dist/index.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from './inlineModal';
 import './popup.css';
+
 import PropTypes from 'prop-types';
 const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 	const [error, setError] = useState(null);
@@ -31,20 +33,35 @@ const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 	return (
 		<Popup
 			trigger={
-				<button className={buttonStyle ? buttonStyle : styles.menuButton}>
+				<button
+					className={
+						buttonStyle
+							? buttonStyle
+							: `${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`
+					}
+				>
 					Удалить
 				</button>
 			}
 		>
 			{close => (
 				<div className={styles.container}>
-					<div className={styles.header}> Подтверждение действия </div>
-					Удалить файл?
-					<div className={styles.actions}>
-						<button onClick={onConfirm} className={styles.alterButton}>
+					<div className={headerStyles.modalHeader}>
+						{' '}
+						Подтверждение действия{' '}
+					</div>
+					<p className={styles.message}>Удалить файл?</p>
+					<div className={buttonStyles.buttons}>
+						<button
+							onClick={onConfirm}
+							className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
+						>
 							Подтвердить
 						</button>
-						<button onClick={() => close()} className={styles.closeButton}>
+						<button
+							onClick={() => close()}
+							className={`${buttonStyles.button} ${buttonStyles.deleteButton}`}
+						>
 							Отменить
 						</button>
 						<Modal state={error}>{error ? error.message : ''}</Modal>

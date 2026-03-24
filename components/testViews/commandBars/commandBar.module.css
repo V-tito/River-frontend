@@ -10,48 +10,14 @@
   height: fit-content;
   
 }
-.deleteContainer{
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 5px;
-  width: 100%;
+.delGrid{
+  width: 100% !important;
+  margin: 0 !important;
 }
-.deleteButton {
-  place-self: end;
-  background-color: darkred;
-  cursor: pointer;
-  padding-left: 1.25vh;
-    padding-right: 1.25vh;
-    padding-top: 0.1vh;
-    padding-bottom: 0.1vh;
-    border-radius: 5%;
-}
-.select {
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  color:var(--foreground);
-  background: var(--background);
-  padding: 5px;
-  font-size: smaller;
-}
-.input {
-  width: 100%;
-  padding: 4px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: smaller;
-  color:var(--foreground);
-  background: var(--background);
-}
-.radio {
-display:inline;   
+.radio{
   margin-left:10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: smaller;
-  color:var(--foreground);
-  background: var(--background);
 }
 .upcoming{
   background-color: lightgray;
@@ -89,4 +55,15 @@ display:inline;
 .label{
   margin-top: auto;
   margin-bottom: 1px;
+  text-align: left;
+font-size: medium;
+}
+.signalGrid{
+  width:100%;
+  display: grid;
+  grid-template-columns: min-content auto min-content auto;
+  padding: 5px 0px;
+  gap:5px;
+  text-align: center;
+  align-items:anchor-center
 }

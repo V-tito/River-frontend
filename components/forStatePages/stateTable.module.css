@@ -28,8 +28,19 @@ box-sizing: border-box; /* Include padding and border in the table width */
 .namer{
     width:100px;
 }
-.h2{
-    font-family: 'Courier New', Courier, monospace;
-    font-size: larger;
-    text-align: center;
+.tableGrid{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    /*grid-template-columns: repeat(auto-fit, minmax(30%,1fr));*/
+    gap:1rem;
+}
+.tableHolder{
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: min-content;
+    gap:1rem;
+    min-width: fit-content;
+    align-items: normal;
+    align-content: first baseline;
 }

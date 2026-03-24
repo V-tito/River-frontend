@@ -10,7 +10,7 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 	const { setPollingError } = useGlobal();
 	const [loading, setLoading] = useState(true);
 	//const [checkConstantly, setCheck] = useState(true);
-	console.log('list of boards from it')
+	console.log('list of boards from it');
 	useEffect(() => {
 		const fetchCurrentState = async sig => {
 			let result;

@@ -5,32 +5,35 @@
     gap: 16px; /* Space between items */
     width: 100%;
 }
+.container {
+    padding: 0.7rem;
+    margin: 0 auto;
+    display:grid;
+  }
+  
+  .cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px,17%));
+    gap: 1.5rem;
+    align-items: stretch; /* Ensures all grid items stretch to same height */
+  }
+
 .card {
-    display: flex;
+   display: flex;
     flex-direction: column;
-    flex: 1 1 250px; /* Grow and shrink with a base size of 300px */
+    flex: 1 1 220px;  
     min-height: 20vh;
-    width:fit-content;
-    max-width:30%;
     padding: 0%;
-    height: 100%;
     border-radius:5%;
     background-color: #1c5f3a;
-    margin: 10px;
+    align-content: center;
+    justify-content: center;
     padding:20px;
     color:aliceblue;
     word-wrap:break-word;
     
 }
-.header {
-    text-align: center;
-    font-size: larger;
-    text-decoration: underline;
-    text-decoration-color: #ffffff;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    padding-bottom: 10px;
-  }
+
 .types{
     display: flex;
     flex-direction: column;
@@ -56,8 +59,51 @@
     color: #cbcbcb;
     font-size: small;
 }
+.longFeat{
+  display: inline-block;
+  font-size: smaller;
+  overflow-y: scroll;
+  max-height: 2.5rem;
+}
 .description{
+  display: inline-block;
+  padding: 0 5%;
     color: #cbcbcb;
     font-size: small;
     text-align: center;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+   margin: auto;
+   max-height: 3.5rem;
+    
 }
+.plusContainer {
+  cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .plusSymbol {
+    font-size: clamp(4rem, 20vw, 10rem);
+    font-weight: 300;
+    line-height: 1;
+    color: #f0f0f0;
+  }
+  
+  .plusText {
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
+    font-weight: 300;
+    color: #f0f0f0;
+  }
+
+  .notFound{
+    font-size: larger;
+    justify-self: left;
+    font-weight: lighter;
+    font-style: italic;
+  }

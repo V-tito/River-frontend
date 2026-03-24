@@ -1,0 +1,51 @@
+/*form ones*/
+.option {
+    padding: 10px;
+    color:var(--foreground);
+    background: var(--background);
+    filter: hue-rotate(20deg);
+    }
+.input {
+    width: 100%;
+    padding: 4px;
+    display: inline;
+    word-wrap: break-word;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: smaller;
+    color:var(--foreground);
+    background: var(--background);
+  }
+  .fileInput{
+    display: inline;
+    width: 75%;
+    justify-self: center;
+    word-wrap: break-word;
+    padding: 4px;
+    border: 5px solid #1c5f3a;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+  }
+.select {
+    display:flex;
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color:var(--foreground);
+    background: var(--background); 
+    padding: 5px;
+    font-size: smaller;
+    width:100%
+ 
+  }
+
+  /*commandBar one*/
+  .radio {
+      display:inline;   
+      font-size: smaller;
+      color:var(--foreground);
+      background: var(--background);
+    }
+  

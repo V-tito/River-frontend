@@ -58,18 +58,14 @@ const FileView = ({ folder }) => {
 	};
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<div className="flex flex-row">
-			<div className="flex flex-col">
-				{Array.isArray(files)
-					? files.map(file => (
-							<FileBar key={file} folder={folder} filename={file}></FileBar>
-						))
-					: ''}
-				<Modal state={error}>{error ? error.message : ''}</Modal>
-				<OpenLocalFileModal
-					uploadAction={handleFileUpload}
-				></OpenLocalFileModal>
-			</div>
+		<div>
+			{Array.isArray(files)
+				? files.map(file => (
+						<FileBar key={file} folder={folder} filename={file}></FileBar>
+					))
+				: ''}
+			<Modal state={error}>{error ? error.message : ''}</Modal>
+			<OpenLocalFileModal uploadAction={handleFileUpload}></OpenLocalFileModal>
 		</div>
 	);
 };

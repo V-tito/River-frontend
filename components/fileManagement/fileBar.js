@@ -3,6 +3,9 @@ import styles from './fileBar.module.css';
 import DeleteButton from './delButton';
 import DownloadButton from './downloadButton';
 import PropTypes from 'prop-types';
+import headerStyles from '@/styles/headerStyles.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 
 const FileBar = ({ folder, filename }) => {
 	return (
@@ -14,11 +17,11 @@ const FileBar = ({ folder, filename }) => {
 				{filename}
 			</a>
 			<DeleteButton
-				className={styles.button}
+				className={`${buttonStyles.button} ${buttonStyles.deleteButton}`}
 				filepath={`?folder=${folder}&filename=${filename}`}
 			></DeleteButton>
 			<DownloadButton
-				className={styles.button}
+				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 				filepath={`?folder=${folder}&filename=${filename}`}
 				filename={filename}
 			></DownloadButton>

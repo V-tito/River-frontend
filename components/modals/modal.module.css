@@ -14,73 +14,12 @@
     padding-left: 2px;
     border: 3px dotted crimson
   }
-.closeButton {
-    background-color: crimson;
-    border-radius: 5%;
-    place-self: end;
-    padding-left: 2vh;
-    padding-right: 2vh;
-    margin-left:2px
-  }
-  .button{
-    color: #fff;
-    cursor: pointer;
-    margin:5px;
-    
-  }
-  .button:disabled{
-    cursor:not-allowed
-  }
-  .buttonFlex{
-    
-    margin-top:10px;
-    border-radius: 5%;
-    border: 1px solid white;
-  }
-  .menuButton {
-    background-color: #1c5f3a;
-    padding: 10px;
-    align-self: center;
-  }
-  
-  .alterButton {
-    background-color: #1c5f3a;
-    justify-self: left;
-    padding-left: 2vh;
-    padding-right: 2vh;
-    
-  }
-  .deleteButton{
-    background-color: crimson;
-    padding: 10px;
-    align-self: center;
+  .message{
+    text-align: center;
   }
   .deleteButtonInline{
     background-color: crimson;
     padding: 0px 10px ;
     align-self: center;
   }
-  .input {
-    display: inline;
-    width: 100%;
-    word-wrap: break-word;
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: smaller;
-  }
-  .fileInput{
-    display: inline;
-    width: 75%;
-    justify-self: center;
-    word-wrap: break-word;
-    padding: 4px;
-    border: 5px solid #1c5f3a;
-    border-radius: 5px;
-    text-align: center;
-    margin: 5px;
-    cursor: pointer;
-  }
-  .message{
-    text-align: center;
-  }
+

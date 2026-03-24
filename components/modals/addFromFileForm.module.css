@@ -1,0 +1,6 @@
+
+.report {
+    display: flex;
+    flex-direction: column!important;
+    overflow-y: auto;
+  }

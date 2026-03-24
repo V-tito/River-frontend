@@ -5,7 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 const AddModal = ({ table }) => {
 	return (
-		<PopupForm buttonLabel={'Создать'}>
+		<PopupForm buttonLabel={'Создать вручную'}>
 			<AddForm table={table}></AddForm>
 		</PopupForm>
 	);

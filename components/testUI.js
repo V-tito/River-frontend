@@ -8,7 +8,7 @@ const TestUI = ({ scheme }) => {
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
-	if (!isClient) return <p>Loading...</p>;
+	if (!isClient) return <p>Загрузка...</p>;
 	return <Editor scheme={scheme}></Editor>;
 };
 TestUI.propTypes = {

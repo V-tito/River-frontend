@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import IndicatorsTable from '../../../components/forStatePages/indicatorsTable';
 import { useGlobal } from '../../GlobalState';
+import headerStyles from '@/styles/headerStyles.module.css';
 import React from 'react';
 import { getList } from '@/lib/api_wrap/configAPI';
 
@@ -28,13 +29,13 @@ const StateOfBoards = () => {
 		};
 		fetchBoards();
 	}, [defaultScheme, setPollingError]);
-	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>{error.message}</p>;
+	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
+	if (error) return <p className={headerStyles.warning}>{error.message}</p>;
 	console.log('list of boards before sp render', data);
 	return (
 		//
 		<div className="w-full">
-			<h1 className="w-full text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+			<h1 className={headerStyles.sectionHeader}>
 				Состояние тестовых плат схемы {defaultScheme.name}:
 			</h1>
 			<IndicatorsTable data={data} board={true}></IndicatorsTable>

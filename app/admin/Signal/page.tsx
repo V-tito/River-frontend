@@ -1,10 +1,9 @@
 'use client';
 //import //logger from "../..///logger";
 import React, { useEffect, useState } from 'react';
-import AddDeleteWrapper from '@/components/addDeleteWrapper';
 import DataView from '@/components/dataView';
 import { useGlobal } from '@/app/GlobalState';
-import commonStyles from '@/components/common.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 
 interface MyDataType {
 	id: number;
@@ -83,9 +82,9 @@ const SignalList = () => {
 	}, [defaultScheme]);
 	console.log('data', data);
 
-	if (loading) return <p>Загрузка...</p>;
+	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	return (
-		<AddDeleteWrapper table="Signal">
+		<div>
 			{groups.length > 0
 				? groups.map(group => (
 						<div key={group.id} className="w-full h-min">
@@ -97,23 +96,29 @@ const SignalList = () => {
 											[group.name]: !prevIsOpen[group.name],
 										}))
 									}
-									className={commonStyles.fold}
+									className={headerStyles.fold}
 								>
 									<div className="flex flex-row">
 										<div
-											className={`${commonStyles.triangle} transition-transform duration-300
+											className={`${headerStyles.triangle} transition-transform duration-300
             ${isOpen[group.name] ? 'rotate-360' : 'rotate-270'}`}
 										/>
-										<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+										<h1 className={headerStyles.sectionHeader}>
 											Список сигналов группы {group.name}:
 										</h1>
 									</div>
 								</button>
 								{isOpen[group.name] ? (
 									data[group.name] ? (
-										<DataView data={data[group.name]} kind="Signal"></DataView>
+										<DataView
+											data={data[group.name]}
+											kind="Signal"
+											label={`сигналы группы ${group.name}`}
+										></DataView>
 									) : pollingError ? (
-										pollingError.message
+										<p className={headerStyles.warning}>
+											Ошибка: {pollingError.message}
+										</p>
 									) : (
 										''
 									)
@@ -130,14 +135,14 @@ const SignalList = () => {
 											[group.name]: !prevIsSulOpen[group.name],
 										}))
 									}
-									className={commonStyles.fold}
+									className={headerStyles.fold}
 								>
 									<div className="flex flex-row">
 										<div
-											className={`${commonStyles.triangle} transition-transform duration-300
+											className={`${headerStyles.triangle} transition-transform duration-300
             ${isSulOpen[group.name] ? 'rotate-360' : 'rotate-270'}`}
 										/>
-										<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
+										<h1 className={headerStyles.sectionHeader}>
 											Список сигналов СУЛ группы {group.name}:
 										</h1>
 									</div>
@@ -147,9 +152,12 @@ const SignalList = () => {
 										<DataView
 											data={sulData[group.name]}
 											kind="SulSignal"
+											label={`сигналы СУЛ группы ${group.name}`}
 										></DataView>
 									) : pollingError ? (
-										pollingError.message
+										<p className={headerStyles.warning}>
+											Ошибка: {pollingError.message}
+										</p>
 									) : (
 										''
 									)
@@ -160,7 +168,7 @@ const SignalList = () => {
 						</div>
 					))
 				: ''}
-		</AddDeleteWrapper>
+		</div>
 	);
 };
 

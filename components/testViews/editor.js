@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './editor.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
-//import CommandBarEditor from './commandBars/commandBarEditor';
+
 import SortableBarEditor from './commandBars/sortableBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
@@ -242,8 +244,8 @@ const Editor = ({ scheme }) => {
 	console.log('formdata', formData);
 	return (
 		<div className={styles.main}>
-			<div className={styles.editorBar}>
-				<header className={styles.header}>Редактор команд: </header>
+			<div className={styles.show}>
+				<header className={headerStyles.modalHeader}>Редактор команд: </header>
 				<SortableBarEditor
 					formData={formData}
 					setFormData={setFormData}
@@ -258,7 +260,7 @@ const Editor = ({ scheme }) => {
 
 				<button
 					onClick={() => executeScript(formData)}
-					className={styles.button}
+					className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 				>
 					Выполнить
 				</button>
@@ -272,7 +274,9 @@ const Editor = ({ scheme }) => {
 			</div>
 
 			<div className={styles.show}>
-				<header className={styles.header}>Результат выполнения: </header>
+				<header className={headerStyles.modalHeader}>
+					Результат выполнения:{' '}
+				</header>
 				<ResultsViewWithHighlight
 					results={results}
 					isHovered={isHovered}

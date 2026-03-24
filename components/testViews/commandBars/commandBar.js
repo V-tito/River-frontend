@@ -2,6 +2,8 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import styles from './commandBar.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 import { BarContext } from './barEditor';
 
 const CommandBar = ({ index }) => {
@@ -107,23 +109,19 @@ const CommandBar = ({ index }) => {
 			}}
 			onMouseLeave={() => setIsHovered(null)}
 		>
-			<div className="flex flex-row w-full">
-				<label className={styles.label}>Действие </label>
-				<div className={styles.deleteContainer}>
-					<button
-						className={styles.deleteButton}
-						onClick={() =>
-							setScript(prev => prev.filter((_, i) => i !== index))
-						}
-					>
-						&times;
-					</button>
-				</div>
+			<div className={`${buttonStyles.delGrid} ${styles.delGrid}`}>
+				<label className={styles.label}>Действие: </label>
+				<button
+					className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
+					onClick={() => setScript(prev => prev.filter((_, i) => i !== index))}
+				>
+					&times;
+				</button>
 			</div>
 			<select
 				id="action"
 				value={script[index].action ? script[index].action : ''}
-				className={styles.select}
+				className={inputStyles.select}
 				onChange={updateScript}
 			>
 				<option value={''}>Действие</option>
@@ -137,11 +135,11 @@ const CommandBar = ({ index }) => {
 				? script[index].action !== ''
 					? commandConfig[script[index].action].map((item, ind) =>
 							item == 'signal' ? (
-								<div key={ind} className="flex flex-row">
-									<label className={styles.label}>Группа </label>
+								<div key={ind} className={styles.signalGrid}>
+									<label className={styles.label}>Группа: </label>
 									<select
 										value={script[index].group ? script[index].group : ''}
-										className={styles.select}
+										className={inputStyles.select}
 										onChange={updateScript}
 										id="group"
 									>
@@ -154,11 +152,11 @@ const CommandBar = ({ index }) => {
 												))
 											: ''}
 									</select>
-									<label className={styles.label}>Сигнал </label>
+									<label className={styles.label}>Сигнал: </label>
 									<select
 										id={item}
 										value={script[index][item] ? script[index][item] : ''}
-										className={styles.select}
+										className={inputStyles.select}
 										onChange={updateScript}
 										disabled={[undefined, ''].includes(script[index].group)}
 									>
@@ -208,10 +206,10 @@ const CommandBar = ({ index }) => {
 												).bool ? (
 													<div>
 														<label className={styles.label}>
-															{translate[item]}
+															{translate[item]}:
 														</label>
 														<input
-															className={styles.input}
+															className={inputStyles.input}
 															type="number"
 															id={item}
 															value={
@@ -223,7 +221,7 @@ const CommandBar = ({ index }) => {
 												) : (
 													<div>
 														<label className={styles.label}>
-															{translate[item]}
+															{translate[item]}:
 														</label>
 														<input
 															type="radio"
@@ -231,12 +229,12 @@ const CommandBar = ({ index }) => {
 															value={1}
 															onChange={updateScript}
 															checked={script[index][item] == 1}
-															className={styles.radio}
+															className={`${inputStyles.radio} ${styles.radio}`}
 														>
 															Активен{' '}
 														</input>{' '}
 														<input
-															className={styles.radio}
+															className={`${inputStyles.radio} ${styles.radio}`}
 															s
 															type="radio"
 															id={item}
@@ -250,11 +248,11 @@ const CommandBar = ({ index }) => {
 											) : (
 												<div>
 													<label className={styles.label}>
-														{translate[item]}
+														{translate[item]}:
 													</label>
 													<input
 														type="radio"
-														className={styles.radio}
+														className={`${inputStyles.radio} ${styles.radio}`}
 														id={item}
 														value={1}
 														onChange={updateScript}
@@ -263,7 +261,7 @@ const CommandBar = ({ index }) => {
 													Активен
 													<input
 														type="radio"
-														className={styles.radio}
+														className={`${inputStyles.radio} ${styles.radio}`}
 														id={item}
 														value={0}
 														onChange={updateScript}
@@ -284,7 +282,7 @@ const CommandBar = ({ index }) => {
 									<label className={styles.label}>Скрипт с сервера: </label>
 									<select
 										value={script[index].script ? script[index].script : ''}
-										className={styles.select}
+										className={inputStyles.select}
 										onChange={updateScript}
 										id="script"
 									>
@@ -297,14 +295,16 @@ const CommandBar = ({ index }) => {
 									</select>
 								</div>
 							) : (
-								<input
-									key={ind}
-									className={styles.input}
-									type="number"
-									id={item}
-									value={script[index][item] ? script[index][item] : ''}
-									onChange={updateScript}
-								></input>
+								<div key={ind}>
+									<label className={styles.label}>{translate[item]}:</label>
+									<input
+										className={inputStyles.input}
+										type="number"
+										id={item}
+										value={script[index][item] ? script[index][item] : ''}
+										onChange={updateScript}
+									></input>
+								</div>
 							)
 						)
 					: ''

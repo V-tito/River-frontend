@@ -55,7 +55,7 @@ const StateButton = ({ sig, group }) => {
 	return (
 		<div>
 			<button
-				className={`${styles.button} ${on == true ? styles.on : styles.off}`}
+				className={`${styles.stateButton} ${on == true ? styles.on : styles.off}`}
 				onClick={changeState}
 			>
 				{on == true ? 'Вкл.' : 'Выкл.'}

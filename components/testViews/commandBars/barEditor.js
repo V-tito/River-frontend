@@ -1,6 +1,7 @@
 'use client';
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
+import buttonStyles from '@/styles/buttonStyles.module.css';
 import React, { createContext, useEffect, useState } from 'react';
 export const BarContext = createContext();
 const BarEditor = ({
@@ -127,7 +128,7 @@ const BarEditor = ({
 				{children}
 			</BarContext.Provider>
 			<button
-				className={styles.button}
+				className={`${buttonStyles.button} ${buttonStyles.menuButton} w-full`}
 				onClick={() => {
 					setFormData(prevFormData => [...prevFormData, { action: null }]);
 				}}

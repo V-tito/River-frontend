@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import styles from './form.module.css'; // Updated import path
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
@@ -56,7 +58,7 @@ const AlterForm = ({ table, object }) => {
 					}
 					setBoardNames(Object.keys(data.boards));
 					setGroupNames(Object.keys(data.groups));
-					setSul(Object.keys(data.sul));
+					if (data.sul) setSul(Object.keys(data.sul));
 				} catch (err) {
 					setError(err);
 				}
@@ -83,14 +85,13 @@ const AlterForm = ({ table, object }) => {
 	if (loading) return <p>Загрузка формы...</p>;
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-			<header className={styles.header}>Изменить элемент</header>
 			{config.map(field => (
 				<div key={field.id}>
 					<label className={styles.label} htmlFor={field.id}>
 						{field.label}{' '}
 					</label>
 					{field.type === 'radio' ? (
-						<div className={styles.radio}>
+						<div className={inputStyles.radio}>
 							<div>
 								<input
 									type="radio"
@@ -117,13 +118,13 @@ const AlterForm = ({ table, object }) => {
 					) : field.type == 'select' ? (
 						<select
 							value={watchers[field.id]}
-							className={styles.select}
+							className={inputStyles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>
 							<option>Выберите элемент...</option>
 							{nameAliases[field.id].map(item => (
-								<option className={styles.option} key={item} value={item}>
+								<option className={inputStyles.option} key={item} value={item}>
 									{item}
 								</option>
 							))}
@@ -131,13 +132,13 @@ const AlterForm = ({ table, object }) => {
 					) : field.type == 'textarea' ? (
 						<textarea
 							id={field.id}
-							className={styles.input}
+							className={inputStyles.input}
 							placeholder={field.placeholder}
 							{...register(field.id, field.validation)}
 						></textarea>
 					) : (
 						<input
-							className={styles.input}
+							className={inputStyles.input}
 							type={field.type}
 							id={field.id}
 							placeholder={object[field.id]}
@@ -146,11 +147,18 @@ const AlterForm = ({ table, object }) => {
 					)}
 				</div>
 			))}
-			<div className={styles.buttons}>
-				<button type="submit" className={styles.button}>
+			<div className={buttonStyles.buttons}>
+				<button
+					type="submit"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+				>
 					Отправить
 				</button>
-				<button type="reset" className={styles.button} onClick={() => reset()}>
+				<button
+					type="reset"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+					onClick={() => reset()}
+				>
 					Очистить
 				</button>
 			</div>

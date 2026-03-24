@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styles from './modal.module.css';
 import Popup from 'reactjs-popup';
-//import 'reactjs-popup/dist/index.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import { deleteEntity } from '@/lib/api_wrap/configAPI';
 const ConfirmDeleteModal = ({ state }) => {
 	console.log('confirm delete modal state', state);
@@ -31,7 +32,7 @@ const ConfirmDeleteModal = ({ state }) => {
 		<Popup
 			trigger={
 				<button
-					className={`${styles.button} ${styles.buttonFlex} ${styles.deleteButton}`}
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.deleteButton}`}
 				>
 					Удалить
 				</button>
@@ -39,21 +40,24 @@ const ConfirmDeleteModal = ({ state }) => {
 		>
 			{close => (
 				<div className={styles.container}>
-					<div className={styles.header}> Подтверждение действия </div>
+					<div className={headerStyles.modalHeader}>
+						{' '}
+						Подтверждение действия{' '}
+					</div>
 					<p className={styles.message}>
 						Удаление этого элемента повлечет удаление всех зависящих от него
 						элементов. Вы уверены, что хотите продолжить?
 					</p>
-					<div className={styles.actions}>
+					<div className={buttonStyles.buttons}>
 						<button
 							onClick={onConfirm}
-							className={`${styles.button}  ${styles.alterButton}`}
+							className={`${buttonStyles.button}  ${buttonStyles.menuButton}`}
 						>
 							Подтвердить
 						</button>
 						<button
 							onClick={() => close()}
-							className={`${styles.button}  ${styles.closeButton}`}
+							className={`${buttonStyles.button}  ${buttonStyles.deleteButton}`}
 						>
 							Отменить
 						</button>

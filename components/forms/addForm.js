@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './form.module.css'; // Updated import path
 import Modal from '../modals/inlineModal';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
@@ -28,7 +30,6 @@ const AddForm = ({ table }) => {
 		parentGroup: groupNames,
 		parentSul: sul ? sul : [],
 	};
-
 	useEffect(() => {
 		const fetchConfig = async () => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
@@ -85,14 +86,13 @@ const AddForm = ({ table }) => {
 	console.log('sulName', sul);
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-			<header className={styles.header}>Добавить элемент</header>
 			{config.map(field => (
 				<div key={field.id}>
 					<label className={styles.label} htmlFor={field.id}>
 						{field.label}{' '}
 					</label>
 					{field.type === 'radio' ? (
-						<div className={styles.radio}>
+						<div className={inputStyles.radio}>
 							<div>
 								<input
 									type="radio"
@@ -116,15 +116,15 @@ const AddForm = ({ table }) => {
 						</div>
 					) : field.type == 'select' ? (
 						<select
-							className={styles.select}
+							className={inputStyles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>
-							<option className={styles.option} value={null}>
+							<option className={inputStyles.option} value={null}>
 								Выберите элемент...
 							</option>
 							{nameAliases[field.id].map(item => (
-								<option className={styles.option} key={item} value={item}>
+								<option className={inputStyles.option} key={item} value={item}>
 									{item}
 								</option>
 							))}
@@ -132,13 +132,13 @@ const AddForm = ({ table }) => {
 					) : field.type == 'textarea' ? (
 						<textarea
 							id={field.id}
-							className={styles.input}
+							className={inputStyles.input}
 							placeholder={field.placeholder}
 							{...register(field.id, field.validation)}
 						></textarea>
 					) : (
 						<input
-							className={styles.input}
+							className={inputStyles.input}
 							type={field.type}
 							id={field.id}
 							placeholder={field.placeholder}
@@ -147,11 +147,18 @@ const AddForm = ({ table }) => {
 					)}
 				</div>
 			))}
-			<div className={styles.buttons}>
-				<button type="submit" className={styles.button}>
+			<div className={buttonStyles.buttons}>
+				<button
+					type="submit"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+				>
 					Создать
 				</button>
-				<button type="reset" className={styles.button} onClick={() => reset()}>
+				<button
+					type="reset"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+					onClick={() => reset()}
+				>
 					Очистить
 				</button>
 			</div>

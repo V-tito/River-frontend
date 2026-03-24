@@ -1,16 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import AddDeleteWrapper from '../../../../components/addDeleteWrapper';
 import DataView from '../../../../components/dataView';
 import { useGlobal } from '@/app/GlobalState';
 import { getList } from '@/lib/api_wrap/configAPI';
+import headerStyles from '@/styles/headerStyles.module.css';
 
 const BoardList = () => {
 	const { defaultScheme, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [sul, setSul] = useState({});
+	const [sul, setSul] = useState();
 	const params = useParams(); // Get URL parameters
 	let slug;
 	if (params) {
@@ -26,7 +26,7 @@ const BoardList = () => {
 				const result = await getList('TestBoard', slug);
 				const Sul = await getList('Sul', slug);
 				setData(result);
-				setSul(Sul);
+				if (Sul != null) setSul(Sul);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
 					setPollingError(err);
@@ -43,16 +43,16 @@ const BoardList = () => {
 
 	return (
 		//
-		<AddDeleteWrapper table="TestBoard">
-			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-				СУЛ:
-			</h1>
-			<DataView data={[sul]} kind="Sul"></DataView>
-			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-				Список тестовых плат:
-			</h1>
-			<DataView data={data} kind="TestBoard"></DataView>
-		</AddDeleteWrapper>
+		<div>
+			<h1 className={headerStyles.sectionHeader}>СУЛ:</h1>
+			<DataView
+				data={sul == null ? [] : [sul]}
+				kind="Sul"
+				label="СУЛ"
+			></DataView>
+			<h1 className={headerStyles.sectionHeader}>Список тестовых плат:</h1>
+			<DataView data={data} kind="TestBoard" label="тестовые платы"></DataView>
+		</div>
 	);
 };
 
