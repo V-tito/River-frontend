@@ -7,7 +7,7 @@
   z-index: 999;
   pointer-events: auto;
   top: 5% !important;
-  --popup-width:max(30%,32em);
+  --popup-width:min(100%,32em);
   --scaled-left: calc(50% - (var(--popup-width))/2);
   width: var(--popup-width);
   left:var(--scaled-left)!important;

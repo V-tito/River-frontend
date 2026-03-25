@@ -43,10 +43,21 @@
   }
 
   /*commandBar one*/
-  .radio {
-      display:inline;   
+  .radioBox{
+     display:inline;   
       font-size: smaller;
+
+  }
+  .radio {
+      -moz-appearance: none; 
+      border:1px solid var(--defaultgrey);
+      border-radius: 50%;
+      height:1em;
+      width:1em;
       color:var(--foreground);
       background: var(--inputbackground);
     }
-  
+  .radio:checked{
+    background-color:var(--controlelementfont);
+    border:5px solid var(--controlelementactive);
+  }

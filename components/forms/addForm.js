@@ -92,12 +92,13 @@ const AddForm = ({ table }) => {
 						{field.label}{' '}
 					</label>
 					{field.type === 'radio' ? (
-						<div className={inputStyles.radio}>
+						<div className={inputStyles.radioBox}>
 							<div>
 								<input
 									type="radio"
 									id={field.id}
 									name={field.label}
+									className={inputStyles.radio}
 									value="true"
 									{...register(field.id, field.validation)}
 								/>{' '}
@@ -107,6 +108,7 @@ const AddForm = ({ table }) => {
 								<input
 									type="radio"
 									id={field.id}
+									className={inputStyles.radio}
 									name={field.label}
 									value="false"
 									{...register(field.id, field.validation)}
