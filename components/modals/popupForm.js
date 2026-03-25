@@ -7,7 +7,7 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import './popup.css';
 
-const PopupForm = ({ buttonLabel, children }) => {
+const PopupForm = ({ buttonLabel, label = null, children }) => {
 	return (
 		<Popup
 			trigger={
@@ -22,7 +22,9 @@ const PopupForm = ({ buttonLabel, children }) => {
 			{close => (
 				<div className={styles.container}>
 					<div className={buttonStyles.delGrid}>
-						<p className={headerStyles.modalHeader}>{buttonLabel}</p>
+						<p className={headerStyles.modalHeader}>
+							{label ? label : buttonLabel}
+						</p>
 						<button
 							onClick={() => close()}
 							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}

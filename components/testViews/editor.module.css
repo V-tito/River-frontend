@@ -13,7 +13,7 @@
     height:90vh;
     padding: 0px 20px;
     margin:10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
   
@@ -22,7 +22,7 @@
     display: flex;
     flex-direction: column!important;
     height:90vh;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
   
@@ -31,7 +31,7 @@
     width: 100%;
     height:80vh;
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     font-size: smaller;
   }

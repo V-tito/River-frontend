@@ -25,10 +25,11 @@
     box-sizing: content-box;
     border-radius: 10%;
     padding: 5%;
-    background-color: #08371d;
+    background-color: var(--controlelementactive);
     color: #fff;
     height: fit-content;
     min-width:min-content;
+    word-wrap:break-word;
     justify-self: center;
     justify-content: center;
     justify-items: center;

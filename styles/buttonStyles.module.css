@@ -16,18 +16,17 @@
   }
   .closeButton {
     min-width: 20px;
-    background-color: crimson;
+    background-color: var(--defaultred);
     font-size: 20;
     font-weight: bolder;
     border-radius: 5%;
 
   }
   .closeButton:hover{
-    background-color: darkred;
-
+    background-color: var(--defaultdarkred);
   }
   .button{
-    color: #fff;
+    color: var(--controlelementfont);
     cursor: pointer;
     margin:5px;
   }
@@ -40,16 +39,20 @@
     border: 1px solid white;
   }
   .menuButton {
-    background-color: #1c5f3a;
+    background-color: var(--controlelementcolor);
     align-self: center;
-    padding: 5px 10px ;
+    padding: 4px 10px ;
     
   }
   .alterButton:hover {
-    background-color: #124127;
+    background-color: var(--controlelementactive);
   }
   .deleteButton{
-    background-color: crimson;
-    padding: 5px 10px ;
+    background-color: var(--defaultred);
+    padding: 4px 10px ;
     align-self: center;
+  }
+  .deleteButton:hover{
+    background-color: var(--defaultdarkred);
+
   }

@@ -1,4 +1,5 @@
 import styles from './addFromFileForm.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import React, { useState } from 'react';
 import OpenLocalFileModal from './openLocalFileModal';
 import { multiplePostPatch } from '@/lib/hooks/postPatchHelpers';
@@ -49,12 +50,15 @@ const addFromFileForm = ({ table }) => {
 				uploadAction={(e, file) => uploadAction(e, file)}
 				label={'Создать из файла'}
 				uploadError={readerError}
+				closeAfter={false}
+				reloadOnClose={true}
 			>
 				{parseReport ? (
-					<div className="flex flex-col">
+					<div className="flex flex-col w-full">
+						<p className={headerStyles.modalHeader}>Отчет о загрузке</p>
 						<div className={styles.report}>
 							{Object.entries(parseReport).map(entry => (
-								<span>
+								<span key={entry}>
 									{entry[0]}: {entry[1]}
 								</span>
 							))}
@@ -63,6 +67,7 @@ const addFromFileForm = ({ table }) => {
 							formData={parseReport}
 							initName="report.json"
 							scheme={defaultScheme.name}
+							label="Сохранить отчет"
 						></SaveFromVarLocally>
 					</div>
 				) : (

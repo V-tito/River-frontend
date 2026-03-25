@@ -1,8 +1,8 @@
 .cards{
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap; /* Allows components to wrap onto the next line */
-    gap: 16px; /* Space between items */
+    flex-wrap: wrap; 
+    gap: 16px; 
     width: 100%;
 }
 .container {
@@ -13,25 +13,25 @@
   
   .cardsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px,17%));
-    gap: 1.5rem;
-    align-items: stretch; /* Ensures all grid items stretch to same height */
+    grid-template-columns: repeat(auto-fill, minmax(30ex,1fr));
+    grid-auto-rows: 1fr;
+    gap: 1rem;
+    align-items: stretch; 
   }
 
 .card {
    display: flex;
     flex-direction: column;
-    flex: 1 1 220px;  
+    flex: 1 1 30ex;  
     min-height: 20vh;
     padding: 0%;
     border-radius:5%;
-    background-color: #1c5f3a;
+    background-color: var(--controlelementcolor);
     align-content: center;
     justify-content: center;
     padding:20px;
-    color:aliceblue;
+    color:var(--controlelementfont);
     word-wrap:break-word;
-    
 }
 
 .types{
@@ -92,13 +92,13 @@
     font-size: clamp(4rem, 20vw, 10rem);
     font-weight: 300;
     line-height: 1;
-    color: #f0f0f0;
+    color: var(--controlelementfont);
   }
   
   .plusText {
     font-size: clamp(0.875rem, 3vw, 1.125rem);
     font-weight: 300;
-    color: #f0f0f0;
+    color: var(--controlelementfont);
   }
 
   .notFound{

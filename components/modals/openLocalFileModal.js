@@ -12,6 +12,8 @@ const OpenLocalFileModal = ({
 	uploadAction,
 	uploadError = null,
 	label = null,
+	closeAfter = true,
+	reloadOnClose = false,
 	children,
 }) => {
 	const [file, setFile] = useState(null);
@@ -36,7 +38,9 @@ const OpenLocalFileModal = ({
 							Открыть локальный скрипт
 						</span>
 						<button
-							onClick={() => close()}
+							onClick={() =>
+								reloadOnClose ? window.location.reload() : close()
+							}
 							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
 						>
 							&times;
@@ -51,7 +55,7 @@ const OpenLocalFileModal = ({
 					<button
 						onClick={e => {
 							uploadAction(e, file);
-							if (!uploadError) close();
+							if (!uploadError & closeAfter) close();
 						}}
 						className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 						disabled={!file}

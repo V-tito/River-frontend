@@ -3,9 +3,8 @@ import styles from './fileBar.module.css';
 import DeleteButton from './delButton';
 import DownloadButton from './downloadButton';
 import PropTypes from 'prop-types';
-import headerStyles from '@/styles/headerStyles.module.css';
+
 import buttonStyles from '@/styles/buttonStyles.module.css';
-import inputStyles from '@/styles/inputStyles.module.css';
 
 const FileBar = ({ folder, filename }) => {
 	return (

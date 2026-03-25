@@ -3,11 +3,14 @@
   flex-direction: column;
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid var(--defaultgrey);
+  border-radius: 5%;
+  background-color: var(--formbackground);
+
 }
 .non_modal_form{
-  min-width: 25%;
+  min-width: 24em;
+  max-width: 48em;
   width: fit-content !important;
 }
 

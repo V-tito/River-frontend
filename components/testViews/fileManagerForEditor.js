@@ -35,6 +35,7 @@ const FileManager = ({ formData, setFormData, initName, scheme }) => {
 			<OpenLocalFileModal
 				uploadAction={handleFileRead}
 				uploadError={readerError}
+				closeAfter={true}
 			></OpenLocalFileModal>
 			<SaveFromEditorToServerModal
 				formData={formData}

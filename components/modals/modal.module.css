@@ -12,14 +12,17 @@
     text-align: center;
     width: 100%;
     padding-left: 2px;
-    border: 3px dotted crimson
+    border: 3px dotted var(--defaultdarkred)
   }
   .message{
     text-align: center;
   }
   .deleteButtonInline{
-    background-color: crimson;
+    background-color: var(--defaultred);
     padding: 0px 10px ;
     align-self: center;
+    cursor: pointer;
   }
+  .deleteButtonInline:hover{
+    background-color: var(--defaultdarkred);}
 

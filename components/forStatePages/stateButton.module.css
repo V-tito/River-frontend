@@ -13,6 +13,6 @@
     
 }
 .off{
-    background-color: red;
+    background-color: var(--defaultred);;
     color: black;
 }

@@ -7,11 +7,11 @@
   z-index: 999;
   pointer-events: auto;
   top: 5% !important;
-  --popup-width:max(30%,300px);
+  --popup-width:max(30%,32em);
   --scaled-left: calc(50% - (var(--popup-width))/2);
   width: var(--popup-width);
   left:var(--scaled-left)!important;
-  border: 1px solid #ccc;
+  border: 1px solid var(--defaultgrey);
   border-radius: 5px;
   display: grid;
 }

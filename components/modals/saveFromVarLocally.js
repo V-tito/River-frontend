@@ -3,7 +3,13 @@ import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
-const SaveFromVarLocally = ({ formData, initName = null }) => {
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
+const SaveFromVarLocally = ({
+	formData,
+	initName = null,
+	label = 'Сохранить',
+}) => {
 	const [filename, setFilename] = useState(
 		initName
 			? initName
@@ -50,20 +56,20 @@ const SaveFromVarLocally = ({ formData, initName = null }) => {
 		<Popup
 			trigger={
 				<button
-					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					Сохранить
+					{label}
 				</button>
 			}
 			closeOnDocumentClick={false}
 		>
 			{close => (
 				<div className={styles.container}>
-					<button onClick={() => close()} className={styles.closeButton}>
+					<button onClick={() => close()} className={buttonStyles.closeButton}>
 						&times;
 					</button>
 					<input
-						className={styles.input}
+						className={inputStyles.input}
 						type="text"
 						placeholder="Имя с расширением .json или без расширения"
 						onChange={handleFilenameChange}
@@ -74,7 +80,7 @@ const SaveFromVarLocally = ({ formData, initName = null }) => {
 							saveToServer();
 							close();
 						}}
-						className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+						className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 					>
 						Сохранить
 					</button>

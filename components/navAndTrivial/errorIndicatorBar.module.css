@@ -1,6 +1,6 @@
 .eba {
     width: 100%;  
-    background-color: #fff;
+    background-color: var(--background);
     padding: 10px;
     height: 100%;  
     border-width: 5px;
@@ -10,30 +10,30 @@
 }
 @media (prefers-color-scheme: dark) {
     .error{
-        color: #fff!important;
-        background-color: #eb1e3a;
-        border-color: #eb1e3a;
+        color: var(--foreground)!important;
+        background-color: var(--defaultred);
+        border-color: var(--defaultred);
     }
     .ok{
-        color: #fff!important;
-        background-color: #1c5f3a;
-        border-color: #1c5f3a;
+        color: var(--foreground)!important;
+        background-color: var(--controlelementcolor);
+        border-color: var(--controlelementcolor);
     }
     .none{
-        color: #fff!important;
-        background-color: #969696;
-        border-color: #969696;
+        color: var(--foreground)!important;
+        background-color: var(--defaultgrey);
+        border-color: var(--defaultgrey);
     }
 }
 .ok{
-    color: #1c5f3a;
-    border-color: #1c5f3a;
+    color: var(--controlelementcolor);
+    border-color: var(--controlelementcolor);
 }
 .error {
-    color: #eb1e3a;
-    border-color: #eb1e3a;
+    color: var(--defaultred);
+    border-color: var(--defaultred);
 }
 .none{
-    color: #969696;
-    border-color: #969696;
+    color: var(--defaultgrey);
+    border-color: var(--defaultgrey);
 }
