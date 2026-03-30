@@ -1,35 +1,45 @@
 .table {
-box-sizing: border-box; /* Include padding and border in the table width */
-    border-collapse: collapse; /* Combine border to avoid double spacing */
+box-sizing: border-box; 
+    border-collapse: collapse; 
     padding: 0%;
-    width: 375px;  /* Set a fixed width */
+    width: 375px;  
   height: min-content;
   margin-right:20px
 }
 .th {
-    padding: 5px; /* Adjust as needed */
-    border: 1px solid #ccc; /* Adjust border size */
-    overflow-wrap: anywhere; /* Break long words */
+    padding: 5px;
+    border: 1px solid var(--defaultgrey); 
+    overflow-wrap: anywhere;
     word-wrap: break-word;
-    background-color: #1c5f3a;
-    color:aliceblue;
+    background-color: var(--controlelementcolor);
+    color:var(--controlelementfont);
     height:min-content
 
 
 }
 .td {
-    padding: 5px; /* Adjust as needed */
-    border: 1px solid #ccc; /* Adjust border size */
-    overflow-wrap: anywhere; /* Break long words */
-   /* word-wrap: break-word;*/
+    padding: 5px; 
+    border: 1px solid var(--defaultgrey); 
+    overflow-wrap: anywhere;
+   
     word-break: break-all;
 
 }
 .namer{
     width:100px;
 }
-.h2{
-    font-family: 'Courier New', Courier, monospace;
-    font-size: larger;
-    text-align: center;
+.tableGrid{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:1rem;
+}
+.tableHolder{
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: min-content;
+    gap:1rem;
+    min-width: fit-content;
+    align-items: normal;
+    align-content: first baseline;
 }

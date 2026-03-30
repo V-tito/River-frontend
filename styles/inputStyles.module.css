@@ -1,0 +1,63 @@
+.option {
+    padding: 10px;
+    color:var(--foreground);
+    background: var(--inputbackground);
+    filter: hue-rotate(20deg);
+    }
+.input {
+    width: 100%;
+    padding: 4px;
+    display: inline;
+    word-wrap: break-word;
+    border: 1px solid var(--defaultgrey);
+    border-radius: 5px;
+    font-size: smaller;
+    color:var(--foreground);
+    background: var(--inputbackground);
+  }
+  .fileInput{
+    display: inline;
+    width: 75%;
+    justify-self: center;
+    word-wrap: break-word;
+    padding: 4px;
+    border: 5px solid var(--controlelementcolor);
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+    color:var(--foreground);
+    background: var(--inputbackground);
+  }
+.select {
+    display:flex;
+    
+    border: 1px solid var(--defaultgrey);
+    border-radius: 5px;
+    color:var(--foreground);
+    background: var(--inputbackground); 
+    padding: 5px;
+    font-size: smaller;
+    width:100%
+ 
+  }
+
+  /*commandBar one*/
+  .radioBox{
+     display:inline;   
+      font-size: smaller;
+
+  }
+  .radio {
+      -moz-appearance: none; 
+      border:1px solid var(--defaultgrey);
+      border-radius: 50%;
+      height:1em;
+      width:1em;
+      color:var(--foreground);
+      background: var(--inputbackground);
+    }
+  .radio:checked{
+    background-color:var(--controlelementfont);
+    border:5px solid var(--controlelementactive);
+  }

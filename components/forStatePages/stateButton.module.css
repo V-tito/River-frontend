@@ -1,4 +1,4 @@
-.button{
+.stateButton{
     width:max-content;
     padding: 2%;
     border-radius: 10%;
@@ -13,6 +13,6 @@
     
 }
 .off{
-    background-color: red;
+    background-color: var(--defaultred);;
     color: black;
 }

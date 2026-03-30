@@ -1,0 +1,58 @@
+  /*form, common,editor ones*/
+.buttons {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .delGrid{/*def good for commandBars as well*/
+    margin-left: 15%;
+    width:85%;
+    display: grid;
+    grid-template-columns: auto minmax(8%,20px);
+    gap:7%;
+    align-items:normal;
+  }
+  .closeButton {
+    min-width: 20px;
+    background-color: var(--defaultred);
+    font-size: 20;
+    font-weight: bolder;
+    border-radius: 5%;
+
+  }
+  .closeButton:hover{
+    background-color: var(--defaultdarkred);
+  }
+  .button{
+    color: var(--controlelementfont);
+    cursor: pointer;
+    margin:5px;
+  }
+  .button:disabled{
+    cursor:not-allowed
+  }
+  .buttonFlex{
+    margin-top:10px;
+    border-radius: 5%;
+    border: 1px solid white;
+  }
+  .menuButton {
+    background-color: var(--controlelementcolor);
+    align-self: center;
+    padding: 4px 10px ;
+    
+  }
+  .alterButton:hover {
+    background-color: var(--controlelementactive);
+  }
+  .deleteButton{
+    background-color: var(--defaultred);
+    padding: 4px 10px ;
+    align-self: center;
+  }
+  .deleteButton:hover{
+    background-color: var(--defaultdarkred);
+
+  }

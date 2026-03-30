@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
@@ -53,7 +56,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		<Popup
 			trigger={
 				<button
-					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
 					Сохранить на сервере
 				</button>
@@ -62,11 +65,19 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		>
 			{close => (
 				<div className={styles.container}>
-					<button onClick={() => close()} className={styles.closeButton}>
-						&times;
-					</button>
+					<div className={buttonStyles.delGrid}>
+						<span className={headerStyles.modalHeader}>
+							Сохранить на сервере
+						</span>
+						<button
+							onClick={() => close()}
+							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
+						>
+							&times;
+						</button>
+					</div>
 					<input
-						className={styles.input}
+						className={inputStyles.input}
 						type="text"
 						placeholder="Имя с расширением .json или без расширения"
 						onChange={handleFilenameChange}
@@ -77,7 +88,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 							saveToServer();
 							close();
 						}}
-						className={`${styles.button}  ${styles.buttonFlex} ${styles.menuButton}`}
+						className={`${buttonStyles.button}  ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 					>
 						Сохранить на сервере
 					</button>

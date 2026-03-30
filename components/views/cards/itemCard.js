@@ -1,38 +1,22 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import AlterModal from '../../modals/alterModal';
 import styles from './cards.module.css';
-import commonStyles from '@/components/common.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import PropTypes from 'prop-types';
 import ConfirmDeleteModal from '@/components/modals/confirmDeleteModal';
 
-const ItemCard = ({ type, item }) => {
-	const [config, setConfig] = useState({ features: [], types: [] });
-	const [loading, setLoading] = useState(true);
+const ItemCard = ({ type, item, config }) => {
 	console.log('item card with item', item);
-
-	useEffect(() => {
-		const fetchConfig = async () => {
-			const response = await fetch(`/api/getCardConfig/${type}`);
-			const data = await response.json();
-			setConfig(data);
-			console.log('card config', data);
-		};
-		console.log('effect');
-		fetchConfig();
-		setLoading(false);
-	}, []);
-
-	if (loading) return <p>Загрузка плитки...</p>;
-
 	return (
 		<div className={styles.card}>
-			<h1 className={styles.header}>{item.name}</h1>
+			<h1 className={headerStyles.modalHeader}>{item.name}</h1>
 			{config['features'].map(feat =>
 				feat.long ? (
 					<div key={feat.id}>
 						<p className={styles.feature}>{feat.label}</p>
-						<span>{item[feat.id]}</span>
+						<span className={styles.longFeat}>{item[feat.id]}</span>
 					</div>
 				) : (
 					<p key={feat.id}>
@@ -59,8 +43,8 @@ const ItemCard = ({ type, item }) => {
 					))}
 				</div>
 			) : null}
-			<p className={styles.description}>{item.description}</p>
-			<div className={commonStyles.buttons}>
+			<span className={styles.description}>{item.description}</span>
+			<div className={buttonStyles.buttons}>
 				<AlterModal table={type} obj={item}></AlterModal>
 				<ConfirmDeleteModal
 					state={{

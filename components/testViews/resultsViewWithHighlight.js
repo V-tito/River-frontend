@@ -6,7 +6,7 @@ const ResultsViewWithHighlight = ({ results, isHovered, setIsHovered }) => {
 		<div className={styles.editor}>
 			{results.map((result, i) => (
 				<p
-					onMouseEnter={() => setIsHovered(i)}
+					onMouseEnter={() => setIsHovered(result.id)}
 					onMouseLeave={() => setIsHovered(null)}
 					key={i}
 					className={`${styles[result.actionType]} ${isHovered == result.id ? styles.active : ''}`}

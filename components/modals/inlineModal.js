@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './modal.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+
 import PropTypes from 'prop-types';
 const Modal = ({ state, children }) => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -18,7 +20,7 @@ const Modal = ({ state, children }) => {
 			{children}
 			<button
 				onClick={onClose}
-				className={`${styles.button} ${styles.deleteButtonInline}`}
+				className={`${buttonStyles.button} ${styles.deleteButtonInline}`}
 			>
 				Закрыть
 			</button>

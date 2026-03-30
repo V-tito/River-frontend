@@ -2,6 +2,9 @@
 import Popup from 'reactjs-popup';
 import Modal from './inlineModal';
 import React, { useState } from 'react';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import PropTypes from 'prop-types';
 import styles from './modal.module.css';
 
@@ -9,6 +12,9 @@ const OpenLocalFileModal = ({
 	uploadAction,
 	uploadError = null,
 	label = null,
+	closeAfter = true,
+	reloadOnClose = false,
+	children,
 }) => {
 	const [file, setFile] = useState(null);
 	const handleFileChange = e => {
@@ -18,7 +24,7 @@ const OpenLocalFileModal = ({
 		<Popup
 			trigger={
 				<button
-					className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
 					{label ? label : 'Открыть локальный скрипт'}
 				</button>
@@ -27,14 +33,21 @@ const OpenLocalFileModal = ({
 		>
 			{close => (
 				<div className={styles.container}>
-					<button
-						onClick={() => close()}
-						className={`${styles.button} ${styles.closeButton}`}
-					>
-						&times;
-					</button>
+					<div className={buttonStyles.delGrid}>
+						<span className={headerStyles.modalHeader}>
+							Открыть локальный скрипт
+						</span>
+						<button
+							onClick={() =>
+								reloadOnClose ? window.location.reload() : close()
+							}
+							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
+						>
+							&times;
+						</button>
+					</div>
 					<input
-						className={styles.fileInput}
+						className={inputStyles.fileInput}
 						type="file"
 						accept=".json,application/json"
 						onChange={e => handleFileChange(e)}
@@ -42,16 +55,18 @@ const OpenLocalFileModal = ({
 					<button
 						onClick={e => {
 							uploadAction(e, file);
-							if (!uploadError) close();
+							if (!uploadError & closeAfter) close();
 						}}
-						className={`${styles.button} ${styles.buttonFlex} ${styles.menuButton}`}
+						className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 						disabled={!file}
 					>
 						Загрузить
 					</button>
+
 					<Modal state={uploadError}>
 						{uploadError ? uploadError.message : ''}
 					</Modal>
+					{children}
 				</div>
 			)}
 		</Popup>

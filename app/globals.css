@@ -3,6 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --controlelementcolor:#1c5f3a;
+  --controlelementactive:#124127;
+  --controlelementfont:#f0f0f0;
+  --defaultgrey:#7f7f7f;
+  --defaultred:crimson;
+  --defaultdarkred:darkred;
+  --inputbackground:#ffffff;
+  --formbackground:rgb(221, 249, 255);
 }
 
 @theme inline {
@@ -16,6 +24,8 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --inputbackground:#707f83;
+    --formbackground:rgb(66, 83, 97);
   }
 }
 

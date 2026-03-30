@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 const AlterModal = ({ table, obj }) => {
 	return (
-		<PopupForm buttonLabel={'Изменить'}>
+		<PopupForm buttonLabel={'Изменить'} label={'Изменить элемент'}>
 			<AlterForm table={table} object={obj}></AlterForm>
 		</PopupForm>
 	);

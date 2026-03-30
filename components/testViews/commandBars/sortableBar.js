@@ -11,6 +11,7 @@ const SortableBar = ({
 	isHovered,
 	setIsHovered,
 	sigsByGroup,
+	filenames,
 }) => {
 	const { ref } = useSortable({ id, index });
 	console.log('fd in sortable', script);
@@ -27,6 +28,7 @@ const SortableBar = ({
 				isHovered={isHovered}
 				setIsHovered={setIsHovered}
 				sigsByGroup={sigsByGroup}
+				filenames={filenames}
 			></CommandBar>
 		</li>
 	);

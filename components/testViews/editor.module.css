@@ -11,89 +11,45 @@
     flex-direction: column!important;
     width: 50%;
     height:90vh;
-    padding: 20px;
+    padding: 0px 20px;
     margin:10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
-  
-  }
-  .editorBar {
-    display: flex;
-    flex-direction: column!important;
-    width: 50%;
-    height:90vh;
-   
-    margin:10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
   
   }
   .edit {
     display: flex;
     flex-direction: column!important;
-    width: 95%;
     height:90vh;
-   
-    margin:10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
   
   }
-
-  .button {
-    display: inline;
-      background-color: #1c5f3a;
-      color: #fff;
-      cursor: pointer;
-      margin:5px;
-      margin-top:10px;
-      padding:  5px;
-      min-width:25%;
-      border-radius: 5%;
-  }
-  .button:hover {
-    background-color: #124127;
-  }
-
-  
   .editor {
     width: 100%;
     height:80vh;
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     font-size: smaller;
   }
-  .input {
-    display: inline;
-    width: 100%;
-    word-wrap: break-word;
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: smaller;
-  }
+
   .fileManager{
     display: flex;
   flex-direction: row;
   justify-content: center;
   }
-  .header{
-    text-align: center;
-    font-size: larger;
-    text-decoration: underline;
-    text-decoration-color: #1c5f3a;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    padding-bottom: 10px;
-  }
+
   .setter{
     background-color: lightskyblue;
   }
   .checker{
     background-color: lightgreen;
+  }
+  .include{
+    background-color: rgb(248, 197, 70);
   }
   .active{
     background-color: yellow !important
@@ -104,6 +60,9 @@
     }
     .checker{
       background-color: #007328;
+    }
+    .include{
+      background-color: rgb(188, 118, 5);
     }
     .error{background-color: rgb(127, 3, 3);
     

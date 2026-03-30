@@ -2,15 +2,23 @@
 import React, { useEffect, useState } from 'react';
 import styles from './form.module.css'; // Updated import path
 import Modal from '../modals/inlineModal';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { postHelper } from '@/lib/hooks/postPatchHelpers';
 
 const AddForm = ({ table }) => {
+	const defaults =
+		table == 'TestBoard'
+			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
+			: {};
 	const { defaultScheme } = useGlobal();
 	console.log('schemeport', defaultScheme.comPort);
-	const { register, handleSubmit, reset } = useForm();
+	const { register, handleSubmit, reset } = useForm({
+		defaultValues: defaults,
+	});
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -22,7 +30,6 @@ const AddForm = ({ table }) => {
 		parentGroup: groupNames,
 		parentSul: sul ? sul : [],
 	};
-
 	useEffect(() => {
 		const fetchConfig = async () => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
@@ -45,10 +52,10 @@ const AddForm = ({ table }) => {
 					console.log('groups and boards', data);
 					console.log('groups', data.groups);
 					console.log('groupnames', Object.keys(data.groups));
-					console.log('sul',sul)
+					console.log('sul', sul);
 					setBoardNames(Object.keys(data.boards));
 					setGroupNames(Object.keys(data.groups));
-					setSul(data.sul?Object.keys(data.sul):[]);
+					setSul(data.sul ? Object.keys(data.sul) : []);
 				} catch (err) {
 					setError(err);
 				} finally {
@@ -75,23 +82,23 @@ const AddForm = ({ table }) => {
 	};
 
 	if (loading) return <p>Загружается форма...</p>;
-					console.log('groupNames', groupNames);
-					console.log('sulName',sul)
+	console.log('groupNames', groupNames);
+	console.log('sulName', sul);
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-			<header className={styles.header}>Добавить элемент</header>
 			{config.map(field => (
 				<div key={field.id}>
 					<label className={styles.label} htmlFor={field.id}>
 						{field.label}{' '}
 					</label>
 					{field.type === 'radio' ? (
-						<div className={styles.radio}>
+						<div className={inputStyles.radioBox}>
 							<div>
 								<input
 									type="radio"
 									id={field.id}
 									name={field.label}
+									className={inputStyles.radio}
 									value="true"
 									{...register(field.id, field.validation)}
 								/>{' '}
@@ -101,6 +108,7 @@ const AddForm = ({ table }) => {
 								<input
 									type="radio"
 									id={field.id}
+									className={inputStyles.radio}
 									name={field.label}
 									value="false"
 									{...register(field.id, field.validation)}
@@ -110,15 +118,15 @@ const AddForm = ({ table }) => {
 						</div>
 					) : field.type == 'select' ? (
 						<select
-							className={styles.select}
+							className={inputStyles.select}
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>
-							<option className={styles.option} value={null}>
+							<option className={inputStyles.option} value={null}>
 								Выберите элемент...
 							</option>
 							{nameAliases[field.id].map(item => (
-								<option className={styles.option} key={item} value={item}>
+								<option className={inputStyles.option} key={item} value={item}>
 									{item}
 								</option>
 							))}
@@ -126,13 +134,13 @@ const AddForm = ({ table }) => {
 					) : field.type == 'textarea' ? (
 						<textarea
 							id={field.id}
-							className={styles.input}
+							className={inputStyles.input}
 							placeholder={field.placeholder}
 							{...register(field.id, field.validation)}
 						></textarea>
 					) : (
 						<input
-							className={styles.input}
+							className={inputStyles.input}
 							type={field.type}
 							id={field.id}
 							placeholder={field.placeholder}
@@ -141,11 +149,18 @@ const AddForm = ({ table }) => {
 					)}
 				</div>
 			))}
-			<div className={styles.buttons}>
-				<button type="submit" className={styles.button}>
+			<div className={buttonStyles.buttons}>
+				<button
+					type="submit"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+				>
 					Создать
 				</button>
-				<button type="reset" className={styles.button} onClick={() => reset()}>
+				<button
+					type="reset"
+					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+					onClick={() => reset()}
+				>
 					Очистить
 				</button>
 			</div>

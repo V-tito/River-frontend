@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './editor.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
-//import CommandBarEditor from './commandBars/commandBarEditor';
+
 import SortableBarEditor from './commandBars/sortableBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
@@ -102,8 +104,18 @@ const Editor = ({ scheme }) => {
 		let now;
 		try {
 			if (entry.action == 'include') {
+				now = new Date();
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Подгружаем скрипт ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 				const response = await fetch(
-					`/api/files?folder=${scheme.name}&filename=${entry.filename}`,
+					`/api/files?folder=${scheme.name}&filename=${entry.script}`,
 					{
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },
@@ -118,11 +130,29 @@ const Editor = ({ scheme }) => {
 				if (additionalData.type != 'file') {
 					throw new Error(`${entry.filename} не является файлом`);
 				}
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Начинаем исполнение скрипта ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 				const contents = JSON.parse(additionalData.content);
 				for (let i = 0; i < contents.length; i++) {
 					const content = contents[i];
-					await executeEntry(content);
+					await executeEntry(content, id);
 				}
+				setResults(prevResults => [
+					...prevResults,
+					{
+						res: `Выполнен скрипт ${entry.script}`,
+						timestamp: now.toLocaleTimeString(),
+						actionType: 'include',
+						id: id,
+					},
+				]);
 			} else {
 				if (entry.action == 'executePresets') {
 					entry.scheme = scheme.name;
@@ -214,8 +244,8 @@ const Editor = ({ scheme }) => {
 	console.log('formdata', formData);
 	return (
 		<div className={styles.main}>
-			<div className={styles.editorBar}>
-				<header className={styles.header}>Редактор команд: </header>
+			<div className={styles.show}>
+				<header className={headerStyles.modalHeader}>Редактор команд: </header>
 				<SortableBarEditor
 					formData={formData}
 					setFormData={setFormData}
@@ -230,7 +260,7 @@ const Editor = ({ scheme }) => {
 
 				<button
 					onClick={() => executeScript(formData)}
-					className={styles.button}
+					className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 				>
 					Выполнить
 				</button>
@@ -244,7 +274,9 @@ const Editor = ({ scheme }) => {
 			</div>
 
 			<div className={styles.show}>
-				<header className={styles.header}>Результат выполнения: </header>
+				<header className={headerStyles.modalHeader}>
+					Результат выполнения:{' '}
+				</header>
 				<ResultsViewWithHighlight
 					results={results}
 					isHovered={isHovered}

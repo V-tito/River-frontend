@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import styles from './form.module.css';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import { getList } from '@/lib/api_wrap/configAPI';
 
 const SetDefaultScheme = () => {
@@ -35,7 +38,11 @@ const SetDefaultScheme = () => {
 	};
 	const handleSubmit = () => {
 		console.log(chosenScheme);
-		setDefaultScheme({ id: chosenScheme.id, name: chosenScheme.name, comPort:chosenScheme.comPort});
+		setDefaultScheme({
+			id: chosenScheme.id,
+			name: chosenScheme.name,
+			comPort: chosenScheme.comPort,
+		});
 		console.log(defaultScheme);
 	};
 
@@ -45,12 +52,15 @@ const SetDefaultScheme = () => {
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit} className={styles.form}>
-				<header className={styles.header}>Установить схему</header>
+			<form
+				onSubmit={handleSubmit}
+				className={`${styles.form} ${styles.non_modal_form}`}
+			>
+				<header className={headerStyles.modalHeader}>Установить схему</header>
 				<div>
 					<label>{'Выберите схему:'}</label>
 					<select
-						className={styles.select}
+						className={inputStyles.select}
 						type="number"
 						id="id"
 						required
@@ -64,8 +74,11 @@ const SetDefaultScheme = () => {
 						))}
 					</select>
 				</div>
-				<div className={styles.buttons}>
-					<button type="submit" className={styles.button}>
+				<div className={buttonStyles.buttons}>
+					<button
+						type="submit"
+						className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
+					>
 						Установить
 					</button>
 				</div>

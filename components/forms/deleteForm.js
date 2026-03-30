@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styles from './form.module.css'; // Updated import path
 import ConfirmDeleteModal from '../modals/confirmDeleteModal';
+import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
 import PropTypes from 'prop-types';
 
 const DeleteForm = ({ table, listOfAll = [[]] }) => {
@@ -26,11 +28,11 @@ const DeleteForm = ({ table, listOfAll = [[]] }) => {
 	if (listOfAll === undefined) return <p>Загрузка...</p>;
 	return (
 		<form onSubmit={handleSubmit} className={styles.form}>
-			<header className={styles.header}>Удалить элемент</header>
+			<header className={headerStyles.modalHeader}>Удалить элемент</header>
 			<div>
 				<label>{'Выберите элемент для удаления:'}</label>
 				<select
-					className={styles.select}
+					className={inputStyles.select}
 					type="number"
 					id="id"
 					required

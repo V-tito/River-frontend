@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import StateTable from '@/components/forStatePages/signalTables';
 import { useGlobal } from '@/app/GlobalState';
+import headerStyles from '@/styles/headerStyles.module.css';
 interface MyDataType {
 	id: number;
 	name: string;
@@ -12,9 +13,8 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
-	const { defaultScheme, pollingError, setPollingError } = useGlobal();
+	const { defaultScheme } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
-	const [sulData, setSulData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
@@ -79,8 +79,9 @@ const StateOfSignals = () => {
 		setLoading(false);
 	}, [defaultScheme]);
 
-	if (loading) return <p>Загрузка...</p>;
-	if (error) return <p>Ошибка: {error.message}</p>;
+	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
+	if (error)
+		return <p className={headerStyles.warning}>Ошибка: {error.message}</p>;
 	console.log('data', data);
 	return (
 		<div className="flex flex-col">

@@ -1,14 +1,17 @@
 .popup-content {  margin: auto;  
   background:var(--background);  
-  width: 40%;  
+   
   padding: 5px;
   overflow: hidden;
   position: absolute !important;
   z-index: 999;
   pointer-events: auto;
   top: 5% !important;
-  left: 30% !important;
-  border: 1px solid #ccc;
+  --popup-width:min(100%,32em);
+  --scaled-left: calc(50% - (var(--popup-width))/2);
+  width: var(--popup-width);
+  left:var(--scaled-left)!important;
+  border: 1px solid var(--defaultgrey);
   border-radius: 5px;
   display: grid;
 }

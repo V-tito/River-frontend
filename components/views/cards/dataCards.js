@@ -1,24 +1,49 @@
 import ItemCard from './itemCard';
-import React from 'react';
+import AddCard from './addCard';
+import React, { useEffect, useState } from 'react';
 import styles from './cards.module.css';
 import PropTypes from 'prop-types';
 
-const DataCards = ({ kind, data }) => {
+const DataCards = ({ type, data, label }) => {
+	const [config, setConfig] = useState({ features: [], types: [] });
+	const [loading, setLoading] = useState(true);
+	console.log('type in data cards', type);
+
+	useEffect(() => {
+		const fetchConfig = async () => {
+			const response = await fetch(`/api/getCardConfig/${type}`);
+			const data = await response.json();
+			setConfig(data);
+			console.log('card config', data);
+		};
+		console.log('effect');
+		fetchConfig();
+		setLoading(false);
+	}, []);
+
+	if (loading) return <p>Загрузка плитки...</p>;
+	console.log('datalen', data.length, 'data', data);
 	return (
-		<div className={styles.cards}>
-			{data.length > 0
-				? data.map(item =>
-						item ? (
-							<ItemCard
-								key={item.name}
-								type={'parentSul' in item ? 'SulSignal' : kind}
-								item={item}
-							></ItemCard>
-						) : (
-							''
+		<div className={styles.container}>
+			<div className={styles.cardsGrid}>
+				{data.length > 0
+					? data.map(item =>
+							item ? (
+								<ItemCard
+									key={item.name}
+									type={type}
+									item={item}
+									config={config}
+								></ItemCard>
+							) : (
+								''
+							)
 						)
-					)
-				: null}
+					: null}
+				{(type == 'Sul') & (data.length > 0) ? null : (
+					<AddCard type={type}></AddCard>
+				)}
+			</div>
 		</div>
 	);
 };

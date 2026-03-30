@@ -2,10 +2,13 @@
     display: flex;
     flex-direction:row;
     height: 100%;
+    gap:1rem;
+    flex:1
   }
   
   .sidebar {
-    width:15%;  
+    max-width:15em;
+    min-width:min-content;
     height: 100%;  
     box-sizing: content-box;
     justify-content: center;
@@ -23,9 +26,12 @@
     box-sizing: content-box;
     border-radius: 10%;
     padding: 5%;
-    background-color: #08371d;
+    background-color: var(--controlelementactive);
     color: #fff;
     height: fit-content;
+    min-width:min-content;
+    max-width:15em;
+    word-wrap:anywhere;
     justify-self: center;
     justify-content: center;
     justify-items: center;

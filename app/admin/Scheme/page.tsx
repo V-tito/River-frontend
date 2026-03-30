@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import DataView from '../../../components/dataView';
-import AddDeleteWrapper from '../../../components/addDeleteWrapper';
 import { getList } from '@/lib/api_wrap/configAPI';
 import { useGlobal } from '@/app/GlobalState';
+import headerStyles from '@/styles/headerStyles.module.css';
 
 const Schemelist = () => {
 	const { pollingError, setPollingError } = useGlobal();
@@ -27,15 +27,22 @@ const Schemelist = () => {
 		};
 		fetchData();
 	}, []);
-	if (loading) return <p>Загрузка...</p>;
-	if (pollingError) return <p>Ошибка: {pollingError.message}</p>;
+	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
+	if (pollingError)
+		return (
+			<p className={headerStyles.warning}>Ошибка: {pollingError.message}</p>
+		);
 	return (
-		<AddDeleteWrapper table="Scheme">
-			<h1 className="w-full text-3xl font-semibold leading-tight tracking-10 text-black dark:text-zinc-50 text-left">
-				Список схем:
+		<div>
+			<h1 className={headerStyles.sectionHeader}>
+				Список рабочих пространств:
 			</h1>
-			<DataView data={data} kind="Scheme"></DataView>
-		</AddDeleteWrapper>
+			<DataView
+				data={data}
+				kind="Scheme"
+				label="рабочие пространства"
+			></DataView>
+		</div>
 	);
 };
 
