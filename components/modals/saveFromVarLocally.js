@@ -5,6 +5,8 @@ import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
+import './popup.css';
 const SaveFromVarLocally = ({
 	formData,
 	initName = null,
@@ -65,9 +67,17 @@ const SaveFromVarLocally = ({
 		>
 			{close => (
 				<div className={styles.container}>
-					<button onClick={() => close()} className={buttonStyles.closeButton}>
-						&times;
-					</button>
+					<div className={buttonStyles.delGrid}>
+						<p className={headerStyles.modalHeader}>
+							{label ? label : buttonLabel}
+						</p>
+						<button
+							onClick={() => close()}
+							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
+						>
+							&times;
+						</button>
+					</div>
 					<input
 						className={inputStyles.input}
 						type="text"

@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-const DownloadButton = ({ filepath, filename, className = '' }) => {
+const DownloadButton = ({
+	filepath,
+	filename,
+	buttonLabel = 'Загрузить',
+	className = '',
+}) => {
 	const api = `/api/files${filepath}`;
 	const onDownload = async () => {
 		const response = await fetch(api, {
 			method: 'GET',
 		});
 		const result = await response.json();
+		console.log(result);
 		const blob = new Blob([result.content], {
 			type: 'text/json',
 		});
@@ -25,7 +31,7 @@ const DownloadButton = ({ filepath, filename, className = '' }) => {
 	};
 	return (
 		<button className={className} onClick={onDownload}>
-			Загрузить
+			{buttonLabel}
 		</button>
 	);
 };

@@ -2,6 +2,8 @@
 import fs from 'fs-extra';
 import { IncomingForm } from 'formidable';
 import path from 'path';
+import { getList } from '@/lib/api_wrap/configAPI';
+import { fetchAllSignalsInTheEnv } from '@/lib/hooks/getHelpers';
 
 export const config = {
 	runtime: 'nodejs',
@@ -9,7 +11,89 @@ export const config = {
 		bodyParser: false, // Disable body parsing to handle file upload
 	},
 };
-
+const processEnvConfig = async envName => {
+	console.log('envname', envName);
+	const translateEntry = entry => {
+		const dictionary = {
+			name: 'Имя',
+			comPort: 'COM_порт',
+			description: 'Описание',
+			address: 'Адрес',
+			maxInputs: 'Число_входных_портов',
+			maxOutputs: 'Число_выходов',
+			protocolVersion: 'Версия_протокола',
+			parentGroup: 'Группа',
+			testBoard: 'Плата',
+			channel: 'Канал',
+			isOutput: 'Сигнал_исходящий',
+			isStraight: 'Сигнал_инвертированный',
+			turnedOnStatusName: 'Имя_активного_состояния',
+			turnedOffStatusName: 'Имя_неактивного_состояния',
+			parentSul: 'СУЛ',
+			byteShift: 'Сдвиг_в_байтах',
+			firstBit: 'Первый_бит',
+			lastBit: 'Последний_бит',
+		};
+		console.log('entry', entry);
+		if (typeof entry == Object)
+			return Object.keys(entry).reduce((acc, key) => {
+				if (key in dictionary) {
+					const val =
+						key == 'isOutput'
+							? entry.key
+								? 'да'
+								: 'нет'
+							: key == 'isStraight'
+								? entry.key
+									? 'нет'
+									: 'да'
+								: entry.key;
+					return { ...acc, [dictionary[key]]: val };
+				}
+			}, {});
+		else return {};
+	};
+	const res = {};
+	//fetch env
+	const schemes = await getList('Scheme');
+	console.log('schemes', schemes);
+	console.log(
+		schemes.find(item => {
+			console.log('item', item);
+			console.log('envname', envName);
+			return item.name == envName;
+		})
+	);
+	const scheme = schemes.find(item => item.name == envName);
+	res.Рабочее_пространство = translateEntry(scheme);
+	//fetch groups
+	const groups = await getList('GroupOfSignals', envName);
+	res.Группы = groups.map(translateEntry);
+	//fetch tbs
+	const boards = await getList('TestBoard', envName);
+	res.Тестовые_платы = boards.map(translateEntry);
+	//fetch sul
+	const sul = await getList('Sul', envName);
+	res.СУЛ = translateEntry(sul);
+	//fetch sigs
+	const sigs = await fetchAllSignalsInTheEnv(envName, false, false, false);
+	res.Сигналы = Object.values(sigs.data)
+		.reduce((acc, item) => {
+			console.log('sigs entry', item);
+			return [...acc, ...item];
+		}, [])
+		.map(translateEntry);
+	//fetch sulsigs
+	const sulsigs = await fetchAllSignalsInTheEnv(envName, false, false, true);
+	res.Сигналы = Object.values(sulsigs.data)
+		.reduce((acc, item) => {
+			return [...acc, ...item];
+		}, [])
+		.map(translateEntry);
+	console.log('conf', res);
+	return res;
+	//return
+};
 export default async function handler(req, res) {
 	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
 	console.log('base path', safeBasePath);
@@ -18,9 +102,27 @@ export default async function handler(req, res) {
 	console.log(typeof relativePath);
 	const fullPath = `${safeBasePath}/${relativePath}/${filename}`;
 	console.log(fullPath);
+	if (req.query.envСonfig) {
+		console.log('envconfig', req.query.envСonfig);
+		const envconf = req.query.envСonfig;
+		try {
+			console.log(envconf);
+			const result = await processEnvConfig(envconf);
+			console.log('retconF', result);
+			res.status(200).json({ content: JSON.stringify(result) });
+			return;
+		} catch (err) {
+			console.log('errs');
+			if (err instanceof Error) {
+				res.status(500).json({ message: err.message });
+			} else {
+				res.status(500).json({ message: 'Неизвестная ошибка' });
+			}
+		}
+	}
 	// Security: Prevent path traversal
 	if (!fullPath.startsWith(safeBasePath)) {
-		return res.status(403).json({ error: 'Access denied' });
+		return res.status(403).json({ message: 'Нет доступа' });
 	}
 
 	try {
@@ -49,7 +151,7 @@ export default async function handler(req, res) {
 
 			form.parse(req, (err, fields, files) => {
 				if (err) {
-					res.status(500).json({ error: 'Something went wrong' });
+					res.status(500).json({ message: 'Неизвестная ошибка' });
 					return;
 				}
 
@@ -67,17 +169,17 @@ export default async function handler(req, res) {
 				fs.rename(oldPath, newPath, err => {
 					console.log('trying to rename');
 					if (err) {
-						res.status(500).json({ error: 'Error saving the file' });
+						res.status(500).json({ message: 'Не удалось сохранить файл' });
 						return;
 					}
 				});
-				res.status(200).json({ message: 'File uploaded successfully' });
+				res.status(200).json({ message: 'файл загружен' });
 			});
 		}
 		if (req.method == 'DELETE') {
 			console.log('DELrequest');
 			fs.unlink(fullPath);
-			res.status(200).json({ status: 'deleted successfully' });
+			res.status(200).json({ status: 'файл удален' });
 		}
 		// Upload logic
 	} catch (error) {
