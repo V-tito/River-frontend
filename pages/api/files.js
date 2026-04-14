@@ -14,114 +14,78 @@ export const config = {
 };
 const processEnvConfig = async envName => {
 	console.log('envname', envName);
-	const translateEntry = entry => {
-		const dictionary = {
-			name: 'Имя',
-			comPort: 'COM_порт',
-			description: 'Описание',
-			address: 'Адрес',
-			maxInputs: 'Число_входных_портов',
-			maxOutputs: 'Число_выходов',
-			protocolVersion: 'Версия_протокола',
-			parentGroup: 'Группа',
-			testBoard: 'Плата',
-			channel: 'Канал',
-			isOutput: 'Сигнал_исходящий',
-			isStraight: 'Сигнал_инвертированный',
-			turnedOnStatusName: 'Имя_активного_состояния',
-			turnedOffStatusName: 'Имя_неактивного_состояния',
-			parentSul: 'СУЛ',
-			byteShift: 'Сдвиг_в_байтах',
-			firstBit: 'Первый_бит',
-			lastBit: 'Последний_бит',
-		};
-		console.log('entry', entry);
-		if ((entry != null) & (entry != undefined))
-			return Object.keys(entry).reduce((acc, key) => {
-				console.log(key);
-				console.log(key in dictionary);
-				if (key in dictionary) {
-					const val =
-						key == 'isOutput'
-							? entry[key]
-								? 'да'
-								: 'нет'
-							: key == 'isStraight'
-								? entry[key]
-									? 'нет'
-									: 'да'
-								: key == 'testBoard'
-									? entry[key].name
-									: entry[key];
-					console.log({ ...acc, [dictionary[key]]: val });
-					return { ...acc, [dictionary[key]]: val };
-				}
-			}, {});
-		else return null;
-	};
 
 	const res = {};
-	//fetch env
-	res.env = {};
+	try {
+		//fetch env
+		console.log('began fetching env');
+		res.Env = {};
 
-	const schemes = await getList('Scheme');
-	console.log('schemes', schemes);
-	console.log(
-		schemes.find(item => {
-			console.log('item', item);
-			console.log('envname', envName);
-			return item.name == envName;
-		})
-	);
-	const scheme = schemes.find(item => item.name == envName);
-	delete scheme.id;
-	res.env.$ = scheme;
-
-	//fetch groups
-	const groups = await getList('GroupOfSignals', envName);
-	res.env.groups = [{ group: [] }];
-	groups.map(item => {
-		console.log('iterating groups');
-		if ('id' in item) delete item.id;
-		res.env.groups[0].group.push({ $: item });
-	});
-	//fetch tbs
-	const boards = await getList('TestBoard', envName);
-	res.env.testBoards = [{ testBoard: [] }];
-	boards.map(item => {
-		if ('id' in item) delete item.id;
-		res.env.testBoards[0].testBoard.push({ $: item });
-	});
-	//fetch sul
-	const sul = await getList('Sul', envName);
-	console.log('sul', sul, sul != null);
-	if (sul != null) delete sul.id;
-	res.env.sul = [{ $: sul }];
-	//fetch sigs
-	const sigs = await fetchAllSignalsInTheEnv(envName, false, false, false);
-	res.env.testSignals = [{}];
-	if ('list' in sigs)
-		res.env.testSignals[0].signal = sigs.list.reduce((acc, item) => {
-			console.log('sigs entry', item, {
-				...item,
-				testBoard: item.testBoard.name,
-			});
+		const schemes = await getList('Scheme');
+		console.log('env fetchschemes', schemes);
+		console.log(
+			schemes.find(item => {
+				console.log('item', item);
+				console.log('envname', envName);
+				return item.name == envName;
+			})
+		);
+		const scheme = schemes.find(item => item.name == envName);
+		delete scheme.id;
+		res.Env.$ = scheme;
+		console.log('set scheme');
+		//fetch groups
+		const groups = await getList('GroupOfSignals', envName);
+		res.Env.Groups = [{ GroupOfSignals: [] }];
+		groups.map(item => {
+			console.log('iterating groups');
 			if ('id' in item) delete item.id;
-
-			return [...acc, { $: { ...item, testBoard: item.testBoard.name } }];
-		}, []);
-	else res.env.testSignals[0].signal = [];
-	//fetch sulsigs
-	const sulsigs = await fetchAllSignalsInTheEnv(envName, false, false, true);
-	res.env.sulSignals = [{}];
-	console.log('ss', sulsigs);
-	if ('list' in sulsigs) {
-		res.env.sulSignals[0].sulSignal = sulsigs.list.reduce((acc, item) => {
+			res.Env.Groups[0].GroupOfSignals.push({ $: item });
+		});
+		console.log('fetched groups');
+		//fetch tbs
+		const boards = await getList('TestBoard', envName);
+		res.Env.TestBoards = [{ TestBoard: [] }];
+		boards.map(item => {
 			if ('id' in item) delete item.id;
-			return [...acc, { $: item }];
-		}, []);
-	} else res.env.sulSignals[0].sulSignal = [];
-	console.log('conf', res);
+			res.Env.TestBoards[0].TestBoard.push({ $: item });
+		});
+		console.log('fetched boards');
+		//fetch sul
+		const Sul = await getList('Sul', envName);
+		console.log('Sul', Sul, Sul != null);
+		if (Sul != null) delete Sul.id;
+		res.Env.Sul = [{ $: Sul }];
+		console.log('fetched sul');
+		//fetch sigs
+		const sigs = await fetchAllSignalsInTheEnv(envName, false, false, false);
+		res.Env.TestSignals = [{}];
+		if ('list' in sigs)
+			res.Env.TestSignals[0].Signal = sigs.list.reduce((acc, item) => {
+				console.log('sigs entry', item, {
+					...item,
+					testBoard: item.testBoard.name,
+				});
+				if ('id' in item) delete item.id;
+
+				return [...acc, { $: { ...item, testBoard: item.testBoard.name } }];
+			}, []);
+		else res.Env.TestSignals[0].Signal = [];
+		console.log('fetched sigs');
+		//fetch Sulsigs
+		const Sulsigs = await fetchAllSignalsInTheEnv(envName, false, false, true);
+		res.Env.SulSignals = [{}];
+		console.log('ss', Sulsigs);
+		if ('list' in Sulsigs) {
+			res.Env.SulSignals[0].SulSignal = Sulsigs.list.reduce((acc, item) => {
+				if ('id' in item) delete item.id;
+				return [...acc, { $: item }];
+			}, []);
+		} else res.Env.SulSignals[0].SulSignal = [];
+		console.log('conf', res);
+	} catch (err) {
+		console.log('err in envcfg', err);
+	}
 	return res;
 };
 //return;
@@ -145,7 +109,8 @@ export default async function handler(req, res) {
 			try {
 				xml = builder.buildObject(result);
 			} catch (err) {
-				console.log(err.message);
+				console.log(error);
+				console.log(err);
 			}
 			console.log(xml);
 			res.status(200).json({ content: xml });

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<env name="РП1" comPort="COM7" description="РП из примера конфигурационного файла">
-<sul name="СУЛ" comPort="COM7" description="СУЛ из примера конфигурационного файла"/>
-    <groups>
-        <group name="Группа1" description="Группа из примера конфигурационного файла" />
-        <group name="Группа2" description="Группа из примера конфигурационного файла" />
-    </groups>
+<Env name="РП1" comPort="COM7" description="РП из примера конфигурационного файла">
+<Sul name="СУЛ" comPort="COM7" description="СУЛ из примера конфигурационного файла"/>
+    <Groups>
+        <GroupOfSignals name="Группа1" description="Группа из примера конфигурационного файла" />
+        <GroupOfSignals name="Группа2" description="Группа из примера конфигурационного файла" />
+    </Groups>
     
-    <testBoards>
-        <testBoard name="ТП1" address="0" maxInputs="32" maxOutputs="24" protocolVersion="1" description="ТП из примера конфигурационного файла"/>
-    </testBoards>
-    <testSignals>
-        <signal name="Сигнал1" parentGroup="Группа1" testBoard="ТП1" channel="0" isOutput="true" isStraight="true" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал из примера кфг"/>
-         <signal name="Сигнал2" parentGroup="Группа2" testBoard="ТП1" channel="0" isOutput="false" isStraight="false" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал из примера кфг"/>
-    </testSignals>
-    <sulSignals>
-        <sulSignal name="СигналСУЛ1" parentGroup="Группа1" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал СУЛ из примера кфг"/>
-        <sulSignal name="СигналСУЛ1" parentGroup="Группа2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал СУЛ из примера кфг"/>
-    </sulSignals>
-</env>
+    <TestBoards>
+        <TestBoard name="ТП1" address="0" maxInputs="32" maxOutputs="24" protocolVersion="1" description="ТП из примера конфигурационного файла"/>
+    </TestBoards>
+    <TestSignals>
+        <Signal name="Сигнал1" parentGroup="Группа1" testBoard="ТП1" channel="0" isOutput="true" isStraight="true" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал из примера кфг"/>
+        <Signal name="Сигнал2" parentGroup="Группа2" testBoard="ТП1" channel="0" isOutput="false" isStraight="false" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал из примера кфг"/>
+    </TestSignals>
+    <SulSignals>
+        <SulSignal name="СигналСУЛ1" parentGroup="Группа1" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал СУЛ из примера кфг"/>
+        <SulSignal name="СигналСУЛ1" parentGroup="Группа2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description="Сигнал СУЛ из примера кфг"/>
+    </SulSignals>
+</Env>
