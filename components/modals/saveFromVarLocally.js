@@ -6,11 +6,13 @@ import PropTypes from 'prop-types';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
+
 import './popup.css';
 const SaveFromVarLocally = ({
 	formData,
 	initName = null,
 	label = 'Сохранить',
+	xml = false,
 }) => {
 	const [filename, setFilename] = useState(
 		initName

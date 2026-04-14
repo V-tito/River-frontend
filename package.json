@@ -25,7 +25,8 @@
     "react-hook-form": "^7.68.0",
     "react-simple-code-editor": "^0.14.1",
     "react-use": "^17.6.0",
-    "reactjs-popup": "^2.0.6"
+    "reactjs-popup": "^2.0.6",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",

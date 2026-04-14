@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import { IncomingForm } from 'formidable';
 import path from 'path';
 import { getList } from '@/lib/api_wrap/configAPI';
+import { Builder } from 'xml2js';
 import { fetchAllSignalsInTheEnv } from '@/lib/hooks/getHelpers';
 
 export const config = {
@@ -35,26 +36,34 @@ const processEnvConfig = async envName => {
 			lastBit: 'Последний_бит',
 		};
 		console.log('entry', entry);
-		if (typeof entry == Object)
+		if ((entry != null) & (entry != undefined))
 			return Object.keys(entry).reduce((acc, key) => {
+				console.log(key);
+				console.log(key in dictionary);
 				if (key in dictionary) {
 					const val =
 						key == 'isOutput'
-							? entry.key
+							? entry[key]
 								? 'да'
 								: 'нет'
 							: key == 'isStraight'
-								? entry.key
+								? entry[key]
 									? 'нет'
 									: 'да'
-								: entry.key;
+								: key == 'testBoard'
+									? entry[key].name
+									: entry[key];
+					console.log({ ...acc, [dictionary[key]]: val });
 					return { ...acc, [dictionary[key]]: val };
 				}
 			}, {});
-		else return {};
+		else return null;
 	};
+
 	const res = {};
 	//fetch env
+	res.env = {};
+
 	const schemes = await getList('Scheme');
 	console.log('schemes', schemes);
 	console.log(
@@ -65,35 +74,57 @@ const processEnvConfig = async envName => {
 		})
 	);
 	const scheme = schemes.find(item => item.name == envName);
-	res.Рабочее_пространство = translateEntry(scheme);
+	delete scheme.id;
+	res.env.$ = scheme;
+
 	//fetch groups
 	const groups = await getList('GroupOfSignals', envName);
-	res.Группы = groups.map(translateEntry);
+	res.env.groups = [{ group: [] }];
+	groups.map(item => {
+		console.log('iterating groups');
+		if ('id' in item) delete item.id;
+		res.env.groups[0].group.push({ $: item });
+	});
 	//fetch tbs
 	const boards = await getList('TestBoard', envName);
-	res.Тестовые_платы = boards.map(translateEntry);
+	res.env.testBoards = [{ testBoard: [] }];
+	boards.map(item => {
+		if ('id' in item) delete item.id;
+		res.env.testBoards[0].testBoard.push({ $: item });
+	});
 	//fetch sul
 	const sul = await getList('Sul', envName);
-	res.СУЛ = translateEntry(sul);
+	console.log('sul', sul, sul != null);
+	if (sul != null) delete sul.id;
+	res.env.sul = [{ $: sul }];
 	//fetch sigs
 	const sigs = await fetchAllSignalsInTheEnv(envName, false, false, false);
-	res.Сигналы = Object.values(sigs.data)
-		.reduce((acc, item) => {
-			console.log('sigs entry', item);
-			return [...acc, ...item];
-		}, [])
-		.map(translateEntry);
+	res.env.testSignals = [{}];
+	if ('list' in sigs)
+		res.env.testSignals[0].signal = sigs.list.reduce((acc, item) => {
+			console.log('sigs entry', item, {
+				...item,
+				testBoard: item.testBoard.name,
+			});
+			if ('id' in item) delete item.id;
+
+			return [...acc, { $: { ...item, testBoard: item.testBoard.name } }];
+		}, []);
+	else res.env.testSignals[0].signal = [];
 	//fetch sulsigs
 	const sulsigs = await fetchAllSignalsInTheEnv(envName, false, false, true);
-	res.Сигналы = Object.values(sulsigs.data)
-		.reduce((acc, item) => {
-			return [...acc, ...item];
-		}, [])
-		.map(translateEntry);
+	res.env.sulSignals = [{}];
+	console.log('ss', sulsigs);
+	if ('list' in sulsigs) {
+		res.env.sulSignals[0].sulSignal = sulsigs.list.reduce((acc, item) => {
+			if ('id' in item) delete item.id;
+			return [...acc, { $: item }];
+		}, []);
+	} else res.env.sulSignals[0].sulSignal = [];
 	console.log('conf', res);
 	return res;
-	//return
 };
+//return;
 export default async function handler(req, res) {
 	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
 	console.log('base path', safeBasePath);
@@ -109,12 +140,21 @@ export default async function handler(req, res) {
 			console.log(envconf);
 			const result = await processEnvConfig(envconf);
 			console.log('retconF', result);
-			res.status(200).json({ content: JSON.stringify(result) });
+			var builder = new Builder();
+			var xml;
+			try {
+				xml = builder.buildObject(result);
+			} catch (err) {
+				console.log(err.message);
+			}
+			console.log(xml);
+			res.status(200).json({ content: xml });
 			return;
 		} catch (err) {
-			console.log('errs');
+			console.log('errs', err);
+			console.log('errmes', err.message);
 			if (err instanceof Error) {
-				res.status(500).json({ message: err.message });
+				res.status(500).json({ message: err.message ? err.message : err });
 			} else {
 				res.status(500).json({ message: 'Неизвестная ошибка' });
 			}

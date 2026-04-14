@@ -7,6 +7,7 @@ import { multiplePostPatch } from '@/lib/hooks/postPatchHelpers';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
 import PropTypes from 'prop-types';
 import { useGlobal } from '@/app/GlobalState';
+import { parseString } from 'xml2js';
 const addFromFileForm = ({
 	table = null,
 	buttonLabel = 'Создать из файла',
@@ -63,56 +64,52 @@ const addFromFileForm = ({
 		const reader = new FileReader();
 
 		reader.onload = e => {
-			const process = async e => {
-				const content = JSON.parse(e.target.result);
-				console.log(content);
+			const process = async content => {
+				console.dir(content);
 				let report;
 				if (table != null) {
 					const newContent = content.map(translateEntry);
 					report = await multiplePostPatch(newContent, table, defaultScheme);
 				} else {
-					if ('Рабочее_пространство' in content) {
+					if ('env' in content) {
 						report = {
 							Рабочее_пространство: await multiplePostPatch(
-								translateEntry(content.Рабочее_пространство),
+								content.env.$,
 								'Scheme'
 							),
 						};
 						const schemes = await getList('Scheme');
 						console.log('schemes after post', schemes);
 						const scheme = schemes.find(item => {
-							console.log('item', item);
-							console.log(content.Рабочее_пространство);
-							console.log(content.Рабочее_пространство.Имя);
-							return item.name == content.Рабочее_пространство.Имя;
+							return item.name == content.env.$.name;
 						});
 						console.log('scheme', scheme);
 						const sulPost = await multiplePostPatch(
-							translateEntry(content.СУЛ),
+							content.env.sul[0].$,
 							'Sul',
 							scheme
 						);
 						report.СУЛ = sulPost;
 						const tbPost = await multiplePostPatch(
-							content.Тестовые_платы.map(translateEntry),
+							content.env.testBoards[0].testBoard.map(item => item.$),
 							'TestBoard',
 							scheme
 						);
 						report.Тестовые_платы = tbPost;
 						const groupPost = await multiplePostPatch(
-							content.Группы.map(translateEntry),
+							content.env.groups[0].group.map(item => item.$),
 							'GroupOfSignals',
 							scheme
 						);
 						report.Группы = groupPost;
 						const sigPost = await multiplePostPatch(
-							content.Сигналы_тестовых_плат.map(translateEntry),
+							content.env.testSignals[0].signal.map(item => item.$),
 							'Signal',
 							scheme
 						);
 						report.Сигналы_тестовых_плат = sigPost;
 						const sulSigPost = await multiplePostPatch(
-							content.Сигналы_СУЛ.map(translateEntry),
+							content.env.sulSignals[0].sulSignal.map(item => item.$),
 							'SulSignal',
 							scheme
 						);
@@ -127,7 +124,7 @@ const addFromFileForm = ({
 				setReaderError(null);
 			};
 			try {
-				process(e);
+				parseString(e.target.result, (err, result) => process(result));
 			} catch (err) {
 				setReaderError(err);
 				console.log('invalid json');
@@ -149,6 +146,7 @@ const addFromFileForm = ({
 				uploadError={readerError}
 				closeAfter={false}
 				reloadOnClose={true}
+				accept=".xml"
 			>
 				{parseReport ? (
 					<div className="flex flex-col w-full">

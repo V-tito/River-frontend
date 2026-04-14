@@ -5,7 +5,7 @@ const EnvDownload = ({ defaultScheme }) => {
 	return (
 		<DownloadButton
 			filepath={`?envСonfig=${defaultScheme}`}
-			filename={`env-config-${defaultScheme}.json`}
+			filename={`env-config-${defaultScheme}.xml`}
 			buttonLabel="Получить конфигурационный файл рабочего пространства"
 			className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 		></DownloadButton>

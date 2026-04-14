@@ -3,7 +3,7 @@ import styles from './modal.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 
 import PropTypes from 'prop-types';
-const Modal = ({ state, children }) => {
+const InlineModal = ({ state, children }) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -14,7 +14,7 @@ const Modal = ({ state, children }) => {
 		setIsVisible(false);
 	};
 	if (!isVisible) return null;
-
+	console.log('imc', children);
 	return (
 		<div className={styles.containerInline}>
 			{children}
@@ -27,8 +27,8 @@ const Modal = ({ state, children }) => {
 		</div>
 	);
 };
-Modal.propTypes = {
+InlineModal.propTypes = {
 	state: PropTypes.any,
 	children: PropTypes.node,
 };
-export default Modal;
+export default InlineModal;

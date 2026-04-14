@@ -14,6 +14,7 @@ const OpenLocalFileModal = ({
 	label = null,
 	closeAfter = true,
 	reloadOnClose = false,
+	accept = '.json,application/json',
 	children,
 }) => {
 	const [file, setFile] = useState(null);
@@ -49,7 +50,7 @@ const OpenLocalFileModal = ({
 					<input
 						className={inputStyles.fileInput}
 						type="file"
-						accept=".json,application/json"
+						accept={accept}
 						onChange={e => handleFileChange(e)}
 					/>
 					<button

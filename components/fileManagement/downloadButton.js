@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import InlineModal from '@/components/modals/inlineModal';
+
 import PropTypes from 'prop-types';
 const DownloadButton = ({
 	filepath,
@@ -6,13 +8,22 @@ const DownloadButton = ({
 	buttonLabel = 'Загрузить',
 	className = '',
 }) => {
+	const [error, setError] = useState(null);
 	const api = `/api/files${filepath}`;
 	const onDownload = async () => {
+		setError(null);
 		const response = await fetch(api, {
 			method: 'GET',
 		});
+		if (!response.ok) {
+			const err = await response.json();
+			console.log('respm', err.message);
+			setError(new Error(`Ошибка сети ${response.status}: ${err.message}`));
+			console.log('errm', error.message);
+			return;
+		}
 		const result = await response.json();
-		console.log(result);
+		console.log('result', result);
 		const blob = new Blob([result.content], {
 			type: 'text/json',
 		});
@@ -29,10 +40,16 @@ const DownloadButton = ({
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	};
+	console.log('err', error != null ? error.message : 'no err');
 	return (
-		<button className={className} onClick={onDownload}>
-			{buttonLabel}
-		</button>
+		<div>
+			<button className={className} onClick={onDownload}>
+				{buttonLabel}
+			</button>
+			<InlineModal state={error}>
+				{error ? error.message : 'no err'}
+			</InlineModal>
+		</div>
 	);
 };
 
