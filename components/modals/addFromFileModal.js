@@ -2,7 +2,11 @@ import styles from './addFromFileForm.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import React, { useState } from 'react';
 import OpenLocalFileModal from './openLocalFileModal';
-import { getList } from '@/lib/api_wrap/configAPI';
+import {
+	getList,
+	checkExistence,
+	deleteEntity,
+} from '@/lib/api_wrap/configAPI';
 import { multiplePostPatch } from '@/lib/hooks/postPatchHelpers';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
 import PropTypes from 'prop-types';
@@ -76,6 +80,13 @@ const addFromFileForm = ({
 					} else {
 						console.log('content', content);
 						const newContent = validateContent(content);
+						const exists = await checkExistence(
+							'Scheme',
+							newContent.Env.$.name
+						);
+						if (exists) {
+							await deleteEntity('Scheme', newContent.Env.$.name);
+						}
 						report = {
 							Рабочее_пространство: await multiplePostPatch(
 								newContent.Env.$,

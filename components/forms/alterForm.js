@@ -45,7 +45,7 @@ const AlterForm = ({ table, object }) => {
 			setConfig(data);
 		};
 		fetchConfig();
-		if (table == 'Signal') {
+		if ((table == 'Signal') | (table == 'SulSignal')) {
 			const fetchGroupsAndBoards = async () => {
 				try {
 					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.name}`);

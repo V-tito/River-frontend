@@ -38,7 +38,7 @@ const AddForm = ({ table }) => {
 			console.log(data);
 		};
 		fetchConfig();
-		if (table == 'Signal') {
+		if ((table == 'Signal') | (table == 'SulSignal')) {
 			const fetchGroupsAndBoards = async () => {
 				try {
 					const response = await fetch(
