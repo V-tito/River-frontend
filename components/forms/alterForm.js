@@ -91,16 +91,17 @@ const AlterForm = ({ table, object }) => {
 						{field.label}{' '}
 					</label>
 					{field.type === 'radio' ? (
-						<div className={inputStyles.radio}>
+						<div className={inputStyles.radioBox}>
 							<div>
 								<input
 									type="radio"
 									id={field.id}
 									name={field.label}
+									className={inputStyles.radio}
 									value="true"
 									checked={String(watchers[field.id]) == 'true'}
 									{...register(field.id, field.validation)}
-								/>{' '}
+								/>
 								{field.values[0]}
 							</div>
 							<div>
@@ -108,10 +109,11 @@ const AlterForm = ({ table, object }) => {
 									type="radio"
 									id={field.id}
 									name={field.label}
+									className={inputStyles.radio}
 									value="false"
 									checked={String(watchers[field.id]) == 'false'}
 									{...register(field.id, field.validation)}
-								/>{' '}
+								/>
 								{field.values[1]}
 							</div>
 						</div>

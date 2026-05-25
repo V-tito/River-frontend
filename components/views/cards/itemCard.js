@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import AlterModal from '../../modals/alterModal';
+import AddCopyModal from '../../modals/addCopyModal';
 import styles from './cards.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
@@ -54,6 +55,7 @@ const ItemCard = ({ type, item, config }) => {
 					}}
 				></ConfirmDeleteModal>
 			</div>
+			<AddCopyModal table={type} object={item}></AddCopyModal>
 		</div>
 	);
 };

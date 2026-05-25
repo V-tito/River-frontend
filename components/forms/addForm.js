@@ -9,14 +9,21 @@ import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { postHelper } from '@/lib/hooks/postPatchHelpers';
 
-const AddForm = ({ table }) => {
+const AddForm = ({ table, object = {} }) => {
 	const defaults =
 		table == 'TestBoard'
 			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
-			: {};
+			: (table == 'Signal') & (object != {})
+				? {
+						...object,
+						parentGroup: object.parentGroup,
+						testBoard: object.testBoard.name,
+					}
+				: object;
+	if ('id' in defaults) delete defaults.id;
 	const { defaultScheme } = useGlobal();
 	console.log('schemeport', defaultScheme.comPort);
-	const { register, handleSubmit, reset } = useForm({
+	const { register, handleSubmit, reset, watch } = useForm({
 		defaultValues: defaults,
 	});
 	const [config, setConfig] = useState([]);
@@ -30,6 +37,9 @@ const AddForm = ({ table }) => {
 		parentGroup: groupNames,
 		parentSul: sul ? sul : [],
 	};
+	const watchers = Object.keys(defaults).reduce((acc, key) => {
+		return { ...acc, [key]: watch(key) };
+	}, {});
 	useEffect(() => {
 		const fetchConfig = async () => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
@@ -100,8 +110,9 @@ const AddForm = ({ table }) => {
 									name={field.label}
 									className={inputStyles.radio}
 									value="true"
+									checked={String(watchers[field.id]) == 'true'}
 									{...register(field.id, field.validation)}
-								/>{' '}
+								/>
 								{field.values[0]}
 							</div>
 							<div>
@@ -111,8 +122,9 @@ const AddForm = ({ table }) => {
 									className={inputStyles.radio}
 									name={field.label}
 									value="false"
+									checked={String(watchers[field.id]) == 'false'}
 									{...register(field.id, field.validation)}
-								/>{' '}
+								/>
 								{field.values[1]}
 							</div>
 						</div>
@@ -173,6 +185,7 @@ const AddForm = ({ table }) => {
 
 AddForm.propTypes = {
 	table: PropTypes.string.isRequired,
+	object: PropTypes.shape(),
 };
 
 export default AddForm;
