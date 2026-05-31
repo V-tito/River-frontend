@@ -6,13 +6,12 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
-
 import SortableBarEditor from './commandBars/sortableBarEditor';
 import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
-import { usePersistentData } from '@/lib/hooks/usePersistentData';
+import { usePersistentData } from '@/utils/hooks/usePersistentData';
 import { useBeforeUnload } from 'react-use';
-import { checkExistence } from '@/lib/api_wrap/configAPI';
+import { checkExistence } from '@/utils/api_wrap/configAPI';
 
 const Editor = ({ scheme }) => {
 	const [formData, setFormData] = useState([]);
@@ -89,7 +88,7 @@ const Editor = ({ scheme }) => {
 		setLoading(false);
 	}, []);
 	const validateSignal = async (signame, group, subtype) => {
-		const result = await checkExistence(subtype, signame, group);
+		const result = await checkExistence(subtype, signame, group, scheme.name);
 		console.log('validate res', result);
 		return result;
 	};
@@ -154,9 +153,7 @@ const Editor = ({ scheme }) => {
 					},
 				]);
 			} else {
-				if (entry.action == 'executePresets') {
-					entry.scheme = scheme.name;
-				}
+				entry.scheme = scheme.name;
 				if ('signal' in entry) {
 					const exists = validateSignal(entry.signal, entry.group, entry.sul);
 					if (!exists) throw new Error('Несуществующий сигнал');

@@ -23,7 +23,7 @@ const StateIndicator = memo(function StateIndicator({
 		<div>
 			<div
 				className={`${styles.indicator} ${
-					on == 1
+					on == 1 || on == 2
 						? styles.active
 						: on == undefined
 							? styles.error
@@ -32,7 +32,7 @@ const StateIndicator = memo(function StateIndicator({
 			></div>
 
 			<span>
-				{on == 1
+				{on == 1 || on == 2
 					? turnedOnStatusName
 					: on == undefined
 						? 'Ошибка при получении состояния сигнала'

@@ -5,7 +5,7 @@ import styles from './form.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 
 const SetDefaultScheme = () => {
 	const { defaultScheme, setDefaultScheme } = useGlobal();

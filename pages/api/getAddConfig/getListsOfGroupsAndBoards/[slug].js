@@ -1,4 +1,4 @@
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 export default function handler(req, res) {
 	const { slug } = req.query;
 	console.log(req.url);
@@ -59,7 +59,7 @@ export default function handler(req, res) {
 			res.status(200).json({
 				boards: tempBoardNames,
 				groups: tempGroupNames,
-				sul: resSul?{ [resSul.name]: resSul.id }:null,
+				sul: resSul ? { [resSul.name]: resSul.id } : null,
 			});
 		} catch (err) {
 			if (err instanceof Error) {

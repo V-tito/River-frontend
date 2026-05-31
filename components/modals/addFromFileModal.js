@@ -6,8 +6,8 @@ import {
 	getList,
 	checkExistence,
 	deleteEntity,
-} from '@/lib/api_wrap/configAPI';
-import { multiplePostPatch } from '@/lib/hooks/postPatchHelpers';
+} from '@/utils/api_wrap/configAPI';
+import { multiplePostPatch } from '@/utils/hooks/postPatchHelpers';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
 import PropTypes from 'prop-types';
 import { useGlobal } from '@/app/GlobalState';

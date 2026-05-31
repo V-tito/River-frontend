@@ -5,8 +5,10 @@ import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
-import { deleteEntity } from '@/lib/api_wrap/configAPI';
+import { deleteEntity } from '@/utils/api_wrap/configAPI';
+import { useGlobal } from '../../app/GlobalState';
 const ConfirmDeleteModal = ({ state }) => {
+	const { defaultScheme } = useGlobal();
 	console.log('confirm delete modal state', state);
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
@@ -17,7 +19,8 @@ const ConfirmDeleteModal = ({ state }) => {
 			await deleteEntity(
 				state.type,
 				state.name,
-				state.group ? state.group : null
+				state.group ? state.group : null,
+				defaultScheme.name
 			);
 			window.location.reload();
 		} catch (err) {

@@ -3,11 +3,11 @@ import StateIndicator from './stateIndicator';
 import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
-import { getBoardState, getSignalState } from '@/lib/api_wrap/protocol';
+import { getBoardState, getSignalState } from '@/utils/api_wrap/protocol';
 const IndicatorsTable = ({ data, board, group = null }) => {
+	const { defaultScheme, setPollingError } = useGlobal();
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
-	const { setPollingError } = useGlobal();
 	const [loading, setLoading] = useState(true);
 	//const [checkConstantly, setCheck] = useState(true);
 	console.log('list of boards from it');
@@ -20,7 +20,7 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 				if (board) {
 					result = await getBoardState(sig.name);
 				} else {
-					result = await getSignalState(group, sig.name);
+					result = await getSignalState(defaultScheme.name, group, sig.name);
 				}
 				console.log('fetching', sig.id, 'set api in', Date.now() - last);
 				last = Date.now();

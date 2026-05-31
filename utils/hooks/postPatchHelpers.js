@@ -2,7 +2,7 @@ import {
 	postEntity,
 	patchEntity,
 	checkExistence,
-} from '@/lib/api_wrap/configAPI';
+} from '@/utils/api_wrap/configAPI';
 const fetchGroupsAndBoards = async defaultScheme => {
 	try {
 		const response = await fetch(
@@ -70,7 +70,8 @@ async function processFileEntry(entry, table, defaultScheme) {
 		const exists = await checkExistence(
 			table,
 			entry.name,
-			entry.parentGroup ? entry.parentGroup : null
+			entry.parentGroup ? entry.parentGroup : null,
+			defaultScheme.name
 		);
 		console.log('existence', exists);
 		if (exists) {

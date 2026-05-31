@@ -1,4 +1,4 @@
-import { fetchAllSignalsInTheEnv } from '@/lib/hooks/getHelpers';
+import { fetchAllSignalsInTheEnv } from '@/utils/hooks/getHelpers';
 export default function handler(req, res) {
 	let sorted = false;
 	let namesOnly = false;

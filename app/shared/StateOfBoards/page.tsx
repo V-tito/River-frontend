@@ -4,7 +4,7 @@ import IndicatorsTable from '../../../components/forStatePages/indicatorsTable';
 import { useGlobal } from '../../GlobalState';
 import headerStyles from '@/styles/headerStyles.module.css';
 import React from 'react';
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 
 const StateOfBoards = () => {
 	const { defaultScheme, setPollingError } = useGlobal();

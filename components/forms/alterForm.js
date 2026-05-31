@@ -7,7 +7,7 @@ import Modal from '../modals/inlineModal';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { patchHelper } from '@/lib/hooks/postPatchHelpers';
+import { patchHelper } from '@/utils/hooks/postPatchHelpers';
 const AlterForm = ({ table, object }) => {
 	const defaults =
 		table != 'Signal'

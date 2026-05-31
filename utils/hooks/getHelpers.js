@@ -1,4 +1,4 @@
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 export async function fetchAllSignalsInTheEnv(
 	envName,
 	sorted = false,
@@ -9,7 +9,11 @@ export async function fetchAllSignalsInTheEnv(
 	if (Array.isArray(newGroups)) {
 		if (newGroups.length > 0) {
 			const promises = newGroups.map(async group => {
-				const temp = await getList(sul ? 'SulSignal' : 'Signal', group.name);
+				const temp = await getList(
+					sul ? 'SulSignal' : 'Signal',
+					group.name,
+					envName
+				);
 				if (temp != undefined) {
 					if (!sorted) {
 						return {

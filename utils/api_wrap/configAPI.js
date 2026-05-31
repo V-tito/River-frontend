@@ -1,16 +1,20 @@
-export async function getList(type, parentName = null) {
+export async function getList(type, parentName = null, schemeName = null) {
 	console.log('getting list of ', type);
-	console.log(
-		'api',
-		`${process.env.API_URL}/api/river/v1/configurator/${type}${parentName ? `?parentName=${parentName}` : ''}`
-	);
-	const response = await fetch(
-		`${process.env.API_URL}/api/river/v1/configurator/${type}${parentName ? `?parentName=${parentName}` : ''}`,
-		{
-			method: 'GET',
-			//headers: {'Content-Type': 'application/json',}
+	let api;
+	if (['Signal', 'SulSignal'].includes(type)) {
+		if (parentName == null) {
+			throw new Error(`Не указана группа`);
 		}
-	);
+		if (schemeName == null) {
+			throw new Error(`Не указано рабочее пространство`);
+		}
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?parentName=${parentName}&schemeName=${schemeName}`;
+	} else
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}${parentName ? `?parentName=${parentName}` : ''}`;
+	const response = await fetch(api, {
+		method: 'GET',
+		//headers: {'Content-Type': 'application/json',}
+	});
 	console.log('received response on getting list');
 	if (!response.ok) {
 		throw new Error(`Ошибка сети ${response.status}`);
@@ -19,13 +23,26 @@ export async function getList(type, parentName = null) {
 	console.log('received result on getting list', result);
 	return result;
 }
-export async function checkExistence(type, name, group = null) {
+export async function checkExistence(
+	type,
+	name,
+	group = null,
+	schemeName = null
+) {
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {
 		if (group == null) {
 			throw new Error(`Не указана группа сигнала`);
 		}
-		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?group=${group}&signal=${name}`;
+		if (schemeName == null) {
+			throw new Error(`Не указано рабочее пространство`);
+		}
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?schemeName=${schemeName}&group=${group}&signal=${name}`;
+	} else if (type == 'GroupOfSignals') {
+		if (schemeName == null) {
+			throw new Error(`Не указано рабочее пространство`);
+		}
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?schemeName=${schemeName}&signal=${name}`;
 	} else {
 		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?name=${name}`;
 	}
@@ -81,12 +98,28 @@ export async function patchEntity(type, body) {
 	const result = await response.json();
 	return result;
 }
-export async function deleteEntity(type, name, group = null) {
+export async function deleteEntity(
+	type,
+	name,
+	group = null,
+	schemeName = null
+) {
 	let api;
-	if (!['Signal', 'SulSignal'].includes(type)) {
-		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?name=${name}`;
+	if (['Signal', 'SulSignal'].includes(type)) {
+		if (group == null) {
+			throw new Error(`Не указана группа сигнала`);
+		}
+		if (schemeName == null) {
+			throw new Error(`Не указано рабочее пространство`);
+		}
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?schemeName=${schemeName}&group=${group}&signal=${name}`;
+	} else if (type == 'GroupOfSignals') {
+		if (schemeName == null) {
+			throw new Error(`Не указано рабочее пространство`);
+		}
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?name=${name}&schemeName=${schemeName}`;
 	} else {
-		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?group=${group}&signal=${name}`;
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?name=${name}`;
 	}
 	console.log('del on url', api);
 	const response = await fetch(api, {

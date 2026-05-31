@@ -1,4 +1,4 @@
-import * as protocol from '@/lib/api_wrap/protocol';
+import * as protocol from '@/utils/api_wrap/protocol';
 export default async function handler(req, res) {
 	async function waitTillTimeout(interval = 500, duration = 30000) {
 		let timeoutId;
@@ -6,6 +6,7 @@ export default async function handler(req, res) {
 		const makeRequest = async () => {
 			try {
 				const result = await protocol.getSignalState(
+					command.scheme,
 					command.group,
 					command.signal
 				);
@@ -60,6 +61,7 @@ export default async function handler(req, res) {
 			message = `Уровень сигнала ${command.signal} предустановлен на ${command.targetValue}`;
 			try {
 				await protocol.presetSignalState(
+					command.scheme,
 					command.group,
 					command.signal,
 					command.targetValue
@@ -74,6 +76,7 @@ export default async function handler(req, res) {
 			длиной ${command.pulseTime} периодичностью ${command.period}`;
 			try {
 				await protocol.presetPulse(
+					command.scheme,
 					command.group,
 					command.signal,
 					command.targetValue,
@@ -89,6 +92,7 @@ export default async function handler(req, res) {
 			message = `Уровень сигнала ${command.signal} установлен на ${command.targetValue}`;
 			try {
 				await protocol.setSignalState(
+					command.scheme,
 					command.group,
 					command.signal,
 					command.targetValue
@@ -102,6 +106,7 @@ export default async function handler(req, res) {
 			message = `Создан импульс сигнала ${command.signal} значением ${command.targetValue} длиной ${command.pulseTime} периодичностью ${command.period}`;
 			try {
 				await protocol.setPulse(
+					command.scheme,
 					command.group,
 					command.signal,
 					command.targetValue,
@@ -118,6 +123,7 @@ export default async function handler(req, res) {
 	if (act == 'check') {
 		try {
 			const result = await protocol.getSignalState(
+				command.scheme,
 				command.group,
 				command.signal
 			);

@@ -3,15 +3,17 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../modals/inlineModal';
 import styles from './stateButton.module.css';
 import PropTypes from 'prop-types';
-import { setSignalState, getSignalState } from '@/lib/api_wrap/protocol';
+import { useGlobal } from '../../app/GlobalState';
+import { setSignalState, getSignalState } from '@/utils/api_wrap/protocol';
 const StateButton = ({ sig, group }) => {
+	const { defaultScheme } = useGlobal();
 	const [error, setError] = useState(null);
 	const [on, setOn] = useState();
 	useEffect(() => {
 		const fetchCurrentState = () => {
 			let result;
 			try {
-				result = getSignalState(group, sig.name);
+				result = getSignalState(defaultScheme.name, group, sig.name);
 				return {
 					on: result.value,
 					checked: result.freshness
@@ -44,7 +46,7 @@ const StateButton = ({ sig, group }) => {
 	}, [sig, on]);
 	const changeState = async () => {
 		try {
-			await setSignalState(group, sig.name, !on);
+			await setSignalState(defaultScheme.name, group, sig.name, !on);
 			setOn(!on);
 		} catch (err) {
 			console.log(err);

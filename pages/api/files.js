@@ -2,9 +2,9 @@
 import fs from 'fs-extra';
 import { IncomingForm } from 'formidable';
 import path from 'path';
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 import { Builder } from 'xml2js';
-import { fetchAllSignalsInTheEnv } from '@/lib/hooks/getHelpers';
+import { fetchAllSignalsInTheEnv } from '@/utils/hooks/getHelpers';
 
 export const config = {
 	runtime: 'nodejs',

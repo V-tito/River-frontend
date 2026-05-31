@@ -10,7 +10,7 @@ export function usePersistentData(options) {
 			try {
 				storage.setItem(storageKey, JSON.stringify(data));
 			} catch (error) {
-				console.error('Failed to save form data:', error);
+				console.error('не удалось сохранить форму:', error);
 			}
 		},
 		[storageKey, storageType]
@@ -22,7 +22,7 @@ export function usePersistentData(options) {
 			const data = storage.getItem(storageKey);
 			return data ? JSON.parse(data) : null;
 		} catch (error) {
-			console.error('Failed to load form data:', error);
+			console.error('не удалось загрузить форму:', error);
 			return null;
 		}
 	}, [storageKey, storageType]);

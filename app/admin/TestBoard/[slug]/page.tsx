@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import DataView from '../../../../components/dataView';
 import { useGlobal } from '@/app/GlobalState';
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 import headerStyles from '@/styles/headerStyles.module.css';
 
 const BoardList = () => {

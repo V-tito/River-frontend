@@ -7,25 +7,11 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { postHelper } from '@/lib/hooks/postPatchHelpers';
+import { postHelper } from '@/utils/hooks/postPatchHelpers';
 
 const AddForm = ({ table, object = {} }) => {
-	const defaults =
-		table == 'TestBoard'
-			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
-			: (table == 'Signal') & (object != {})
-				? {
-						...object,
-						parentGroup: object.parentGroup,
-						testBoard: object.testBoard.name,
-					}
-				: object;
-	if ('id' in defaults) delete defaults.id;
 	const { defaultScheme } = useGlobal();
 	console.log('schemeport', defaultScheme.comPort);
-	const { register, handleSubmit, reset, watch } = useForm({
-		defaultValues: defaults,
-	});
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -37,9 +23,7 @@ const AddForm = ({ table, object = {} }) => {
 		parentGroup: groupNames,
 		parentSul: sul ? sul : [],
 	};
-	const watchers = Object.keys(defaults).reduce((acc, key) => {
-		return { ...acc, [key]: watch(key) };
-	}, {});
+
 	useEffect(() => {
 		const fetchConfig = async () => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
@@ -77,6 +61,24 @@ const AddForm = ({ table, object = {} }) => {
 			setLoading(false);
 		}
 	}, [table, defaultScheme]);
+
+	const defaults =
+		table == 'TestBoard'
+			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
+			: table == 'Signal' && object != {}
+				? {
+						...object,
+						parentGroup: object.parentGroup ? object.parentGroup : null,
+						testBoard: object.testBoard ? object.testBoard.name : null,
+					}
+				: object;
+	if ('id' in defaults) delete defaults.id;
+	const { register, handleSubmit, reset, watch } = useForm({
+		defaultValues: defaults,
+	});
+	const watchers = config.reduce((acc, field) => {
+		return { ...acc, [field.id]: watch(field.id) };
+	}, {});
 
 	const onSubmit = async data => {
 		setError(null);

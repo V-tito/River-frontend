@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import DataView from '../../../components/dataView';
-import { getList } from '@/lib/api_wrap/configAPI';
+import { getList } from '@/utils/api_wrap/configAPI';
 import { useGlobal } from '@/app/GlobalState';
 import headerStyles from '@/styles/headerStyles.module.css';
 

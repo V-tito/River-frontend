@@ -1,10 +1,11 @@
 import styles from './stateTable.module.css';
-import SulSigIndicator from './SulSigIndicator'
+import SulSigIndicator from './SulSigIndicator';
 import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
-import { getSignalState } from '@/lib/api_wrap/protocol';
+import { getSignalState } from '@/utils/api_wrap/protocol';
 const SulSigsTable = ({ data, group = null }) => {
+	const { defaultScheme } = useGlobal();
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const { setPollingError } = useGlobal();
@@ -17,8 +18,8 @@ const SulSigsTable = ({ data, group = null }) => {
 			console.log('fetching', sig.name, 'start', last);
 			try {
 				console.log('fetching', sig.name, 'set api in', Date.now() - last);
-				
-				result = await getSignalState(group, sig.name);
+
+				result = await getSignalState(defaultScheme.name, group, sig.name);
 				last = Date.now();
 				console.log('received ss:', result);
 				setPollingError('ok');
