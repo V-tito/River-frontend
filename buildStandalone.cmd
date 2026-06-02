@@ -1,1 +1,1 @@
-npm run build &&  cp -r .next/static .next/standalone/.next/  && cp -r public .next/standalone/  && rmdir -r .next/standalone/.next/node_modules && cp -r .next/node_modules .next/standalone/.next/ && pause 
+npm run build &  cp -r .next/static .next/standalone/.next/  & cp -r public .next/standalone/  & rmdir -r .next/standalone/.next/node_modules & cp -r .next/node_modules .next/standalone/.next/ & pause 
