@@ -71,7 +71,7 @@ async function processFileEntry(entry, table, defaultScheme) {
 			table,
 			entry.name,
 			entry.parentGroup ? entry.parentGroup : null,
-			defaultScheme.name
+			defaultScheme != null ? defaultScheme.name : null
 		);
 		console.log('existence', exists);
 		if (exists) {
@@ -85,9 +85,12 @@ async function processFileEntry(entry, table, defaultScheme) {
 		return `error ${err.status} ${err.message}`;
 	}
 }
-export async function multiplePostPatch(data, table, defaultScheme) {
+export async function multiplePostPatch(data, table, defaultScheme = null) {
 	console.log('received data', data);
 	console.log('received type', table);
+	if (table != 'Scheme' && defaultScheme == null) {
+		throw new Error('Не указана схема');
+	}
 	var results = { posted: 0, patched: 0 };
 	console.log('results', results);
 	console.log('processing entries');

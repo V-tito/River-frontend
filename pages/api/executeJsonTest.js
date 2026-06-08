@@ -11,7 +11,14 @@ export default async function handler(req, res) {
 					command.signal
 				);
 				console.log('received:', result);
-				if (result.value == command.expectedValue) {
+				let cond;
+				if (command.sul == 'Signal')
+					cond =
+						command.expectedValue == 0
+							? result.value == command.expectedValue
+							: result.value > 0;
+				else cond = result.value == command.expectedValue;
+				if (cond) {
 					res
 						.status(200)
 						.json(
@@ -127,8 +134,16 @@ export default async function handler(req, res) {
 				command.group,
 				command.signal
 			);
+
 			console.log('received:', result);
-			if (result.value == command.expectedValue)
+			let cond;
+			if (command.sul == 'Signal')
+				cond =
+					command.expectedValue == 0
+						? result.value == command.expectedValue
+						: result.value > 0;
+			else cond = result.value == command.expectedValue;
+			if (cond)
 				res
 					.status(200)
 					.json(

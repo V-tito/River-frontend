@@ -42,7 +42,7 @@ export async function checkExistence(
 		if (schemeName == null) {
 			throw new Error(`Не указано рабочее пространство`);
 		}
-		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?schemeName=${schemeName}&signal=${name}`;
+		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?schemeName=${schemeName}&name=${name}`;
 	} else {
 		api = `${process.env.API_URL}/api/river/v1/configurator/${type}/exists?name=${name}`;
 	}

@@ -63,15 +63,17 @@ const AddForm = ({ table, object = {} }) => {
 	}, [table, defaultScheme]);
 
 	const defaults =
-		table == 'TestBoard'
-			? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
-			: table == 'Signal' && object != {}
+		object != {}
+			? table == 'Signal'
 				? {
 						...object,
 						parentGroup: object.parentGroup ? object.parentGroup : null,
 						testBoard: object.testBoard ? object.testBoard.name : null,
 					}
-				: object;
+				: object
+			: table == 'TestBoard'
+				? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
+				: {};
 	if ('id' in defaults) delete defaults.id;
 	const { register, handleSubmit, reset, watch } = useForm({
 		defaultValues: defaults,
