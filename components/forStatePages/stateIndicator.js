@@ -23,10 +23,10 @@ const StateIndicator = memo(function StateIndicator({
 		<div>
 			<div
 				className={`${styles.indicator} ${
-					on != 0
-						? styles.active
-						: on == undefined
-							? styles.error
+					on == undefined
+						? styles.error
+						: on != 0
+							? styles.active
 							: styles.inactive
 				}`}
 			></div>

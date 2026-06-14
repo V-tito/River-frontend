@@ -1,9 +1,29 @@
-const netError = response =>
+const netError = (response, messag = null, entity = null) =>
 	new Error(
-		`Ошибка сети ${response.status}: ${
-			response.message != undefined ? response.message : 'неизвестная ошибка'
+		`Ошибка сети  ${response.status} ${messag}: ${
+			'message' in response
+				? response.message
+				: response.status == 500
+					? 'внутренняя ошибка сервера'
+					: response.status == 409
+						? 'неправильно заполнена форма'
+						: response.status == 404
+							? `сущность ${entity ? entity : ''} не найдена`
+							: 'неизвестная ошибка'
 		}`
 	);
+
+export async function toggleScheme(schemeName, state = true) {
+	const api = `${process.env.API_URL}/api/river/v1/protocol/turnOn?schemeName=${schemeName}&isTurnOn=${state}`;
+	const response = await fetch(api, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+	});
+	if (!response.ok) {
+		throw netError(response, 'при активации рабочего пространства', schemeName);
+	}
+	return;
+}
 export async function getBoardState(name) {
 	const response = await fetch(
 		`${process.env.API_URL}/api/river/v1/protocol/nop?name=${name}`,
@@ -13,7 +33,7 @@ export async function getBoardState(name) {
 		}
 	);
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(response, 'при связи с платой', name);
 	}
 	const result = await response.json();
 	return result;
@@ -25,7 +45,11 @@ export async function getSignalState(schemeName, groupName, signalName) {
 		method: 'GET',
 	});
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(
+			response,
+			'',
+			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
+		);
 	}
 	const result = await response.json();
 	console.log('received signal state', result);
@@ -41,7 +65,11 @@ export async function setSignalState(schemeName, groupName, signalName, value) {
 	console.log('response', response);
 	if (!response.ok) {
 		console.log('net error');
-		throw netError(response);
+		throw netError(
+			response,
+			'',
+			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
+		);
 	}
 	console.log('returning res');
 	const result = await response.text();
@@ -62,7 +90,11 @@ export async function presetSignalState(
 	console.log('send presetting state request', api);
 	console.log('response', response);
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(
+			response,
+			'',
+			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
+		);
 	}
 	console.log('returning res');
 	const result = await response.text();
@@ -85,7 +117,11 @@ export async function setPulse(
 	console.log('send setting pulse request', api);
 	console.log('response', response);
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(
+			response,
+			'',
+			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
+		);
 	}
 	console.log('returning res');
 	const result = await response.text();
@@ -108,7 +144,11 @@ export async function presetPulse(
 	console.log('send presetting pulse request', api);
 	console.log('response', response);
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(
+			response,
+			'',
+			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
+		);
 	}
 	console.log('returning res');
 	const result = await response.text();
@@ -124,7 +164,7 @@ export async function executePresets(scheme) {
 		}
 	);
 	if (!response.ok) {
-		throw netError(response);
+		throw netError(response, '', scheme);
 	}
 	const result = await response.text();
 	return result;

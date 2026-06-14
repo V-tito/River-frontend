@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
 import { getBoardState, getSignalState } from '@/utils/api_wrap/protocol';
-const IndicatorsTable = ({ data, board, group = null }) => {
+const IndicatorsTable = ({ data, board, sul = false, group = null }) => {
 	const { defaultScheme, setPollingError } = useGlobal();
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const [loading, setLoading] = useState(true);
-	//const [checkConstantly, setCheck] = useState(true);
-	console.log('list of boards from it');
+	const newData = Array.isArray(data) ? data : [data];
+	console.log('newdata', newData);
 	useEffect(() => {
 		const fetchCurrentState = async sig => {
 			let result;
@@ -80,30 +80,37 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 		};
 		const fetchAllStates = async () => {
 			if (!responseWaiting) {
-				const begin = Date.now();
-				let last = begin;
-				console.log('polling start', last);
-				setResponseWaiting(true);
-				console.log('before res', Date.now() - last);
-				last = Date.now();
-				const results = await Promise.all(
-					data.map(item => fetchCurrentState(item))
-				);
-				console.log('after res', Date.now() - last);
-				console.log(results);
-				last = Date.now();
-				setAllStates(prev => {
-					const upd = { ...prev };
-					results.forEach(data => {
-						upd[data[0]] = data[1];
+				try {
+					setResponseWaiting(true);
+					console.log('start mapping on data', newData);
+					const results = await Promise.all(
+						newData.map(item => fetchCurrentState(item))
+					);
+					console.log('polling results', results);
+					setAllStates(prev => {
+						const upd = { ...prev };
+						results.forEach(result => {
+							upd[result[0]] = result[1];
+						});
+						return upd;
 					});
-					return upd;
-				});
-				console.log('time on mapping', Date.now() - last);
-				setResponseWaiting(false);
-				setLoading(false);
-				console.log('polling end', Date.now());
-				console.log('polling time', Date.now() - begin);
+				} catch (err) {
+					setPollingError(err);
+					setAllStates(
+						newData.reduce((acc, item) => {
+							return {
+								...acc,
+								[item.name]: {
+									on: undefined,
+									checked: null,
+								},
+							};
+						}, {})
+					);
+				} finally {
+					setResponseWaiting(false);
+					setLoading(false);
+				}
 			}
 		};
 		fetchAllStates();
@@ -116,7 +123,8 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 	//const changeCheckSettings = () => {
 	//	setCheck(prev => !prev);
 	//};
-	console.log('all states', allStates);
+	console.log('data', data, Array.isArray(data));
+	//console.log('all states', allStates);
 	if (loading) return <p>Загрузка...</p>;
 
 	return (
@@ -128,8 +136,8 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 				</tr>
 			</thead>
 			<tbody>
-				{data.length > 0 ? (
-					data.map(item => (
+				{newData.length > 0 ? (
+					newData.map(item => (
 						<tr key={item.id}>
 							<td className={`${styles.td} ${styles.namer}`}>{item.name}</td>
 							<td className={styles.td}>
@@ -140,17 +148,20 @@ const IndicatorsTable = ({ data, board, group = null }) => {
 											? item.isStraight
 												? item.turnedOnStatusName
 												: item.turnedOffStatusName
-											: 'Есть соединение с платой'
+											: sul
+												? 'Есть соединение с СУЛ'
+												: 'Есть соединение с платой'
 									}
 									turnedOffStatusName={
 										!board
 											? item.isStraight
 												? item.turnedOffStatusName
 												: item.turnedOnStatusName
-											: 'Нет соединения с платой'
+											: sul
+												? 'Нет соединения с СУЛ'
+												: 'Нет соединения с платой'
 									}
 									lastCheckTime={allStates[item.name].checked}
-									//todo change to proper naming
 								></StateIndicator>
 							</td>
 						</tr>

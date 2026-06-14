@@ -2,6 +2,7 @@
 //import //logger from "..///logger";
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { checkExistence } from '@/utils/api_wrap/configAPI';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
@@ -19,14 +20,18 @@ export const GlobalProvider = ({ children }) => {
 		}
 	});
 	const [pollingError, setPollingError] = useState(null);
+
 	const [defaultScheme, setDefaultScheme] = useState(() => {
 		if (typeof window !== 'undefined') {
 			//logger.info("Setting up default scheme")
 			try {
 				const storedScheme = localStorage.getItem('defaultScheme');
 				if (storedScheme) {
+					const parsedScheme = JSON.parse(storedScheme);
+					const exists = checkExistence('Scheme', parsedScheme.name);
 					//logger.info("set up default scheme from local storage",storedScheme)
-					return JSON.parse(storedScheme);
+					if (exists) return parsedScheme;
+					else return null;
 				}
 			} catch (err) {
 				//logger.error("error setting scheme",err.message)
