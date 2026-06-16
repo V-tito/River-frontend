@@ -32,10 +32,10 @@ const StateIndicator = memo(function StateIndicator({
 			></div>
 
 			<span>
-				{on != 0
-					? turnedOnStatusName
-					: on == undefined
-						? 'Ошибка при получении состояния сигнала'
+				{on == undefined
+					? 'Ошибка при получении состояния'
+					: on != 0
+						? turnedOnStatusName
 						: turnedOffStatusName}
 			</span>
 			{lastCheckTime == null ? '' : <p>Сигнал получен в {lastCheckTime}</p>}

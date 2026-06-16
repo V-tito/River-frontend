@@ -1,17 +1,4 @@
-const netError = (response, messag = null, entity = null) =>
-	new Error(
-		`Ошибка сети  ${response.status} ${messag}: ${
-			'message' in response
-				? response.message
-				: response.status == 500
-					? 'внутренняя ошибка сервера'
-					: response.status == 409
-						? 'неправильно заполнена форма'
-						: response.status == 404
-							? `сущность ${entity ? entity : ''} не найдена`
-							: 'неизвестная ошибка'
-		}`
-	);
+import { netError } from '@/utils/api_wrap/netError';
 
 export async function toggleScheme(schemeName, state = true) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/turnOn?schemeName=${schemeName}&isTurnOn=${state}`;
@@ -34,6 +21,20 @@ export async function getBoardState(name) {
 	);
 	if (!response.ok) {
 		throw netError(response, 'при связи с платой', name);
+	}
+	const result = await response.json();
+	return result;
+}
+export async function getSulState(schemeName) {
+	const response = await fetch(
+		`${process.env.API_URL}/api/river/v1/protocol/sulNop?name=${schemeName}`,
+		{
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		}
+	);
+	if (!response.ok) {
+		throw netError(response, 'при связи с СУЛ схемы ', schemeName);
 	}
 	const result = await response.json();
 	return result;

@@ -1,3 +1,4 @@
+import { netError } from '@/utils/api_wrap/netError';
 export async function getList(type, parentName = null, schemeName = null) {
 	console.log('getting list of ', type);
 	let api;
@@ -17,7 +18,7 @@ export async function getList(type, parentName = null, schemeName = null) {
 	});
 	console.log('received response on getting list');
 	if (!response.ok) {
-		throw new Error(`Ошибка сети ${response.status}`);
+		throw netError(response, 'при получении данных', type);
 	}
 	const result = await response.json();
 	console.log('received result on getting list', result);
@@ -129,6 +130,5 @@ export async function deleteEntity(
 	if (!response.ok) {
 		throw new Error(`Ошибка сети ${response.status}`);
 	}
-	const result = await response.json();
-	return result;
+	return;
 }

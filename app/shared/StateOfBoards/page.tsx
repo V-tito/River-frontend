@@ -65,7 +65,7 @@ const StateOfBoards = () => {
 				Состояние тестовых плат рабочего пространства {defaultScheme.name}:
 			</h1>
 			<div className="w-full h-min">
-				<IndicatorsTable data={data} board={true}></IndicatorsTable>
+				<IndicatorsTable data={data} board={true} sul={false}></IndicatorsTable>
 			</div>
 			<h1 className={headerStyles.sectionHeader}>
 				Состояние СУЛ рабочего пространства {defaultScheme.name}:
