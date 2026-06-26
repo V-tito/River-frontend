@@ -1,33 +1,31 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import styles from './editor.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from '../modals/inlineModal';
 import PropTypes from 'prop-types';
 import SortableBarEditor from './commandBars/sortableBarEditor';
-import FileManager from './fileManagerForEditor';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
-import { usePersistentData } from '@/utils/hooks/usePersistentData';
-import { useBeforeUnload } from 'react-use';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
 
-const Editor = ({ scheme }) => {
-	const [formData, setFormData] = useState([]);
-	const [current, setCurrent] = useState();
+//displays a pair of windows corresponding to a single test file - editor and results respectively.
+//id is unique and is used to determine whether to display the component
+//fpath isn't, so a few windows with the same file can be opened (don't want to fuck with it rn)
+const EditAndResultsWindowPair = ({ scheme, id, fpath = null, currentId }) => {
+	const [formData, setFormData] = useState([]); //content of editor
+	const [currentCommand, setCurrentCommand] = useState(); //command being executed
 	const [results, setResults] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
 	const [isHovered, setIsHovered] = useState();
 	const [errorIDs, setErrorIDs] = useState([]);
-	const params = useSearchParams();
 	const { saveFormData, loadFormData } = usePersistentData({
-		storageKey: 'editor-contents',
+		storageKey: id,
 		storageType: 'session',
 	});
+	//save data on exit
 	const router = useRouter();
-
 	// Auto-save on change (with debounce)
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
@@ -36,7 +34,6 @@ const Editor = ({ scheme }) => {
 
 		return () => clearTimeout(timeoutId);
 	}, [formData, saveFormData]);
-
 	// Save before page unload
 	useBeforeUnload(() => {
 		saveFormData(formData);
@@ -45,48 +42,46 @@ const Editor = ({ scheme }) => {
 		const handleRouteChange = () => {
 			saveFormData(formData);
 		};
-
 		// Using Next.js router events
 		router.events?.on('routeChangeStart', handleRouteChange);
-
 		return () => {
 			router.events?.off('routeChangeStart', handleRouteChange);
 		};
 	}, [formData, router, saveFormData]);
-	console.log('params', params);
-	const filename = params.get('filename');
-	console.log();
-	useEffect(() => {
-		const fetchFile = async path => {
-			console.log(path);
+
+	const fetchFile = async path => {
+		const split = path.split('/');
+		const folder = split.slice(0, split.length - 1);
+		const file = split[split.length - 1];
+		const response = await fetch(
+			`/api/files?folder=${folder.join('/')}&filename=${file}`,
+			{
+				method: 'GET',
+			}
+		);
+		const additionalData = await response.json();
+		console.log('addata', additionalData);
+		if (additionalData.type != 'file') {
+			throw new Error(`${path} не является файлом`);
+		}
+		return JSON.parse(additionalData.content);
+	};
+
+	useEffect(async () => {
+		let newFD = null;
+		if (fpath != null) {
 			try {
-				const response = await fetch(`/api/files${path}`, {
-					method: 'GET',
-				});
-				const additionalData = await response.json();
-				console.log('addata', additionalData);
-				if (additionalData.type != 'file') {
-					throw new Error(`${path} не является файлом`);
-				}
-				setFormData(JSON.parse(additionalData.content));
+				newFD = await fetchFile(fpath);
 			} catch (err) {
 				setError(err);
 			}
-		};
-
-		if (params.get('filename')) {
-			fetchFile(
-				`?folder=${params.get('folder') ? params.get('folder') : ''}&filename=${params.get('filename')}`
-			);
 		} else {
-			const savedData = loadFormData();
-			if (savedData) {
-				setFormData(savedData);
-				console.log('Form data restored from storage');
-			}
+			newFD = loadFormData();
 		}
+		if (newFD != null) setFormData(newFD);
 		setLoading(false);
 	}, []);
+
 	const validateSignal = async (signame, group, subtype) => {
 		const result = await checkExistence(subtype, signame, group, scheme.name);
 		console.log('validate res', result);
@@ -223,10 +218,10 @@ const Editor = ({ scheme }) => {
 			setResults([]);
 			setErrorIDs([]);
 			for (let i = 0; i < formData.length; i++) {
-				setCurrent(i);
+				setCurrentCommand(i);
 				await executeEntry(formData[i], i);
 			}
-			setCurrent(formData.length);
+			setCurrentCommand(formData.length);
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
@@ -239,7 +234,7 @@ const Editor = ({ scheme }) => {
 	};
 	if (loading) return <p>Загрузка...</p>;
 	console.log('formdata', formData);
-	return (
+	return id == currentId ? (
 		<div className={styles.main}>
 			<div className={styles.show}>
 				<header className={headerStyles.modalHeader}>Редактор команд: </header>
@@ -248,7 +243,7 @@ const Editor = ({ scheme }) => {
 					setFormData={setFormData}
 					isHovered={isHovered}
 					setIsHovered={setIsHovered}
-					current={current}
+					current={currentCommand}
 					errorIDs={errorIDs}
 					setErrorIDs={setErrorIDs}
 					setError={setError}
@@ -261,15 +256,7 @@ const Editor = ({ scheme }) => {
 				>
 					Выполнить
 				</button>
-				<Modal state={error}>{error ? error.message : ''}</Modal>
-				<FileManager
-					formData={formData}
-					setFormData={setFormData}
-					initName={filename}
-					scheme={scheme.name}
-				></FileManager>
 			</div>
-
 			<div className={styles.show}>
 				<header className={headerStyles.modalHeader}>
 					Результат выполнения:{' '}
@@ -281,6 +268,8 @@ const Editor = ({ scheme }) => {
 				></ResultsViewWithHighlight>
 			</div>
 		</div>
+	) : (
+		''
 	);
 };
 Editor.propTypes = {
