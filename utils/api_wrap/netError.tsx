@@ -1,4 +1,8 @@
-export const netError = (response, messag = null, entity = null) =>
+export const netError = (
+	response: Response,
+	messag: string | null = null,
+	entity: string | null = null
+) =>
 	new Error(
 		`Ошибка сети  ${response.status} ${messag}: ${
 			'message' in response

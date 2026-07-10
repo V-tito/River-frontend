@@ -4,7 +4,13 @@ import OpenLocalFileModal from '../modals/openLocalFileModal';
 import FileChooser from '../fileManagement/fileChooserForEditor';
 import styles from './editor.module.css';
 import PropTypes from 'prop-types';
-const FileManager = ({ formData, setFormData, initName, scheme, getId }) => {
+const FileManager = ({
+	currentTab,
+	addTab,
+	renameTab,
+	resetTabContent,
+	scheme,
+}) => {
 	const [readerError, setReaderError] = useState(null);
 	const handleFileRead = (event, file) => {
 		if (!file) return;
@@ -15,17 +21,14 @@ const FileManager = ({ formData, setFormData, initName, scheme, getId }) => {
 			try {
 				const content = e.target.result;
 				console.log('uploaded content', content);
-				const id = getId();
-				const { saveFormData, loadFormData } = usePersistentData({
-					storageKey: id,
-					storageType: 'session',
-				});
-				saveFormData(JSON.parse(content));
+				const newTabId = addTab();
+				if ('name' in file) renameTab(newTabId, file.name);
+				resetTabContent(JSON.parse(content), newTabId);
 				setReaderError(null);
 			} catch (err) {
 				setReaderError(err);
 				console.log('invalid json');
-				setFormData(null);
+				resetTabContent([]);
 			}
 		};
 
@@ -43,8 +46,8 @@ const FileManager = ({ formData, setFormData, initName, scheme, getId }) => {
 				closeAfter={true}
 			></OpenLocalFileModal>
 			<SaveFromEditorToServerModal
-				formData={formData}
-				initName={initName}
+				formData={currentTab.content}
+				initName={currentTab.name}
 				scheme={scheme}
 			></SaveFromEditorToServerModal>
 			<FileChooser folder={scheme}></FileChooser>

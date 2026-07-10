@@ -1,0 +1,71 @@
+.tabHeaders {
+    display:flex;
+    flex-direction: row;
+    margin:0px;
+    padding:0px;
+    overflow-x: scroll;
+}
+.tabHeader {
+    display:grid;
+    grid-template-columns: auto auto;
+    background-color: var(--controlelementcolor);
+    color: var(--controlelementfont);
+    cursor: pointer;
+    margin:0px;
+    padding:0vh;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
+}
+.execButton {
+    display:grid;
+    grid-template-columns: auto auto;
+    background-color: var(--controlelementcolor);
+    color: var(--controlelementfont);
+    cursor: pointer;
+    margin:0px;
+    padding:0.5vh 2vh  0vh 2vh;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 10%;
+}
+.execButton:hover{
+    background-color: var(--controlelementactive);
+}
+.tabAdder {
+    background-color: var(--controlelementcolor);
+    color: var(--controlelementfont);
+    padding: 0vh 2vh  0.5vh 2vh;
+    cursor: pointer;
+    margin:0px;
+    width:min-content;
+    height: min-content;
+    border-radius: 15%;
+    justify-self: right;
+    align-self: center;
+    font-size: larger;
+
+}
+.tabAdder:hover{
+    background-color: var(--controlelementactive);
+}
+
+.tabDeleter{
+    padding: 0vh 2vh  0.5vh 2vh;
+    cursor: pointer;
+    margin:0px;
+    width:min-content;
+    height: min-content;
+    border-radius: 15%;
+    justify-self: right;
+    align-self: center;
+    font-size: larger;
+
+}
+.tabDeleter:hover{
+    background-color: var(--defaultdarkred);
+}
+.inactive{
+    background-color: var(--controlelementcolor);
+}
+.active {
+    background-color: var(--controlelementactive);
+  }

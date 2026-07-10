@@ -5,7 +5,7 @@ export function usePersistentData(options) {
 	const storage = storageType === 'local' ? localStorage : sessionStorage;
 
 	// Save form data
-	const saveFormData = useCallback(
+	const saveData = useCallback(
 		data => {
 			try {
 				storage.setItem(storageKey, JSON.stringify(data));
@@ -17,7 +17,7 @@ export function usePersistentData(options) {
 	);
 
 	// Load form data
-	const loadFormData = useCallback(() => {
+	const loadData = useCallback(() => {
 		try {
 			const data = storage.getItem(storageKey);
 			return data ? JSON.parse(data) : null;
@@ -28,9 +28,10 @@ export function usePersistentData(options) {
 	}, [storageKey, storageType]);
 
 	// Clear stored data
-	const clearFormData = useCallback(() => {
+	const clearData = useCallback(() => {
 		storage.removeItem(storageKey);
+		console.debug('cleared data');
 	}, [storageKey, storageType]);
 
-	return { saveFormData, loadFormData, clearFormData };
+	return { saveData, loadData, clearData };
 }

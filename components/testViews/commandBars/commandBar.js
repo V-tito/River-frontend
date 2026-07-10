@@ -5,100 +5,258 @@ import styles from './commandBar.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import { BarContext } from './barEditor';
+import { errorIDsContext, commandHooksContext } from '../editorTabs';
+import { execAndMouseDisplayContext } from '../editor';
+import {
+	CommandAction,
+	commandTypeCheckers,
+} from '@/utils/hooks/command/command';
+import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
 
+const { translateFields, isSetter, getConfig } = CommandBarHelpers;
+
+const DelScriptButton = ({ delAction }) => {
+	return (
+		<button
+			className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
+			onClick={delAction}
+		>
+			&times;
+		</button>
+	);
+};
+const ActionPicker = ({ actRef, changeAction }) => {
+	return (
+		<select
+			id="action"
+			value={actRef}
+			className={inputStyles.select}
+			onChange={changeAction}
+		>
+			{Object.values(CommandAction).map(item =>
+				(item != CommandAction.none) | (actRef == CommandAction.none) ? (
+					<option value={item} key={item}>
+						{item}
+					</option>
+				) : (
+					''
+				)
+			)}
+		</select>
+	);
+};
+const CheckIfSigsAreNotUndef = (command, sigtable) => {
+	if (![undefined, ''].includes(command.group) & (sigtable != undefined))
+		if (sigtable[command.group] != undefined) return true;
+	return false;
+};
+const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
+	const listOfSignals = CheckIfSigsAreNotUndef(command, sigtable)
+		? isSetter(command)
+			? sigtable[command.group].outputs
+			: [
+					...sigtable[command.group].outputs,
+					...sigtable[command.group].inputs,
+					...sigtable[command.group].sulSigs,
+				]
+		: [null];
+	const displayed = commandTypeCheckers.isWait(command)
+		? command.waitForSignal
+		: true;
+	return displayed ? (
+		<div className={styles.signalGrid}>
+			<label className={styles.label}>Группа: </label>
+			<select
+				value={command.group}
+				className={inputStyles.select}
+				onChange={updateAction}
+				id="group"
+			>
+				<option value={''}>группа...</option>
+				{sigtable
+					? Object.keys(sigtable).map(item => (
+							<option value={item} key={item}>
+								{item}
+							</option>
+						))
+					: ''}
+			</select>
+			<label className={styles.label}>Сигнал: </label>
+			<select
+				id="signal"
+				value={command.signal}
+				className={inputStyles.select}
+				onChange={updateAction}
+				disabled={[undefined, ''].includes(command.group)}
+			>
+				<option value={''}>сигнал...</option>
+				{listOfSignals.map(item =>
+					item != null ? (
+						<option value={item.name} key={item.name}>
+							{item.name}
+						</option>
+					) : (
+						<option key={Date.now()} value={null}>
+							Ошибка при получении списка сигналов
+						</option>
+					)
+				)}
+			</select>
+		</div>
+	) : (
+		''
+	);
+};
+const ValueRadio = ({ command, fieldName, updateAction }) => {
+	return (
+		<div>
+			<label className={styles.label}>{translateFields[fieldName]}:</label>
+			<input
+				type="radio"
+				id={fieldName}
+				value={1}
+				onChange={updateAction}
+				checked={command[fieldName] == 1}
+				className={`${inputStyles.radio} ${styles.radio}`}
+			/>
+			Активен{' '}
+			<input
+				className={`${inputStyles.radio} ${styles.radio}`}
+				s
+				type="radio"
+				id={fieldName}
+				value={0}
+				onChange={updateAction}
+				checked={command[fieldName] == 0}
+			/>{' '}
+			Неактивен
+		</div>
+	);
+};
+const ValueInput = ({ command, fieldName, sigtable, updateAction }) => {
+	const isRadio =
+		command.signalSubtype == 'SulSignal'
+			? !sigtable[command.group].sulSigs.find(
+					item => item.name == command.signal
+				).bool
+				? false
+				: true
+			: true;
+	const displayed = commandTypeCheckers.isWait(command)
+		? command.waitForSignal
+		: true;
+
+	if (CheckIfSigsAreNotUndef(command, sigtable) && displayed)
+		return (
+			<div>
+				{isRadio ? (
+					<ValueRadio
+						command={command}
+						fieldName={fieldName}
+						updateAction={updateAction}
+					></ValueRadio>
+				) : (
+					<div>
+						<label className={styles.label}>
+							{translateFields[fieldName]}:
+						</label>
+						<input
+							className={inputStyles.input}
+							type="number"
+							id={fieldName}
+							value={command[fieldName] ? command[fieldName] : ''}
+							onChange={updateScript}
+						></input>
+					</div>
+				)}
+			</div>
+		);
+	else return;
+};
+const ScriptSelection = ({ command, updateAction, filenames }) => {
+	return (
+		<div className="flex flex-row">
+			<label className={styles.label}>Скрипт с сервера: </label>
+			<select
+				value={command.script}
+				className={inputStyles.select}
+				onChange={updateAction}
+				id="script"
+			>
+				<option value={''}>скрипт...</option>
+				{filenames.map(item => (
+					<option value={item} key={item}>
+						{item}
+					</option>
+				))}
+			</select>
+		</div>
+	);
+};
+const WaitCheckbox = ({ command, updateAction }) => {
+	return (
+		<div>
+			<label>
+				<input
+					type="checkbox"
+					id={'waitForSignal'}
+					checked={command.waitForSignal}
+					onChange={updateAction}
+				/>
+				Ждать состояния сигнала
+				{command.waitForSignal}
+			</label>
+		</div>
+	);
+};
+const GenInput = ({ command, fieldName, updateAction }) => {
+	return (
+		<div>
+			<label className={styles.label}>{translateFields[fieldName]}:</label>
+			<input
+				className={inputStyles.input}
+				type="number"
+				id={fieldName}
+				value={command[fieldName]}
+				onChange={updateAction}
+			></input>{' '}
+		</div>
+	);
+};
 const CommandBar = ({ index }) => {
-	let {
-		formData,
-		setFormData,
-		current,
-		errorIDs,
-		isHovered,
-		setIsHovered,
-		sigsByGroup,
-		files,
-	} = useContext(BarContext);
+	const { formData, sigsByGroup, files } = useContext(BarContext);
 	let script = formData;
-	let setScript = setFormData;
-	let filenames = files;
+	let command = script[index];
+	console.debug('script in command bar', script);
+	const { isHovered, setIsHovered, current } = useContext(
+		execAndMouseDisplayContext
+	);
+	const errorIDs = useContext(errorIDsContext);
+	console.log('errorIDs context in command bar', errorIDs);
+	const {
+		deleteCommandFromCurrentTab,
+		changeCommandActionType,
+		updateCommandField,
+		autoUpdateCommandSignalSubtype,
+		autoCleanCommand,
+		markIfEntryHasEmptyFields,
+	} = useContext(commandHooksContext);
 	console.log('sigs by group in command bar', sigsByGroup);
 	console.log(
 		'group is undef',
-		[undefined, ''].includes(script[index].group),
+		[undefined, ''].includes(command.group),
 		'group',
-		script[index].group
+		command.group
 	);
-	const commandConfig = {
-		check: ['signal', 'expectedValue'],
-		wait: ['signal', 'expectedValue'],
-		set: ['signal', 'targetValue'],
-		include: ['script'],
-		setPulse: ['signal', 'targetValue', 'pulseTime', 'period'],
-		preset: ['signal', 'targetValue'],
-		presetPulse: ['signal', 'targetValue', 'pulseTime', 'period'],
-		executePresets: [],
-		setAll: ['targetValue'],
-		presetAll: ['targetValue'],
-	};
-	const commands = {
-		check: 'Сравнить',
-		wait: 'Ждать',
-		set: 'Установить',
-		include: 'Выполнить скрипт',
-		setPulse: 'Установить пульсацию',
-		preset: 'Предустановить',
-		presetPulse: 'Предустановить пульсацию',
-		executePresets: 'Запустить предустановленные',
-		setAll: 'Установить все',
-		presetAll: 'Предустановить все',
-	};
-	const translate = {
-		group: 'группа',
-		signal: 'Сигнал',
-		targetValue: 'Целевое значение',
-		expectedValue: 'Ожидаемое значение',
-		pulseTime: 'Длительность импульса',
-		period: 'Периодичность импульсов',
-	};
+
 	useEffect(() => {
-		if (!sigsByGroup[script[index].group]) {
-			setScript(
-				script.map((item, i) => (i == index ? { ...item, group: '' } : item))
-			);
-		}
+		autoCleanCommand(index, sigsByGroup);
 	}, []);
 	useEffect(() => {
-		if (sigsByGroup[script[index].group]) {
-			if (
-				sigsByGroup[script[index].group].sulSigs.find(
-					item => item.name == script[index].signal
-				) != undefined
-			) {
-				script[index].sul = 'SulSignal';
-			} else {
-				if (
-					(sigsByGroup[script[index].group].inputs.find(
-						item => item.name == script[index].signal
-					) !=
-						undefined) |
-					(sigsByGroup[script[index].group].outputs.find(
-						item => item.name == script[index].signal
-					) !=
-						undefined)
-				) {
-					script[index].sul = 'Signal';
-				} else {
-					script[index].signal = '';
-				}
-			}
-			console.log('triggered set sul', script[index]);
-		}
-	}, [script[index].signal]);
+		autoUpdateCommandSignalSubtype(index, sigsByGroup);
+	}, [command.signal]);
 	const updateScript = e => {
-		setScript(
-			script.map((item, i) =>
-				i == index ? { ...item, [e.target.id]: e.target.value } : item
-			)
-		);
+		updateCommandField(index, e.target.id, e.target.value);
 	};
 	console.log('cb triggered with index', index, 'script', script);
 	return (
@@ -111,224 +269,64 @@ const CommandBar = ({ index }) => {
 		>
 			<div className={`${buttonStyles.delGrid} ${styles.delGrid}`}>
 				<label className={styles.label}>Действие: </label>
-				<button
-					className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
-					onClick={() => setScript(prev => prev.filter((_, i) => i !== index))}
-				>
-					&times;
-				</button>
+				<DelScriptButton
+					delAction={() => deleteCommandFromCurrentTab(index)}
+				></DelScriptButton>
 			</div>
-			<select
-				id="action"
-				value={script[index].action ? script[index].action : ''}
-				className={inputStyles.select}
-				onChange={updateScript}
-			>
-				<option value={''}>Действие</option>
-				{Object.entries(commands).map(item => (
-					<option value={item[0]} key={item[0]}>
-						{item[1]}
-					</option>
-				))}
-			</select>
-			{script[index].action
-				? script[index].action !== ''
-					? commandConfig[script[index].action].map((item, ind) =>
-							item == 'signal' ? (
-								<div key={ind} className={styles.signalGrid}>
-									<label className={styles.label}>Группа: </label>
-									<select
-										value={script[index].group ? script[index].group : ''}
-										className={inputStyles.select}
-										onChange={updateScript}
-										id="group"
-									>
-										<option value={''}>группа...</option>
-										{sigsByGroup
-											? Object.keys(sigsByGroup).map(item => (
-													<option value={item} key={item}>
-														{item}
-													</option>
-												))
-											: ''}
-									</select>
-									<label className={styles.label}>Сигнал: </label>
-									<select
-										id={item}
-										value={script[index][item] ? script[index][item] : ''}
-										className={inputStyles.select}
-										onChange={updateScript}
-										disabled={[undefined, ''].includes(script[index].group)}
-									>
-										<option value={''}>сигнал...</option>
-										{![undefined, ''].includes(script[index].group) &
-										(sigsByGroup != undefined) ? (
-											sigsByGroup[script[index].group] != undefined ? (
-												script[index]['action'].includes('set') ? (
-													sigsByGroup[script[index].group].outputs.map(item => (
-														<option value={item.name} key={item.name}>
-															{item.name}
-														</option>
-													))
-												) : (
-													[
-														...sigsByGroup[script[index].group].outputs,
-														...sigsByGroup[script[index].group].inputs,
-														...sigsByGroup[script[index].group].sulSigs,
-													].map(item => (
-														<option value={item.name} key={item.name}>
-															{item.name}
-														</option>
-													))
-												)
-											) : (
-												<option value={null}>
-													'sigs by group.group undef'
-												</option>
-											)
-										) : (
-											<option
-												value={null}
-											>{`sigs by group ${sigsByGroup} undef or group undef. group: ${script[index].group}`}</option>
-										)}
-									</select>
-								</div>
-							) : ['targetValue', 'expectedValue'].includes(item) ? (
-								<div key={ind}>
-									{![undefined, ''].includes(script[index].group) &
-									(sigsByGroup != undefined) ? (
-										sigsByGroup[script[index].group] != undefined ? (
-											sigsByGroup[script[index].group].sulSigs.find(
-												item => item.name == script[index].signal
-											) != undefined ? (
-												!sigsByGroup[script[index].group].sulSigs.find(
-													item => item.name == script[index].signal
-												).bool ? (
-													<div>
-														<label className={styles.label}>
-															{translate[item]}:
-														</label>
-														<input
-															className={inputStyles.input}
-															type="number"
-															id={item}
-															value={
-																script[index][item] ? script[index][item] : ''
-															}
-															onChange={updateScript}
-														></input>
-													</div>
-												) : (
-													<div>
-														<label className={styles.label}>
-															{translate[item]}:
-														</label>
-														<input
-															type="radio"
-															id={item}
-															value={1}
-															onChange={updateScript}
-															checked={script[index][item] == 1}
-															className={`${inputStyles.radio} ${styles.radio}`}
-														>
-															Активен{' '}
-														</input>{' '}
-														<input
-															className={`${inputStyles.radio} ${styles.radio}`}
-															s
-															type="radio"
-															id={item}
-															value={0}
-															onChange={updateScript}
-															checked={script[index][item] == 0}
-														/>{' '}
-														Неактивен
-													</div>
-												)
-											) : (
-												<div>
-													<label className={styles.label}>
-														{translate[item]}:
-													</label>
-													<input
-														type="radio"
-														className={`${inputStyles.radio} ${styles.radio}`}
-														id={item}
-														value={1}
-														onChange={updateScript}
-														checked={script[index][item] == 1}
-													/>{' '}
-													Активен
-													<input
-														type="radio"
-														className={`${inputStyles.radio} ${styles.radio}`}
-														id={item}
-														value={0}
-														onChange={updateScript}
-														checked={script[index][item] == 0}
-													/>{' '}
-													Неактивен
-												</div>
-											)
-										) : (
-											''
-										)
-									) : (
-										''
-									)}
-								</div>
-							) : item == 'script' ? (
-								<div key={ind} className="flex flex-row">
-									<label className={styles.label}>Скрипт с сервера: </label>
-									<select
-										value={script[index].script ? script[index].script : ''}
-										className={inputStyles.select}
-										onChange={updateScript}
-										id="script"
-									>
-										<option value={''}>скрипт...</option>
-										{filenames.map(item => (
-											<option value={item} key={item}>
-												{item}
-											</option>
-										))}
-									</select>
-								</div>
-							) : (
-								<div key={ind}>
-									<label className={styles.label}>{translate[item]}:</label>
-									<input
-										className={inputStyles.input}
-										type="number"
-										id={item}
-										value={script[index][item] ? script[index][item] : ''}
-										onChange={updateScript}
-									></input>
-								</div>
-							)
-						)
-					: ''
-				: ''}
+			<ActionPicker
+				actRef={command.action}
+				changeAction={e => changeCommandActionType(index, e.target.value)}
+			></ActionPicker>
+			{getConfig(command).map((item, ind) =>
+				item == 'signal' ? (
+					<GroupSignalSelection
+						key={ind}
+						command={command}
+						sigtable={sigsByGroup}
+						updateAction={updateScript}
+					></GroupSignalSelection>
+				) : ['targetValue', 'expectedValue'].includes(item) ? (
+					<ValueInput
+						key={ind}
+						command={command}
+						fieldName={item}
+						sigtable={sigsByGroup}
+						updateAction={updateScript}
+					></ValueInput>
+				) : item == 'script' ? (
+					<ScriptSelection
+						key={ind}
+						command={command}
+						updateAction={updateScript}
+						filenames={files}
+					></ScriptSelection>
+				) : item == 'waitForSignal' ? (
+					<WaitCheckbox
+						command={command}
+						updateAction={e => {
+							console.debug(
+								'e.val',
+								e.target.value,
+								'of type',
+								typeof e.target.value
+							);
+							updateCommandField(index, e.target.id, e.target.checked);
+						}}
+						key={ind}
+					></WaitCheckbox>
+				) : (
+					<GenInput
+						command={command}
+						updateAction={updateScript}
+						fieldName={item}
+						key={ind}
+					></GenInput>
+				)
+			)}
 		</div>
 	);
 };
 CommandBar.propTypes = {
-	script: PropTypes.arrayOf(
-		PropTypes.shape({
-			action: PropTypes.string.isRequired,
-			group: PropTypes.string,
-			signal: PropTypes.string,
-			targetValue: PropTypes.string,
-			expectedValue: PropTypes.string,
-			pulseTime: PropTypes.string,
-			period: PropTypes.string,
-		})
-	).isRequired,
-	setScript: PropTypes.func.isRequired,
 	index: PropTypes.number,
-	current: PropTypes.number,
-	errorIDs: PropTypes.arrayOf(PropTypes.number),
-	isHovered: PropTypes.number,
-	sigsByGroup: PropTypes.shape.isRequired,
 };
 export default CommandBar;

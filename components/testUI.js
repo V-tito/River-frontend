@@ -1,6 +1,6 @@
 'use client';
 //import JsonEditor from './testViews/jsonEditor';
-import Editor from './testViews/editAndResultsWindowPair';
+import Editor from './testViews/editor';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 const TestUI = ({ scheme }) => {

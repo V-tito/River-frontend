@@ -2,23 +2,17 @@
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
 import buttonStyles from '@/styles/buttonStyles.module.css';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState, useContext } from 'react';
 export const BarContext = createContext();
-const BarEditor = ({
-	formData,
-	setFormData,
-	isHovered,
-	setIsHovered,
-	current,
-	errorIDs,
-	setErrorIDs,
-	setError,
-	schemeName,
-	children,
-}) => {
+import { commandHooksContext } from '../editorTabs';
+import { useGlobal } from '@/app/GlobalState';
+const BarEditor = ({ formData, setFormData, setError, children }) => {
+	const { defaultScheme } = useGlobal();
+	const schemeName = defaultScheme.name;
 	const [files, setFiles] = useState([]);
 	const [sigsByGroup, setSigs] = useState();
 	const [loading, setLoading] = useState(true);
+	let { addCommandToCurrentTab } = useContext(commandHooksContext);
 	useEffect(() => {
 		const fetchSigs = async () => {
 			try {
@@ -109,6 +103,7 @@ const BarEditor = ({
 		};
 		fetchAll();
 	}, []);
+
 	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div className={styles.edit}>
@@ -116,11 +111,6 @@ const BarEditor = ({
 				value={{
 					formData,
 					setFormData,
-					current,
-					errorIDs,
-					setErrorIDs,
-					isHovered,
-					setIsHovered,
 					sigsByGroup,
 					files,
 				}}
@@ -129,9 +119,7 @@ const BarEditor = ({
 			</BarContext.Provider>
 			<button
 				className={`${buttonStyles.button} ${buttonStyles.menuButton} w-full`}
-				onClick={() => {
-					setFormData(prevFormData => [...prevFormData, { action: null }]);
-				}}
+				onClick={e => addCommandToCurrentTab(formData.length)}
 			>
 				Добавить
 			</button>
@@ -139,12 +127,6 @@ const BarEditor = ({
 	);
 };
 BarEditor.propTypes = {
-	initName: PropTypes.string,
-	schemeName: PropTypes.string,
-	current: PropTypes.number,
-	errorIDs: PropTypes.array,
-	isHovered: PropTypes.number,
-	setIsHovered: PropTypes.func,
 	formData: PropTypes.array,
 	setFormData: PropTypes.func,
 	setError: PropTypes.func,

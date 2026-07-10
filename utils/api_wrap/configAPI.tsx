@@ -1,5 +1,9 @@
 import { netError } from '@/utils/api_wrap/netError';
-export async function getList(type, parentName = null, schemeName = null) {
+export async function getList(
+	type: string,
+	parentName: string | null = null,
+	schemeName: string | null = null
+) {
 	console.log('getting list of ', type);
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {
@@ -25,11 +29,12 @@ export async function getList(type, parentName = null, schemeName = null) {
 	return result;
 }
 export async function checkExistence(
-	type,
-	name,
-	group = null,
-	schemeName = null
+	type: string,
+	name: string,
+	group: string | null = null,
+	schemeName: string | null = null
 ) {
+	console.log('params', type, name, group, schemeName);
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {
 		if (group == null) {
@@ -57,7 +62,7 @@ export async function checkExistence(
 	const result = await response.json();
 	return result;
 }
-export async function postEntity(type, body) {
+export async function postEntity(type: string, body: Object) {
 	const response = await fetch(
 		`${process.env.API_URL}/api/river/v1/configurator/${type}`,
 		{
@@ -78,7 +83,7 @@ export async function postEntity(type, body) {
 	const result = await response.json();
 	return result;
 }
-export async function patchEntity(type, body) {
+export async function patchEntity(type: string, body: Object) {
 	console.log(
 		'patching on api',
 		`${process.env.API_URL}/api/river/v1/configurator/${type}`,
@@ -100,10 +105,10 @@ export async function patchEntity(type, body) {
 	return result;
 }
 export async function deleteEntity(
-	type,
-	name,
-	group = null,
-	schemeName = null
+	type: string,
+	name: string,
+	group: string | null = null,
+	schemeName: string | null = null
 ) {
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {

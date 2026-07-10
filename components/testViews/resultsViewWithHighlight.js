@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './editor.module.css';
 import PropTypes from 'prop-types';
-const ResultsViewWithHighlight = ({ results, isHovered, setIsHovered }) => {
+import { execAndMouseDisplayContext } from './editor';
+const ResultsViewWithHighlight = ({ results }) => {
+	const { isHovered, setIsHovered } = useContext(execAndMouseDisplayContext);
 	return (
 		<div className={styles.editor}>
 			{results.map((result, i) => (

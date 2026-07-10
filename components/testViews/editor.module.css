@@ -54,6 +54,9 @@
   .active{
     background-color: yellow !important
   }
+  .error{background-color: lightcoral;
+
+  }
   @media (prefers-color-scheme: dark) {
     .setter{
       background-color: rgb(0, 138, 136);

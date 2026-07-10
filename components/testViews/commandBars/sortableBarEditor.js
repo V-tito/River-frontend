@@ -9,27 +9,16 @@ import { DragDropProvider } from '@dnd-kit/react';
 const SortableBarEditor = ({
 	formData,
 	setFormData,
-	isHovered,
-	setIsHovered,
-	current,
-	errorIDs,
 	setErrorIDs,
 	setError,
-	schemeName,
 }) => {
 	const [version, setVersion] = useState(0);
-
+	console.log('setFormData in sortable bar is', setFormData);
 	return (
 		<BarEditor
 			formData={formData}
 			setFormData={setFormData}
-			isHovered={isHovered}
-			setIsHovered={setIsHovered}
-			current={current}
-			errorIDs={errorIDs}
-			setErrorIDs={setErrorIDs}
 			setError={setError}
-			schemeName={schemeName}
 		>
 			<ul>
 				<DragDropProvider
@@ -79,12 +68,7 @@ const SortableBarEditor = ({
 	);
 };
 SortableBarEditor.propTypes = {
-	initName: PropTypes.string,
-	schemeName: PropTypes.string,
-	current: PropTypes.number,
 	errorIDs: PropTypes.array,
-	isHovered: PropTypes.number,
-	setIsHovered: PropTypes.func,
 	formData: PropTypes.array,
 	setFormData: PropTypes.func,
 	setError: PropTypes.func,
