@@ -55,7 +55,7 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 		? isSetter(command)
 			? sigtable[command.group].outputs
 			: [
-					...sigtable[command.group].outputs,
+					//...sigtable[command.group].outputs,
 					...sigtable[command.group].inputs,
 					...sigtable[command.group].sulSigs,
 				]
@@ -122,7 +122,6 @@ const ValueRadio = ({ command, fieldName, updateAction }) => {
 			Активен{' '}
 			<input
 				className={`${inputStyles.radio} ${styles.radio}`}
-				s
 				type="radio"
 				id={fieldName}
 				value={0}

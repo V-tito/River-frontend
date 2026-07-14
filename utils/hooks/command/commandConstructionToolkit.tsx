@@ -27,12 +27,15 @@ function autoUpdateSignalSubtype<T extends Command>(
 			)
 				return { ...command, signalSubtype: 'SulSignal' } as T;
 			else if (
-				sigtable[command.group].inputs.find(
+				(sigtable[command.group].outputs.find(
 					item => item.name == command.signal
 				) === undefined &&
-				sigtable[command.group].outputs.find(
+					(commandTypeCheckers.isSet(command) ||
+						commandTypeCheckers.isPulse(command))) ||
+				(sigtable[command.group].inputs.find(
 					item => item.name == command.signal
-				) === undefined
+				) === undefined &&
+					commandTypeCheckers.isCheck(command))
 			)
 				return { ...command, signal: '' } as T;
 	return command;

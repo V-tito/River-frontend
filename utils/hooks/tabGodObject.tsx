@@ -139,7 +139,18 @@ export function useTabManager(scheme: string) {
 					setCurrentTabId(current);
 				}
 			}
-			clearSessionStorage();
+			//clearSessionStorage();
+			return;
+		}
+		if (filepath) {
+			if (Array.isArray(filepath)) {
+				filepath.map(path => addTab(path));
+			} else addTab(filepath);
+		} else {
+			const newId = addTab();
+			console.log('tabs', tabs);
+			console.log('new id', newId);
+			setCurrentTabId(newId);
 		}
 	};
 
@@ -432,6 +443,7 @@ export function useExecutionHook(
 	}
 
 	async function executeTabScript(id: string, tabContent: Array<Command>) {
+		console.debug('started execution');
 		clearTabResults(id);
 		clearTabErrorIds(id);
 		for (let i = 0; i < tabContent.length; i++) {

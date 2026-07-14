@@ -83,10 +83,20 @@ const StateOfSignals = () => {
 		fetchData();
 	}, [defaultScheme]);
 	useEffect(() => {
-		const toggleOff = () => {
-			toggleScheme(defaultScheme.name, false);
+		const toggleOff = async () => {
+			await toggleScheme(defaultScheme.name, false);
 		};
-		return () => toggleOff();
+		const handleBeforeUnload = async (event: Event) => {
+			await toggleOff();
+			event.preventDefault();
+			return;
+		};
+
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
 	}, []);
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;

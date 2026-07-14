@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useEffect } from 'react';
 import styles from './editor.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
@@ -41,9 +41,10 @@ const EditorTabs = ({
 			</commandHooksContext.Provider>
 			<button
 				onClick={async e => {
-					await toggleScheme(scheme);
+					//await toggleScheme(scheme);
+					//console.debug('toggled scheme on');
 					await executeTabScript(currentTabId, tabs[currentTabId].content);
-					await toggleScheme(scheme, false);
+					//await toggleScheme(scheme, false);
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 			>

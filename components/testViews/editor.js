@@ -1,5 +1,11 @@
 //lib tools
-import React, { useState, useEffect, createContext, useCallback } from 'react';
+import React, {
+	useState,
+	useEffect,
+	createContext,
+	useCallback,
+	useRef,
+} from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useBeforeUnload } from 'react-use';
 
@@ -39,11 +45,28 @@ const Editor = ({ scheme }) => {
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const filepath = params.get('filepath');
-	//load data on enter
 	useEffect(() => {
-		initTabs(filepath);
-		setLoading(false);
+		const toggleon = async () => {
+			await toggleScheme(scheme.name);
+		};
+		toggleon();
+	}, [scheme]);
+	useEffect(() => {
+		const toggleOff = () => {
+			toggleScheme(scheme.name, false);
+		};
+		return () => toggleOff();
 	}, []);
+	//load data on enter
+	const hasInitialized = useRef(false);
+	useEffect(() => {
+		if (!hasInitialized.current) {
+			console.debug('use init tabs effect');
+			initTabs(filepath);
+			setLoading(false);
+			hasInitialized.current = true;
+		}
+	}, [filepath]);
 	//save data on exit
 	const router = useRouter();
 	// Auto-save on change (with debounce)
@@ -76,13 +99,11 @@ const Editor = ({ scheme }) => {
 				<button
 					className={tabStyles.execButton}
 					onClick={async e => {
-						await toggleScheme(scheme.name);
 						console.debug('toggled on scheme');
 						const all = Object.keys(tabs).map(tabID =>
 							executeTabScript(tabID, tabs[tabID].content)
 						);
 						await Promise.all(all);
-						await toggleScheme(scheme.name, false);
 					}}
 				>
 					Выполнить все

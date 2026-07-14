@@ -55,13 +55,28 @@ async function postprocess<T extends Command>(
 }
 
 const checkExpected = (command: Command, result: Record<string, any>) => {
-	if (!commandTypeCheckers.isCheck(command))
+	if (
+		!(
+			commandTypeCheckers.isCheck(command) ||
+			commandTypeCheckers.isWait(command)
+		)
+	)
 		throw new Error('Неверный тип команды');
-	if (command.signalSubtype == 'Signal')
+	if (command.signalSubtype == 'Signal') {
+		console.debug(
+			'expected value ',
+			command.expectedValue,
+			'of type',
+			typeof command.expectedValue,
+			'is == result.value',
+			command.expectedValue == result.value,
+			'of type ',
+			typeof result.value
+		);
 		return command.expectedValue == 0
 			? result.value == command.expectedValue
 			: result.value > 0;
-	else return result.value == command.expectedValue;
+	} else return result.value == command.expectedValue;
 };
 
 async function waitForSignalState(
@@ -73,10 +88,11 @@ async function waitForSignalState(
 		throw new Error('Неверный тип команды');
 	let result: Record<string, any> = {};
 	let cond: boolean = false;
-	let timeoutId: NodeJS.Timeout;
+	let error: any = null;
 	const dur = command.waitingTime ? (command.waitingTime as number) : duration;
 	let elapsedTime = 0;
 	const makeRequest = async () => {
+		console.debug('duraiton', dur);
 		result = await protocol.getSignalState(
 			command.schemeName,
 			command.group,
@@ -84,18 +100,19 @@ async function waitForSignalState(
 		);
 		console.log('received:', result);
 		cond = checkExpected(command, result);
-		if (cond) {
-			return `Сигнал ${command.signal} ${command.expectedValue ? 'активен' : 'неактивен'} в момент времени ${result.freshness}`;
-		} else {
-			elapsedTime += interval;
-			if (elapsedTime < dur) {
-				timeoutId = setTimeout(makeRequest, interval);
-			} else {
-				return `Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`;
-			}
-		}
 	};
-	await makeRequest();
+	while (elapsedTime < dur && !cond) {
+		try {
+			await makeRequest();
+			elapsedTime += interval;
+			await new Promise(res => setTimeout(res, interval));
+		} catch (err) {
+			console.log('caught error');
+			error = err;
+			break;
+		}
+	}
+	if (error != null) throw error;
 
 	if (cond) {
 		assert(result.freshness);
@@ -120,8 +137,10 @@ async function execute<T extends Command>(command: T, index: number) {
 		console.debug('entry exists', command, exists);
 		if (commandTypeCheckers.isSet(command)) {
 			console.debug('entry is set');
+			console.debug('command.action', command.action as CommandAction);
 			switch (command.action as CommandAction) {
 				case CommandAction.set:
+					console.debug('set command');
 					message = `Уровень сигнала ${command.signal} установлен на ${command.targetValue}`;
 					await protocol.setSignalState(
 						command.schemeName,
@@ -129,7 +148,9 @@ async function execute<T extends Command>(command: T, index: number) {
 						command.signal,
 						command.targetValue
 					);
+					break;
 				case CommandAction.preset:
+					console.debug('preset command');
 					message = `Уровень сигнала ${command.signal} предустановлен на ${command.targetValue}`;
 					await protocol.presetSignalState(
 						command.schemeName,
@@ -137,6 +158,7 @@ async function execute<T extends Command>(command: T, index: number) {
 						command.signal,
 						command.targetValue
 					);
+					break;
 			}
 		}
 		if (commandTypeCheckers.isPulse(command)) {
