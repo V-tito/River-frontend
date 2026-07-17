@@ -33,15 +33,19 @@ const ActionPicker = ({ actRef, changeAction }) => {
 			className={inputStyles.select}
 			onChange={changeAction}
 		>
-			{Object.values(CommandAction).map(item =>
-				(item != CommandAction.none) | (actRef == CommandAction.none) ? (
-					<option value={item} key={item}>
-						{item}
-					</option>
-				) : (
-					''
+			{Object.values(CommandAction)
+				.filter(
+					val => val != CommandAction.setAll && val != CommandAction.presetAll
 				)
-			)}
+				.map(item =>
+					(item != CommandAction.none) | (actRef == CommandAction.none) ? (
+						<option value={item} key={item}>
+							{item}
+						</option>
+					) : (
+						''
+					)
+				)}
 		</select>
 	);
 };
@@ -60,10 +64,7 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 					...sigtable[command.group].sulSigs,
 				]
 		: [null];
-	const displayed = commandTypeCheckers.isWait(command)
-		? command.waitForSignal
-		: true;
-	return displayed ? (
+	return (
 		<div className={styles.signalGrid}>
 			<label className={styles.label}>Группа: </label>
 			<select
@@ -103,8 +104,6 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 				)}
 			</select>
 		</div>
-	) : (
-		''
 	);
 };
 const ValueRadio = ({ command, fieldName, updateAction }) => {
@@ -141,11 +140,8 @@ const ValueInput = ({ command, fieldName, sigtable, updateAction }) => {
 				? false
 				: true
 			: true;
-	const displayed = commandTypeCheckers.isWait(command)
-		? command.waitForSignal
-		: true;
 
-	if (CheckIfSigsAreNotUndef(command, sigtable) && displayed)
+	if (CheckIfSigsAreNotUndef(command, sigtable))
 		return (
 			<div>
 				{isRadio ? (
@@ -192,22 +188,7 @@ const ScriptSelection = ({ command, updateAction, filenames }) => {
 		</div>
 	);
 };
-const WaitCheckbox = ({ command, updateAction }) => {
-	return (
-		<div>
-			<label>
-				<input
-					type="checkbox"
-					id={'waitForSignal'}
-					checked={command.waitForSignal}
-					onChange={updateAction}
-				/>
-				Ждать состояния сигнала
-				{command.waitForSignal}
-			</label>
-		</div>
-	);
-};
+
 const GenInput = ({ command, fieldName, updateAction }) => {
 	return (
 		<div>
@@ -299,20 +280,6 @@ const CommandBar = ({ index }) => {
 						updateAction={updateScript}
 						filenames={files}
 					></ScriptSelection>
-				) : item == 'waitForSignal' ? (
-					<WaitCheckbox
-						command={command}
-						updateAction={e => {
-							console.debug(
-								'e.val',
-								e.target.value,
-								'of type',
-								typeof e.target.value
-							);
-							updateCommandField(index, e.target.id, e.target.checked);
-						}}
-						key={ind}
-					></WaitCheckbox>
 				) : (
 					<GenInput
 						command={command}
