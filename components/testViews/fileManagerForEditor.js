@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SaveFromEditorToServerModal from '../modals/saveFromEditorToServerModal';
 import OpenLocalFileModal from '../modals/openLocalFileModal';
 import FileChooser from '../fileManagement/fileChooserForEditor';
+import SaveFromVarLocally from '../modals/saveFromVarLocally';
 import styles from './editor.module.css';
 import PropTypes from 'prop-types';
 const FileManager = ({
@@ -50,6 +51,7 @@ const FileManager = ({
 				initName={currentTab.name}
 				scheme={scheme}
 			></SaveFromEditorToServerModal>
+			<SaveFromVarLocally formData={currentTab.content} nitName={currentTab.name} label="Сохранить как..."/>
 			<FileChooser folder={scheme}></FileChooser>
 		</div>
 	);

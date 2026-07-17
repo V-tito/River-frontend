@@ -1,6 +1,7 @@
 export enum CommandAction {
 	include = 'Выполнить скрипт',
-	wait = 'Ждать',
+	waitForSignal = 'Ждать состояния сигнала',
+	waitForTime="Бездействовать заданное время",
 	check = 'Сравнить состояние сигнала',
 	set = 'Установить сигнал',
 	setPulse = 'Установить пульсацию',
@@ -22,7 +23,7 @@ interface SignalCommand extends BaseCommand {
 	signalSubtype: 'Signal' | 'SulSignal';
 }
 interface CheckSignalCommand extends SignalCommand {
-	action: CommandAction.check | CommandAction.wait;
+	action: CommandAction.check | CommandAction.waitForSignal;
 	expectedValue: number;
 }
 interface SetSignalCommand extends SignalCommand {
@@ -33,9 +34,12 @@ interface SetSignalCommand extends SignalCommand {
 		| CommandAction.presetPulse;
 	targetValue: number;
 }
-interface WaitCommand extends CheckSignalCommand {
-	action: CommandAction.wait;
-	waitForSignal: boolean;
+interface WaitForTimeCommand extends BaseCommand {
+	action: CommandAction.waitForTime;
+	waitingTime: number | string;
+}
+interface WaitForSignalCommand extends CheckSignalCommand {
+	action: CommandAction.waitForSignal;
 	waitingTime: number | string;
 }
 interface PulseCommand extends SetSignalCommand {
@@ -53,14 +57,16 @@ interface ExecPresetsCommand extends BaseCommand {
 	action: CommandAction.executePresets;
 }
 interface SetAllCommand extends BaseCommand {
-	action: CommandAction.setAll;
+	action: CommandAction.setAll | CommandAction.presetAll;
 	targetValue: number;
+	board: string;
 }
 export type Command =
 	| BaseCommand
 	| CheckSignalCommand
 	| SetSignalCommand
-	| WaitCommand
+	| WaitForTimeCommand
+	|WaitForSignalCommand
 	| PulseCommand
 	| IncludeCommand
 	| ExecPresetsCommand
@@ -70,8 +76,10 @@ const isCheck = (command: Command): command is CheckSignalCommand =>
 	command.action === CommandAction.check;
 const isSet = (command: Command): command is SetSignalCommand =>
 	[CommandAction.set, CommandAction.preset].includes(command.action);
-const isWait = (command: Command): command is WaitCommand =>
-	command.action === CommandAction.wait;
+const isWaitForSignal = (command: Command): command is WaitForSignalCommand =>
+	command.action === CommandAction.waitForSignal;
+const isWaitForTime = (command: Command): command is WaitForTimeCommand =>
+	command.action === CommandAction.waitForTime;
 const isPulse = (command: Command): command is PulseCommand =>
 	[CommandAction.setPulse, CommandAction.presetPulse].includes(command.action);
 const isInclude = (command: Command): command is IncludeCommand =>
@@ -79,18 +87,20 @@ const isInclude = (command: Command): command is IncludeCommand =>
 const isExec = (command: Command): command is ExecPresetsCommand =>
 	command.action === CommandAction.executePresets;
 const isSetAll = (command: Command): command is SetAllCommand =>
-	command.action === CommandAction.setAll;
+	[CommandAction.setAll,CommandAction.presetAll].includes(command.action);
 const isSignalCommand = (command: Command): command is SignalCommand =>
-	isCheck(command) || isWait(command) || isSet(command) || isPulse(command);
+	isCheck(command) || isWaitForSignal(command) || isSet(command) || isPulse(command);
 
 export const prototypes = {
 	[CommandAction.include]: { scriptPath: null, scriptContent: {} },
-	[CommandAction.wait]: {
+	[CommandAction.waitForSignal]: {
 		group: '',
 		signal: '',
 		signalSubtype: 'Signal',
 		expectedValue: 0,
-		waitForSignal: true,
+		waitingTime: 1000,
+	},
+	[CommandAction.waitForTime]: {
 		waitingTime: 1000,
 	},
 	[CommandAction.check]: {
@@ -129,13 +139,14 @@ export const prototypes = {
 	},
 	[CommandAction.executePresets]: {},
 	[CommandAction.none]: {},
-	[CommandAction.setAll]: { targetValue: 0 },
-	[CommandAction.presetAll]: { targetValue: 0 },
+	[CommandAction.setAll]: { targetValue: 0, board:"" },
+	[CommandAction.presetAll]: { targetValue: 0, board:""  },
 };
 export const commandTypeCheckers = {
 	isCheck,
 	isSet,
-	isWait,
+	isWaitForTime,
+	isWaitForSignal,
 	isPulse,
 	isInclude,
 	isExec,

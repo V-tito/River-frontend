@@ -11,17 +11,20 @@ export interface Result {
 }
 
 async function preprocess<T extends Command>(command: T, index: number) {
-	if (commandTypeCheckers.isWait(command)) {
+	if (commandTypeCheckers.isWaitForSignal(command)||commandTypeCheckers.isWaitForTime(command)) {
+	let res:string;
+	if (commandTypeCheckers.isWaitForSignal(command)) 
+		res=`Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue ? 'активен' : 'неактивен'}`; else
+			res='Ожидание...'
+		
 		const now = new Date();
 		return {
-			res: command.waitForSignal
-				? `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue ? 'активен' : 'неактивен'}`
-				: 'Ожидание...',
+			res: res,
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'checker',
 			id: index,
 		};
-	}
+	} else
 	if (commandTypeCheckers.isInclude(command)) {
 		const now = new Date();
 		return {
@@ -58,7 +61,7 @@ const checkExpected = (command: Command, result: Record<string, any>) => {
 	if (
 		!(
 			commandTypeCheckers.isCheck(command) ||
-			commandTypeCheckers.isWait(command)
+			commandTypeCheckers.isWaitForSignal(command)
 		)
 	)
 		throw new Error('Неверный тип команды');
@@ -84,7 +87,7 @@ async function waitForSignalState(
 	interval = 500,
 	duration = 30000
 ) {
-	if (!commandTypeCheckers.isWait(command))
+	if (!commandTypeCheckers.isWaitForSignal(command))
 		throw new Error('Неверный тип команды');
 	let result: Record<string, any> = {};
 	let cond: boolean = false;
@@ -121,6 +124,7 @@ async function waitForSignalState(
 		return `Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`;
 	else return 'Ошибка исполнения';
 }
+
 async function execute<T extends Command>(command: T, index: number) {
 	console.debug('entry in execute', command);
 	let message;
@@ -174,6 +178,7 @@ async function execute<T extends Command>(command: T, index: number) {
 						command.pulseTime,
 						command.period
 					);
+					break;
 				case CommandAction.presetPulse:
 					console.debug('triggered preset pulse', command);
 					message = `Предустановлен импульс сигнала ${command.signal} значением ${command.targetValue} 
@@ -187,16 +192,12 @@ async function execute<T extends Command>(command: T, index: number) {
 						command.period
 					);
 					console.debug('pulse preset', command);
+					break;
 			}
 		}
-		if (commandTypeCheckers.isWait(command)) {
-			if (command.waitForSignal) message = await waitForSignalState(command);
-			else {
-				await new Promise(res =>
-					setTimeout(res, command.waitingTime as number)
-				);
-				message = `Прошло ${command.waitingTime as number} миллисекунд`;
-			}
+		if (commandTypeCheckers.isWaitForSignal(command)) {
+			message = await waitForSignalState(command);
+			
 		}
 		if (commandTypeCheckers.isCheck(command)) {
 			const result = await protocol.getSignalState(
@@ -210,6 +211,24 @@ async function execute<T extends Command>(command: T, index: number) {
 			else
 				message = `Уровень сигнала ${command.signal} НЕ равен эталону ${command.expectedValue}`;
 		}
+	}
+	if (commandTypeCheckers.isWaitForTime(command)) {
+		await new Promise(res =>
+					setTimeout(res, command.waitingTime as number)
+				);
+				message = `Прошло ${command.waitingTime as number} миллисекунд`;
+	}
+	if (commandTypeCheckers.isSetAll(command)) {
+		switch (command.action) {
+			case CommandAction.setAll:
+				message=`Сигналы платы ${command.board} установлены на ${command.targetValue}`;
+
+				break;
+		case CommandAction.presetAll:
+			message=`Сигналы платы ${command.board} предустановлены на ${command.targetValue}`;
+		break}
+		
+		
 	}
 	if (commandTypeCheckers.isExec(command)) {
 		message = 'Запущены пресеты';

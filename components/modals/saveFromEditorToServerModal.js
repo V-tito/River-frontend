@@ -67,7 +67,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 				<div className={styles.container}>
 					<div className={buttonStyles.delGrid}>
 						<span className={headerStyles.modalHeader}>
-							Сохранить на сервере
+							Сохранить
 						</span>
 						<button
 							onClick={() => close()}
@@ -90,7 +90,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 						}}
 						className={`${buttonStyles.button}  ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 					>
-						Сохранить на сервере
+						Сохранить
 					</button>
 					<Modal state={error}>
 						{error
