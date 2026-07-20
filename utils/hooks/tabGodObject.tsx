@@ -315,6 +315,14 @@ export function useCommandHooks(
 				},
 			};
 		});
+		console.debug('request to update field',
+			field,
+			' at index',
+			commandIndex,
+			'to value',
+			value,
+			'type of val',
+			typeof value," sat")
 	}
 
 	function autoUpdateCommandSignalSubtype(

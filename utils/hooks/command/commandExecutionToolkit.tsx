@@ -126,7 +126,7 @@ async function waitForSignalState(
 }
 
 async function execute<T extends Command>(command: T, index: number) {
-	console.debug('entry in execute', command);
+	console.debug('Executing entry', command);
 	let message;
 	if (commandTypeCheckers.isSignalCommand(command)) {
 		console.debug('entry is signal command', command);
@@ -136,15 +136,14 @@ async function execute<T extends Command>(command: T, index: number) {
 			command.group,
 			command.schemeName
 		);
-		console.debug('entry exists before throw', command, exists);
+		console.debug('entry &signal existence before nonexistent signal throw', command, exists);
 		if (!exists) throw new Error('Несуществующий сигнал');
-		console.debug('entry exists', command, exists);
+		console.debug('entry & signal existence after throw statement', command, exists);
 		if (commandTypeCheckers.isSet(command)) {
-			console.debug('entry is set');
-			console.debug('command.action', command.action as CommandAction);
+			console.debug('entry is set/preset command');
 			switch (command.action as CommandAction) {
 				case CommandAction.set:
-					console.debug('set command');
+					console.debug('preparing ng to send set command');
 					message = `Уровень сигнала ${command.signal} установлен на ${command.targetValue}`;
 					await protocol.setSignalState(
 						command.schemeName,
@@ -154,7 +153,7 @@ async function execute<T extends Command>(command: T, index: number) {
 					);
 					break;
 				case CommandAction.preset:
-					console.debug('preset command');
+					console.debug('preparing to send preset command');
 					message = `Уровень сигнала ${command.signal} предустановлен на ${command.targetValue}`;
 					await protocol.presetSignalState(
 						command.schemeName,
