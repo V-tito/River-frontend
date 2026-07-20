@@ -26,6 +26,7 @@ const DelScriptButton = ({ delAction }) => {
 	);
 };
 const ActionPicker = ({ actRef, changeAction }) => {
+	console.debug("action picker triggered")
 	return (
 		<select
 			id="action"
@@ -255,6 +256,7 @@ const CommandBar = ({ index }) => {
 		autoUpdateCommandSignalSubtype(index, sigsByGroup);
 	}, [command.signal]);
 	const updateScript = e => {
+		console.debug("updating script with " ,script[index],e.target.id, e.target.value)
 		updateCommandField(index, e.target.id, e.target.value);
 	};
 	console.log('cb triggered with index', index, 'script', script);

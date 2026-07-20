@@ -72,9 +72,9 @@ export async function setSignalState(schemeName, groupName, signalName, value) {
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning res');
+	console.log('returning result of setting state request');
 	const result = await response.text();
-	console.log('res', result);
+	console.log('result before return ', result);
 	return result;
 }
 export async function presetSignalState(
@@ -97,9 +97,9 @@ export async function presetSignalState(
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning res');
+	console.log('returning reult of presetting state request');
 	const result = await response.text();
-	console.log('res', result);
+	console.log('result before return', result);
 	return result;
 }
 export async function setPulse(
