@@ -9,14 +9,31 @@ export interface Result {
 	timestamp: string;
 	res: string | undefined;
 }
-
+function hasEmptyFields(command: Command) {
+	let res = command.action == CommandAction.none;
+	console.debug(
+		'triggered has empty with command',
+		command,
+		'command.action == CommandAction.none:',
+		res
+	);
+	if (commandTypeCheckers.isSignalCommand(command))
+		res = res || command.group == '' || command.signal == '';
+	if (commandTypeCheckers.isInclude(command))
+		res = res || command.scriptPath == '';
+	console.debug('returning', res, ' from has empty with command', command);
+	return res;
+}
 async function preprocess<T extends Command>(command: T, index: number) {
-	if (commandTypeCheckers.isWaitForSignal(command)||commandTypeCheckers.isWaitForTime(command)) {
-	let res:string;
-	if (commandTypeCheckers.isWaitForSignal(command)) 
-		res=`Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue ? 'активен' : 'неактивен'}`; else
-			res='Ожидание...'
-		
+	if (
+		commandTypeCheckers.isWaitForSignal(command) ||
+		commandTypeCheckers.isWaitForTime(command)
+	) {
+		let res: string;
+		if (commandTypeCheckers.isWaitForSignal(command))
+			res = `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue ? 'активен' : 'неактивен'}`;
+		else res = 'Ожидание...';
+
 		const now = new Date();
 		return {
 			res: res,
@@ -24,8 +41,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			actionType: 'checker',
 			id: index,
 		};
-	} else
-	if (commandTypeCheckers.isInclude(command)) {
+	} else if (commandTypeCheckers.isInclude(command)) {
 		const now = new Date();
 		return {
 			res: `Подгружаем скрипт ${command.scriptPath}`,
@@ -136,9 +152,17 @@ async function execute<T extends Command>(command: T, index: number) {
 			command.group,
 			command.schemeName
 		);
-		console.debug('entry &signal existence before nonexistent signal throw', command, exists);
+		console.debug(
+			'entry &signal existence before nonexistent signal throw',
+			command,
+			exists
+		);
 		if (!exists) throw new Error('Несуществующий сигнал');
-		console.debug('entry & signal existence after throw statement', command, exists);
+		console.debug(
+			'entry & signal existence after throw statement',
+			command,
+			exists
+		);
 		if (commandTypeCheckers.isSet(command)) {
 			console.debug('entry is set/preset command');
 			switch (command.action as CommandAction) {
@@ -196,7 +220,6 @@ async function execute<T extends Command>(command: T, index: number) {
 		}
 		if (commandTypeCheckers.isWaitForSignal(command)) {
 			message = await waitForSignalState(command);
-			
 		}
 		if (commandTypeCheckers.isCheck(command)) {
 			const result = await protocol.getSignalState(
@@ -212,22 +235,19 @@ async function execute<T extends Command>(command: T, index: number) {
 		}
 	}
 	if (commandTypeCheckers.isWaitForTime(command)) {
-		await new Promise(res =>
-					setTimeout(res, command.waitingTime as number)
-				);
-				message = `Прошло ${command.waitingTime as number} миллисекунд`;
+		await new Promise(res => setTimeout(res, command.waitingTime as number));
+		message = `Прошло ${command.waitingTime as number} миллисекунд`;
 	}
 	if (commandTypeCheckers.isSetAll(command)) {
 		switch (command.action) {
 			case CommandAction.setAll:
-				message=`Сигналы платы ${command.board} установлены на ${command.targetValue}`;
+				message = `Сигналы платы ${command.board} установлены на ${command.targetValue}`;
 
 				break;
-		case CommandAction.presetAll:
-			message=`Сигналы платы ${command.board} предустановлены на ${command.targetValue}`;
-		break}
-		
-		
+			case CommandAction.presetAll:
+				message = `Сигналы платы ${command.board} предустановлены на ${command.targetValue}`;
+				break;
+		}
 	}
 	if (commandTypeCheckers.isExec(command)) {
 		message = 'Запущены пресеты';
@@ -246,4 +266,5 @@ export const CommandExecutionToolkit = {
 	preprocess,
 	postprocess,
 	execute,
+	hasEmptyFields,
 };

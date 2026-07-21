@@ -11,6 +11,7 @@ const SortableBarEditor = ({
 	setFormData,
 	setErrorIDs,
 	setError,
+	blockEditing = false,
 }) => {
 	const [version, setVersion] = useState(0);
 	console.log('setFormData in sortable bar is', setFormData);
@@ -59,7 +60,12 @@ const SortableBarEditor = ({
 				>
 					{formData.length > 0
 						? formData.map((item, i) => (
-								<SortableBar key={i} id={i} index={i}></SortableBar>
+								<SortableBar
+									key={i}
+									id={i}
+									index={i}
+									blockEditing={blockEditing}
+								></SortableBar>
 							))
 						: ''}
 				</DragDropProvider>

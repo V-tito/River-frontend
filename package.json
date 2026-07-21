@@ -30,7 +30,7 @@
     "baseline-browser-mapping": "^2.10.43",
     "globals": "^17.7.0",
     "tailwindcss": "^4",
-    "typescript": "^7"
+    "typescript": "7.0.2"
   },
   "allowScripts": {
     "sharp@0.34.5": true

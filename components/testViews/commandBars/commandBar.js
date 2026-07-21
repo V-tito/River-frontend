@@ -15,24 +15,26 @@ import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
 
 const { translateFields, isSetter, getConfig } = CommandBarHelpers;
 
-const DelScriptButton = ({ delAction }) => {
+const DelScriptButton = ({ delAction, disabled }) => {
 	return (
 		<button
 			className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
 			onClick={delAction}
+			disabled={disabled}
 		>
 			&times;
 		</button>
 	);
 };
-const ActionPicker = ({ actRef, changeAction }) => {
-	console.debug("action picker triggered")
+const ActionPicker = ({ actRef, changeAction, disabled }) => {
+	console.debug('action picker triggered');
 	return (
 		<select
 			id="action"
 			value={actRef}
 			className={inputStyles.select}
 			onChange={changeAction}
+			disabled={disabled}
 		>
 			{Object.values(CommandAction)
 				.filter(
@@ -55,7 +57,12 @@ const CheckIfSigsAreNotUndef = (command, sigtable) => {
 		if (sigtable[command.group] != undefined) return true;
 	return false;
 };
-const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
+const GroupSignalSelection = ({
+	command,
+	sigtable,
+	updateAction,
+	disabled,
+}) => {
 	const listOfSignals = CheckIfSigsAreNotUndef(command, sigtable)
 		? isSetter(command)
 			? sigtable[command.group].outputs
@@ -74,7 +81,7 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 				onChange={updateAction}
 				id="group"
 			>
-				<option value={''}>группа...</option>
+				{command.group == '' ? <option value={''}>группа...</option> : ''}
 				{sigtable
 					? Object.keys(sigtable).map(item => (
 							<option value={item} key={item}>
@@ -89,9 +96,9 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 				value={command.signal}
 				className={inputStyles.select}
 				onChange={updateAction}
-				disabled={[undefined, ''].includes(command.group)}
+				disabled={[undefined, ''].includes(command.group) || disabled}
 			>
-				<option value={''}>сигнал...</option>
+				{command.signal == '' ? <option value={''}>сигнал...</option> : ''}
 				{listOfSignals.map(item =>
 					item != null ? (
 						<option value={item.name} key={item.name}>
@@ -107,7 +114,7 @@ const GroupSignalSelection = ({ command, sigtable, updateAction }) => {
 		</div>
 	);
 };
-const ValueRadio = ({ command, fieldName, updateAction }) => {
+const ValueRadio = ({ command, fieldName, updateAction, disabled }) => {
 	return (
 		<div>
 			<label className={styles.label}>{translateFields[fieldName]}:</label>
@@ -118,6 +125,7 @@ const ValueRadio = ({ command, fieldName, updateAction }) => {
 				onChange={updateAction}
 				checked={command[fieldName] == 1}
 				className={`${inputStyles.radio} ${styles.radio}`}
+				disabled={disabled}
 			/>
 			Активен{' '}
 			<input
@@ -127,12 +135,19 @@ const ValueRadio = ({ command, fieldName, updateAction }) => {
 				value={0}
 				onChange={updateAction}
 				checked={command[fieldName] == 0}
+				disabled={disabled}
 			/>{' '}
 			Неактивен
 		</div>
 	);
 };
-const ValueInput = ({ command, fieldName, sigtable, updateAction }) => {
+const ValueInput = ({
+	command,
+	fieldName,
+	sigtable,
+	updateAction,
+	disabled,
+}) => {
 	const isRadio =
 		command.signalSubtype == 'SulSignal'
 			? !sigtable[command.group].sulSigs.find(
@@ -162,6 +177,7 @@ const ValueInput = ({ command, fieldName, sigtable, updateAction }) => {
 							id={fieldName}
 							value={command[fieldName] ? command[fieldName] : ''}
 							onChange={updateScript}
+							disabled={disabled}
 						></input>
 					</div>
 				)}
@@ -169,17 +185,18 @@ const ValueInput = ({ command, fieldName, sigtable, updateAction }) => {
 		);
 	else return;
 };
-const ScriptSelection = ({ command, updateAction, filenames }) => {
+const ScriptSelection = ({ command, updateAction, filenames, disabled }) => {
 	return (
 		<div className="flex flex-row">
 			<label className={styles.label}>Скрипт с сервера: </label>
 			<select
-				value={command.script}
+				value={command.scriptPath}
 				className={inputStyles.select}
 				onChange={updateAction}
+				disabled={disabled}
 				id="script"
 			>
-				<option value={''}>скрипт...</option>
+				{command.scriptPath == '' ? <option value={''}>скрипт...</option> : ''}
 				{filenames.map(item => (
 					<option value={item} key={item}>
 						{item}
@@ -190,7 +207,7 @@ const ScriptSelection = ({ command, updateAction, filenames }) => {
 	);
 };
 
-const GenInput = ({ command, fieldName, updateAction }) => {
+const GenInput = ({ command, fieldName, updateAction, disabled }) => {
 	return (
 		<div>
 			<label className={styles.label}>{translateFields[fieldName]}:</label>
@@ -200,11 +217,12 @@ const GenInput = ({ command, fieldName, updateAction }) => {
 				id={fieldName}
 				value={command[fieldName]}
 				onChange={updateAction}
+				disabled={disabled}
 			></input>{' '}
 		</div>
 	);
 };
-const CommandBar = ({ index }) => {
+const CommandBar = ({ index, blockEditing = false }) => {
 	const { formData, sigsByGroup, files } = useContext(BarContext);
 	let script = formData;
 	let command = script[index];
@@ -220,7 +238,6 @@ const CommandBar = ({ index }) => {
 		updateCommandField,
 		autoUpdateCommandSignalSubtype,
 		autoCleanCommand,
-		markIfEntryHasEmptyFields,
 	} = useContext(commandHooksContext);
 	console.log('sigs by group in command bar', sigsByGroup);
 	console.log(
@@ -237,7 +254,12 @@ const CommandBar = ({ index }) => {
 		autoUpdateCommandSignalSubtype(index, sigsByGroup);
 	}, [command.signal]);
 	const updateScript = e => {
-		console.debug("updating script with " ,script[index],e.target.id, e.target.value)
+		console.debug(
+			'updating script with ',
+			script[index],
+			e.target.id,
+			e.target.value
+		);
 		updateCommandField(index, e.target.id, e.target.value);
 	};
 	console.log('cb triggered with index', index, 'script', script);
@@ -253,11 +275,13 @@ const CommandBar = ({ index }) => {
 				<label className={styles.label}>Действие: </label>
 				<DelScriptButton
 					delAction={() => deleteCommandFromCurrentTab(index)}
+					disabled={blockEditing}
 				></DelScriptButton>
 			</div>
 			<ActionPicker
 				actRef={command.action}
 				changeAction={e => changeCommandActionType(index, e.target.value)}
+				disabled={blockEditing}
 			></ActionPicker>
 			{getConfig(command).map((item, ind) =>
 				item == 'signal' ? (
@@ -266,6 +290,7 @@ const CommandBar = ({ index }) => {
 						command={command}
 						sigtable={sigsByGroup}
 						updateAction={updateScript}
+						disabled={blockEditing}
 					></GroupSignalSelection>
 				) : ['targetValue', 'expectedValue'].includes(item) ? (
 					<ValueInput
@@ -274,6 +299,7 @@ const CommandBar = ({ index }) => {
 						fieldName={item}
 						sigtable={sigsByGroup}
 						updateAction={updateScript}
+						disabled={blockEditing}
 					></ValueInput>
 				) : item == 'script' ? (
 					<ScriptSelection
@@ -281,6 +307,7 @@ const CommandBar = ({ index }) => {
 						command={command}
 						updateAction={updateScript}
 						filenames={files}
+						disabled={blockEditing}
 					></ScriptSelection>
 				) : (
 					<GenInput
@@ -288,6 +315,7 @@ const CommandBar = ({ index }) => {
 						updateAction={updateScript}
 						fieldName={item}
 						key={ind}
+						disabled={blockEditing}
 					></GenInput>
 				)
 			)}

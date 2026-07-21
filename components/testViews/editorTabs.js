@@ -3,7 +3,7 @@ import styles from './editor.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import SortableBarEditor from './commandBars/sortableBarEditor';
-import { useCommandHooks } from '@/utils/hooks/tabGodObject';
+import { useCommandHooks } from '@/utils/hooks/editorTabHooks/useCommandHooks';
 import { useGlobal } from '@/app/GlobalState';
 export const errorIDsContext = createContext();
 export const commandHooksContext = createContext();
@@ -15,7 +15,7 @@ const EditorTabs = ({
 	setCurrentTabErrorIDs,
 	executeTabScript,
 	scheme,
-	toggleScheme,
+	hasEmpty,
 }) => {
 	const { setPollingError } = useGlobal();
 	console.log(
@@ -36,6 +36,9 @@ const EditorTabs = ({
 						setFormData={updateCurrentTabContent}
 						setErrorIDs={setCurrentTabErrorIDs}
 						setError={setPollingError}
+						blockEditing={
+							currentTabId ? tabs[currentTabId].isBeingExecuted : false
+						}
 					></SortableBarEditor>
 				</errorIDsContext.Provider>
 			</commandHooksContext.Provider>
@@ -47,6 +50,7 @@ const EditorTabs = ({
 					//await toggleScheme(scheme, false);
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
+				disabled={hasEmpty(tabs[currentTabId])}
 			>
 				Выполнить текущий скрипт
 			</button>

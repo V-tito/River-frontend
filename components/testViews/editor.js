@@ -22,7 +22,8 @@ import ResultTabs from './resultTabs';
 import AddTabButton from './addTabButton';
 //hooks
 import { toggleScheme } from '@/utils/api_wrap/protocol';
-import { useTabManager, useExecutionHook } from '@/utils/hooks/tabGodObject';
+import { useTabManager } from '@/utils/hooks/editorTabHooks/useTabManager';
+import { useExecutionHook } from '@/utils/hooks/editorTabHooks/useExecutionHook';
 
 export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
@@ -41,18 +42,21 @@ const Editor = ({ scheme }) => {
 		updateTabContent,
 	} = useTabManager(scheme.name);
 	console.log('updateTabContent in editor is', updateTabContent);
-	const { setCurrentTabErrorIDs, executeTabScript } = useExecutionHook(setTabs);
+	const { setCurrentTabErrorIDs, executeTabScript, entryHasEmptyFields } =
+		useExecutionHook(setTabs);
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const filepath = params.get('filepath');
 	useEffect(() => {
 		const toggleon = async () => {
+			console.debug('toggled on scheme');
 			await toggleScheme(scheme.name);
 		};
 		toggleon();
 	}, [scheme]);
 	useEffect(() => {
 		const toggleOff = () => {
+			console.debug('toggled off scheme');
 			toggleScheme(scheme.name, false);
 		};
 		return () => toggleOff();
@@ -98,8 +102,10 @@ const Editor = ({ scheme }) => {
 			<div className={tabStyles.tabHeaders}>
 				<button
 					className={tabStyles.execButton}
+					disabled={Object.values(tabs).reduce((acc, tab) => {
+						return acc || entryHasEmptyFields(tab);
+					}, false)}
 					onClick={async e => {
-						console.debug('toggled on scheme');
 						const all = Object.keys(tabs).map(tabID =>
 							executeTabScript(tabID, tabs[tabID].content)
 						);
@@ -142,7 +148,7 @@ const Editor = ({ scheme }) => {
 						setCurrentTabErrorIDs={setCurrentTabErrorIDs}
 						executeTabScript={executeTabScript}
 						scheme={scheme.name}
-						toggleScheme={toggleScheme}
+						hasEmpty={entryHasEmptyFields}
 					></EditorTabs>
 
 					<ResultTabs

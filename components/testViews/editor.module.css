@@ -2,17 +2,17 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  height:100vh;
-  margin:10px;
+  height:85vh;
+  margin:5px;
 
 }
 .show {
     display: flex;
     flex-direction: column!important;
     width: 50%;
-    height:90vh;
+    height:80vh;
     padding: 0px 20px;
-    margin:10px;
+    margin:5px;
     border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
@@ -21,7 +21,7 @@
   .edit {
     display: flex;
     flex-direction: column!important;
-    height:90vh;
+    height:70vh;
     border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     overflow-y: auto;
@@ -29,7 +29,7 @@
   }
   .editor {
     width: 100%;
-    height:80vh;
+    height:70vh;
     padding: 4px;
     border: 1px solid var(--defaultgrey);
     border-radius: 5px;
@@ -40,6 +40,7 @@
     display: flex;
   flex-direction: row;
   justify-content: center;
+
   }
 
   .setter{
