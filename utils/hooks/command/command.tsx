@@ -1,7 +1,7 @@
 export enum CommandAction {
 	include = 'Выполнить скрипт',
 	waitForSignal = 'Ждать состояния сигнала',
-	waitForTime="Бездействовать заданное время",
+	waitForTime = 'Бездействовать заданное время',
 	check = 'Сравнить состояние сигнала',
 	set = 'Установить сигнал',
 	setPulse = 'Установить пульсацию',
@@ -66,7 +66,7 @@ export type Command =
 	| CheckSignalCommand
 	| SetSignalCommand
 	| WaitForTimeCommand
-	|WaitForSignalCommand
+	| WaitForSignalCommand
 	| PulseCommand
 	| IncludeCommand
 	| ExecPresetsCommand
@@ -87,12 +87,15 @@ const isInclude = (command: Command): command is IncludeCommand =>
 const isExec = (command: Command): command is ExecPresetsCommand =>
 	command.action === CommandAction.executePresets;
 const isSetAll = (command: Command): command is SetAllCommand =>
-	[CommandAction.setAll,CommandAction.presetAll].includes(command.action);
+	[CommandAction.setAll, CommandAction.presetAll].includes(command.action);
 const isSignalCommand = (command: Command): command is SignalCommand =>
-	isCheck(command) || isWaitForSignal(command) || isSet(command) || isPulse(command);
+	isCheck(command) ||
+	isWaitForSignal(command) ||
+	isSet(command) ||
+	isPulse(command);
 
 export const prototypes = {
-	[CommandAction.include]: { scriptPath: null, scriptContent: {} },
+	[CommandAction.include]: { scriptPath: '', scriptContent: {} },
 	[CommandAction.waitForSignal]: {
 		group: '',
 		signal: '',
@@ -139,8 +142,8 @@ export const prototypes = {
 	},
 	[CommandAction.executePresets]: {},
 	[CommandAction.none]: {},
-	[CommandAction.setAll]: { targetValue: 0, board:"" },
-	[CommandAction.presetAll]: { targetValue: 0, board:""  },
+	[CommandAction.setAll]: { targetValue: 0, board: '' },
+	[CommandAction.presetAll]: { targetValue: 0, board: '' },
 };
 export const commandTypeCheckers = {
 	isCheck,

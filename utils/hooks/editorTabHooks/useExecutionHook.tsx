@@ -58,8 +58,7 @@ export function useExecutionHook(
 		return { id: id, actionType: 'error', timestamp: now, res: msg } as Result;
 	}
 	async function executeEntry(tabId: string, entry: Command, index: number) {
-		console.debug('entry in execute entry', entry);
-		console.debug('execute(entry)', execute(entry, index));
+		console.debug('started executing entry ', entry);
 		const prepres = await preprocess(entry, index);
 		if (prepres) updateTabResults(tabId, prepres);
 		try {
@@ -89,7 +88,7 @@ export function useExecutionHook(
 	}
 
 	async function executeTabScript(id: string, tabContent: Array<Command>) {
-		console.debug('started execution');
+		console.info('start processing tab ', id, 'with contents ', tabContent);
 		clearTabResults(id);
 		clearTabErrorIds(id);
 		setTabs(prev => ({

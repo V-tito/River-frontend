@@ -30,12 +30,10 @@ const StateOfBoards = () => {
 	useEffect(() => {
 		const fetchBoards = async () => {
 			const result = await getList('TestBoard', defaultScheme.name);
-			console.log('list of boards from sp', result);
 			setData(result);
 		};
 		const fetchSul = async () => {
 			const result = await getList('Sul', defaultScheme.name);
-			console.log('list of sul from sp', result);
 			setSul(result);
 		};
 		const fetchAll = async () => {
@@ -57,7 +55,6 @@ const StateOfBoards = () => {
 
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;
-	console.log('list of boards before sp render', data);
 	return (
 		//
 		<div className="flex flex-col">

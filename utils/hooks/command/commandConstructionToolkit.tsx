@@ -53,37 +53,26 @@ function updateField<T extends Command, K extends keyof T>(
 	return command;
 }
 function changeAction<T extends Command>(command: T, newAction: CommandAction) {
-	console.debug('changing action of command', command, 'to ', newAction);
 	const prototype = prototypes[newAction];
-	console.debug('new action prototype', prototype);
-	console.debug('prototype keys', Object.keys(prototype));
 	const res = Object.keys(prototype).reduce(
 		(acc, key) => {
-			console.debug('prototype acc', {
-				...acc,
-				[key]: prototype[key as keyof typeof prototype],
-			});
 			return key in command
 				? { ...acc, [key]: command[key as keyof typeof command] }
 				: { ...acc, [key]: prototype[key as keyof typeof prototype] };
 		},
 		{ action: newAction, schemeName: command.schemeName }
 	);
-	console.debug('Returning new command', res);
 	return res;
 }
 function makeNew(
 	schemeName: string,
 	entry?: Record<string, string | number> | Command
 ) {
-	console.debug('making new command');
 	if (!entry) {
-		console.debug('making command with no entry');
 		return { action: CommandAction.none, schemeName: schemeName } as Command;
 	}
 	if (!('action' in entry)) throw new Error('Команда не определена');
 	let act = entry.action;
-	console.debug('making command with action ', act);
 	assert(typeof act == 'string');
 	if (!Object.values(CommandAction).includes(act as CommandAction))
 		if (!(act in CommandAction)) throw new Error('Неизвестная команда');
@@ -93,7 +82,6 @@ function makeNew(
 		action: act,
 		schemeName: schemeName,
 	} as Command;
-	console.debug('new command', newCommand);
 	return changeAction(newCommand, act as CommandAction);
 }
 

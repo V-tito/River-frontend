@@ -30,25 +30,18 @@ const SetDefaultScheme = () => {
 
 	const handleChange = e => {
 		const { value } = e.target;
-		//console.log(e.target.value)
-		console.log(value);
 		setChosenScheme(data.find(record => record.id === Number(value)));
-		console.log(value);
-		console.log(data.find(record => record.id === Number(value)));
 	};
 	const handleSubmit = () => {
-		console.log(chosenScheme);
 		setDefaultScheme({
 			id: chosenScheme.id,
 			name: chosenScheme.name,
 			comPort: chosenScheme.comPort,
 		});
-		console.log(defaultScheme);
 	};
 
 	if (error != null) return <p>Ошибка: {error.message}</p>;
 	if (loading) return <p>Загрузка...</p>;
-	console.log(`shemes ${data}`);
 
 	return (
 		<div>

@@ -14,19 +14,14 @@ const FileView = ({ folder }) => {
 				const response = await fetch(`/api/files?folder=${folder}`, {
 					method: 'GET',
 				});
-				console.log(response.ok);
-				console.log(response);
 				if (!response.ok) {
 					throw new Error(
 						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
 					);
 				}
 				const result = await response.json();
-				console.log('res', result);
 				const fileList = result.files;
 				setFiles(fileList);
-				console.log('resfiles', fileList);
-				console.log('resfilesIsArray', Array.isArray(fileList));
 			} catch (err) {
 				setError(err);
 			} finally {
@@ -42,17 +37,13 @@ const FileView = ({ folder }) => {
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('file', file);
-		console.log(formData);
-		console.log(file.name);
 		const response = await fetch(`/api/files?folder=${folder}`, {
 			method: 'POST',
 			body: formData,
 		});
 
 		if (response.ok) {
-			console.log('File uploaded successfully');
 		} else {
-			console.error('Error uploading file');
 		}
 		window.location.reload();
 	};

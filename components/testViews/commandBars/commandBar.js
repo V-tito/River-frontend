@@ -27,7 +27,6 @@ const DelScriptButton = ({ delAction, disabled }) => {
 	);
 };
 const ActionPicker = ({ actRef, changeAction, disabled }) => {
-	console.debug('action picker triggered');
 	return (
 		<select
 			id="action"
@@ -194,7 +193,7 @@ const ScriptSelection = ({ command, updateAction, filenames, disabled }) => {
 				className={inputStyles.select}
 				onChange={updateAction}
 				disabled={disabled}
-				id="script"
+				id="scriptPath"
 			>
 				{command.scriptPath == '' ? <option value={''}>скрипт...</option> : ''}
 				{filenames.map(item => (
@@ -223,15 +222,15 @@ const GenInput = ({ command, fieldName, updateAction, disabled }) => {
 	);
 };
 const CommandBar = ({ index, blockEditing = false }) => {
+	const id = crypto.randomUUID();
+	console.info('mounted CommandBar component with id', id);
 	const { formData, sigsByGroup, files } = useContext(BarContext);
 	let script = formData;
 	let command = script[index];
-	console.debug('script in command bar', script);
 	const { isHovered, setIsHovered, current } = useContext(
 		execAndMouseDisplayContext
 	);
 	const errorIDs = useContext(errorIDsContext);
-	console.log('errorIDs context in command bar', errorIDs);
 	const {
 		deleteCommandFromCurrentTab,
 		changeCommandActionType,
@@ -239,13 +238,6 @@ const CommandBar = ({ index, blockEditing = false }) => {
 		autoUpdateCommandSignalSubtype,
 		autoCleanCommand,
 	} = useContext(commandHooksContext);
-	console.log('sigs by group in command bar', sigsByGroup);
-	console.log(
-		'group is undef',
-		[undefined, ''].includes(command.group),
-		'group',
-		command.group
-	);
 
 	useEffect(() => {
 		autoCleanCommand(index, sigsByGroup);
@@ -253,16 +245,12 @@ const CommandBar = ({ index, blockEditing = false }) => {
 	useEffect(() => {
 		autoUpdateCommandSignalSubtype(index, sigsByGroup);
 	}, [command.signal]);
+	useEffect(() => {
+		return () => console.info('unmounted CommandBar component with id', id);
+	}, []);
 	const updateScript = e => {
-		console.debug(
-			'updating script with ',
-			script[index],
-			e.target.id,
-			e.target.value
-		);
 		updateCommandField(index, e.target.id, e.target.value);
 	};
-	console.log('cb triggered with index', index, 'script', script);
 	return (
 		<div
 			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
@@ -301,7 +289,7 @@ const CommandBar = ({ index, blockEditing = false }) => {
 						updateAction={updateScript}
 						disabled={blockEditing}
 					></ValueInput>
-				) : item == 'script' ? (
+				) : item == 'scriptPath' ? (
 					<ScriptSelection
 						key={ind}
 						command={command}

@@ -61,32 +61,12 @@ export function useCommandHooks(
 		field: string,
 		value: string | number | boolean
 	) {
-		console.debug(
-			'request to update field',
-			field,
-			' at index',
-			commandIndex,
-			'to value',
-			value,
-			'type of val',
-			typeof value
-		);
 		setTabs(prev => {
 			return {
 				...prev,
 				[currentTabId]: {
 					...prev[currentTabId],
 					content: prev[currentTabId].content.map((item, i) => {
-						console.debug(
-							'in setting tabs item',
-							item,
-							'i',
-							i,
-							'commandIndex',
-							commandIndex,
-							'i == commandIndex',
-							i == commandIndex
-						);
 						return i == commandIndex
 							? updateField(item, field as keyof Command, value)
 							: item;
@@ -94,17 +74,6 @@ export function useCommandHooks(
 				},
 			};
 		});
-		console.debug(
-			'request to update field',
-			field,
-			' at index',
-			commandIndex,
-			'to value',
-			value,
-			'type of val',
-			typeof value,
-			' sat'
-		);
 	}
 
 	function autoUpdateCommandSignalSubtype(

@@ -13,13 +13,12 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 	const [sigsByGroup, setSigs] = useState();
 	const [loading, setLoading] = useState(true);
 	let { addCommandToCurrentTab } = useContext(commandHooksContext);
+	console.info(
+		'mounted BarEditor component (answers for providing lists of groups and signals'
+	);
 	useEffect(() => {
 		const fetchSigs = async () => {
 			try {
-				console.log(
-					'try fetching signals on api',
-					`/api/getSignalTables/${schemeName}?sortedSignals=true`
-				);
 				const response = await fetch(
 					`/api/getSignalTables/${schemeName}?sortedSignals=true`
 				);
@@ -27,8 +26,6 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const conf = await response.json();
-				console.log('sigsbygroup', conf.data);
-				console.log('groups', conf.groups);
 				const sulResponse = await fetch(
 					`/api/getSulSignalTables/${schemeName}`
 				);
@@ -37,21 +34,8 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const tempGroups = conf.groups;
-				console.log('temp groups', conf);
 				const tempData = conf.data;
-				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
 				const tempData2 = tempGroups.reduce((acc, group) => {
-					console.log(
-						'data w upd, in theory',
-						{
-							...acc,
-							[group.name]: {
-								...acc[group.name],
-								sulSigs: sulConf.data[group.name],
-							},
-						},
-						tempData
-					);
 					return {
 						...acc,
 						[group.name]: {
@@ -60,7 +44,6 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 						},
 					};
 				}, tempData);
-				console.log('aggregated data', tempData2);
 				setSigs(tempData2);
 			} catch (err) {
 				if (err instanceof Error) {
@@ -74,19 +57,14 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 				const response = await fetch(`/api/files?folder=${schemeName}`, {
 					method: 'GET',
 				});
-				console.log(response.ok);
-				console.log(response);
 				if (!response.ok) {
 					throw new Error(
 						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
 					);
 				}
 				const result = await response.json();
-				console.log('res', result);
 				const fileList = result.files;
 				setFiles(fileList);
-				console.log('resfiles', fileList);
-				console.log('resfilesIsArray', Array.isArray(fileList));
 				return;
 			} catch (err) {
 				setError(err);
@@ -97,7 +75,6 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 			if (schemeName !== undefined) {
 				await fetchFiles();
 			}
-			console.log('before fetching sigs');
 			await fetchSigs();
 			setLoading(false);
 		};

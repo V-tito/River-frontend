@@ -41,7 +41,7 @@ export async function getSulState(schemeName) {
 }
 export async function getSignalState(schemeName, groupName, signalName) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/get?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}`;
-	console.log('fetching signal state on api', api);
+
 	const response = await fetch(api, {
 		method: 'GET',
 	});
@@ -53,28 +53,26 @@ export async function getSignalState(schemeName, groupName, signalName) {
 		);
 	}
 	const result = await response.json();
-	console.log('received signal state', result);
 	return result;
 }
 export async function setSignalState(schemeName, groupName, signalName, value) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/set?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}`;
+	console.debug('setting signal state on api ', api);
 	const response = await fetch(api, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log('send setting state request', api);
-	console.log('response', response);
+	console.debug('set response ', response);
 	if (!response.ok) {
-		console.log('net error');
+		console.debug('set resolved with error');
 		throw netError(
 			response,
 			'',
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning result of setting state request');
 	const result = await response.text();
-	console.log('result before return ', result);
+	console.debug('set result ', result);
 	return result;
 }
 export async function presetSignalState(
@@ -84,22 +82,22 @@ export async function presetSignalState(
 	value
 ) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/preset?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}`;
+	console.debug('presetting signal state on api ', api);
 	const response = await fetch(api, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log('send presetting state request', api);
-	console.log('response', response);
+	console.debug('preset response ', response);
 	if (!response.ok) {
+		console.debug('preset resolved with error');
 		throw netError(
 			response,
 			'',
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning reult of presetting state request');
 	const result = await response.text();
-	console.log('result before return', result);
+	console.debug('preset result ', result);
 	return result;
 }
 export async function setPulse(
@@ -115,8 +113,6 @@ export async function setPulse(
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log('send setting pulse request', api);
-	console.log('response', response);
 	if (!response.ok) {
 		throw netError(
 			response,
@@ -124,9 +120,7 @@ export async function setPulse(
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning res');
 	const result = await response.text();
-	console.log('res', result);
 	return result;
 }
 export async function presetPulse(
@@ -142,8 +136,6 @@ export async function presetPulse(
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 	});
-	console.log('send presetting pulse request', api);
-	console.log('response', response);
 	if (!response.ok) {
 		throw netError(
 			response,
@@ -151,9 +143,7 @@ export async function presetPulse(
 			`${signalName} в группе ${groupName} рабочего пространства ${schemeName}`
 		);
 	}
-	console.log('returning res');
 	const result = await response.text();
-	console.log('res', result);
 	return result;
 }
 export async function executePresets(scheme) {

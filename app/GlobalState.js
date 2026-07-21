@@ -14,7 +14,6 @@ export const GlobalProvider = ({ children }) => {
 					return JSON.parse(stored);
 				}
 			} catch (err) {
-				console.error("error getting nav profile from local storage", err.message);
 				return null;
 			}
 		}
@@ -34,7 +33,6 @@ export const GlobalProvider = ({ children }) => {
 					else return null;
 				}
 			} catch (err) {
-				console.error("error setting scheme",err.message)
 				return null;
 			}
 		}

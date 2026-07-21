@@ -4,7 +4,6 @@ export async function getList(
 	parentName: string | null = null,
 	schemeName: string | null = null
 ) {
-	console.log('getting list of ', type);
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {
 		if (parentName == null) {
@@ -20,12 +19,10 @@ export async function getList(
 		method: 'GET',
 		//headers: {'Content-Type': 'application/json',}
 	});
-	console.log('received response on getting list');
 	if (!response.ok) {
 		throw netError(response, 'при получении данных', type);
 	}
 	const result = await response.json();
-	console.log('received result on getting list', result);
 	return result;
 }
 export async function checkExistence(
@@ -34,7 +31,6 @@ export async function checkExistence(
 	group: string | null = null,
 	schemeName: string | null = null
 ) {
-	console.log('params', type, name, group, schemeName);
 	let api;
 	if (['Signal', 'SulSignal'].includes(type)) {
 		if (group == null) {
@@ -71,12 +67,7 @@ export async function postEntity(type: string, body: Object) {
 			body: JSON.stringify(body),
 		}
 	);
-	console.log(
-		'sent',
-		JSON.stringify(body),
-		' on ',
-		`${process.env.API_URL}/api/river/v1/configurator/${type}`
-	);
+
 	if (!response.ok) {
 		throw new Error(`Ошибка сети ${response.status}`);
 	}
@@ -84,12 +75,6 @@ export async function postEntity(type: string, body: Object) {
 	return result;
 }
 export async function patchEntity(type: string, body: Object) {
-	console.log(
-		'patching on api',
-		`${process.env.API_URL}/api/river/v1/configurator/${type}`,
-		'with body',
-		body
-	);
 	const response = await fetch(
 		`${process.env.API_URL}/api/river/v1/configurator/${type}`,
 		{
@@ -127,7 +112,6 @@ export async function deleteEntity(
 	} else {
 		api = `${process.env.API_URL}/api/river/v1/configurator/${type}?name=${name}`;
 	}
-	console.log('del on url', api);
 	const response = await fetch(api, {
 		method: 'DELETE',
 		//headers: {'Content-Type': 'application/json',}

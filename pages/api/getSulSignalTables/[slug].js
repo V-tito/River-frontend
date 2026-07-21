@@ -1,6 +1,5 @@
 import { fetchAllSignalsInTheEnv } from '@/utils/hooks/getHelpers';
 export default function handler(req, res) {
-	console.log('triggered endpoint fetch sul sighals');
 	let namesOnly = false;
 	if ('namesOnly' in req.query) {
 		namesOnly = req.query.namesOnly;

@@ -18,7 +18,14 @@ function isSetter<T extends Command>(command: T) {
 }
 function getConfig<T extends Command>(command: T) {
 	return Object.keys(command).filter(
-		key => !['group', 'signalSubtype', 'schemeName', 'action'].includes(key)
+		key =>
+			![
+				'group',
+				'signalSubtype',
+				'schemeName',
+				'action',
+				'scriptContent',
+			].includes(key)
 	);
 }
 

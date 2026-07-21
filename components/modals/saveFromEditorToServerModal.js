@@ -14,20 +14,16 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
-		console.log('fd passed to saver', formData);
 		try {
 			const blob = new Blob([JSON.stringify(formData)], {
 				type: 'text/json',
 			});
-			console.log('blob', blob);
 			const dataToSend = new FormData();
 			dataToSend.append('file', blob, filename);
-			console.log('before', JSON.stringify(dataToSend));
 			const response = await fetch(`/api/files?folder=${scheme}`, {
 				method: 'POST',
 				body: dataToSend,
 			});
-			console.log('after', JSON.stringify(formData));
 			if (!response.ok) {
 				throw new Error(
 					`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
@@ -37,7 +33,6 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
-				console.log(`Error: ${err.message}`);
 			}
 		}
 	};

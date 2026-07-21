@@ -7,22 +7,18 @@ import PropTypes from 'prop-types';
 const DataCards = ({ type, data, label }) => {
 	const [config, setConfig] = useState({ features: [], types: [] });
 	const [loading, setLoading] = useState(true);
-	console.log('type in data cards', type);
 
 	useEffect(() => {
 		const fetchConfig = async () => {
 			const response = await fetch(`/api/getCardConfig/${type}`);
 			const data = await response.json();
 			setConfig(data);
-			console.log('card config', data);
 		};
-		console.log('effect');
 		fetchConfig();
 		setLoading(false);
 	}, []);
 
 	if (loading) return <p>Загрузка плитки...</p>;
-	console.log('datalen', data.length, 'data', data);
 	return (
 		<div className={styles.container}>
 			<div className={styles.cardsGrid}>

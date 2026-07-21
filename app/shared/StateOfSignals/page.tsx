@@ -22,13 +22,10 @@ const StateOfSignals = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				console.log('toggle scheme');
 				await toggleScheme(defaultScheme.name);
-				console.log('toggled scheme');
 				const response = await fetch(
 					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
 				);
-				console.log('fetched sigs');
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
@@ -36,24 +33,15 @@ const StateOfSignals = () => {
 				const sulResponse = await fetch(
 					`/api/getSulSignalTables/${defaultScheme.name}`
 				);
-				console.log('fetched ssigs');
 				const sulConf = await sulResponse.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const tempGroups = conf.groups;
 				const tempData = conf.data;
-				console.log('data', tempData, 'sul', sulConf, 'groups', tempGroups);
 				if (sulConf.data != undefined) {
 					const tempData2 = tempGroups.reduce(
 						(acc: DynamicRecord, group: MyDataType) => {
-							console.log('data w upd, in theory', {
-								...acc,
-								[group.name]: {
-									...acc[group.name],
-									sulSigs: sulConf.data[group.name],
-								},
-							});
 							return {
 								...acc,
 								[group.name]: {
@@ -64,7 +52,6 @@ const StateOfSignals = () => {
 						},
 						tempData
 					);
-					console.log('aggregated data', tempData2);
 					setData(tempData2);
 				} else {
 					setData(tempData);
@@ -100,7 +87,6 @@ const StateOfSignals = () => {
 	}, []);
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;
-	console.log('data', data);
 	return (
 		<div className="flex flex-col">
 			{groups.map(group => (

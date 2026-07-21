@@ -10,7 +10,6 @@ import headerStyles from '@/styles/headerStyles.module.css';
 import AddFromFileModal from '@/components/modals/addFromFileModal';
 import AddModal from '@/components/modals/addModal';
 const AddCard = ({ type }) => {
-	console.log('type in addCard', type);
 	return (
 		<Popup
 			trigger={

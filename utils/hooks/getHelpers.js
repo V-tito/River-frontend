@@ -37,7 +37,6 @@ export async function fetchAllSignalsInTheEnv(
 						return {
 							name: String(group.name),
 							outputs: temp.reduce((acc, item) => {
-								console.log('item', item);
 								if (item.isOutput) {
 									acc.push(
 										namesOnly ? item.name : { ...item, parentGroup: group.name }
@@ -46,7 +45,6 @@ export async function fetchAllSignalsInTheEnv(
 								return acc;
 							}, []),
 							inputs: temp.reduce((acc, item) => {
-								console.log('item', item);
 								if (!item.isOutput) {
 									acc.push(
 										namesOnly ? item.name : { ...item, parentGroup: group.name }

@@ -21,14 +21,12 @@ const FileManager = ({
 		reader.onload = e => {
 			try {
 				const content = e.target.result;
-				console.log('uploaded content', content);
 				const newTabId = addTab();
 				if ('name' in file) renameTab(newTabId, file.name);
 				resetTabContent(JSON.parse(content), newTabId);
 				setReaderError(null);
 			} catch (err) {
 				setReaderError(err);
-				console.log('invalid json');
 				resetTabContent([]);
 			}
 		};
@@ -51,7 +49,11 @@ const FileManager = ({
 				initName={currentTab.name}
 				scheme={scheme}
 			></SaveFromEditorToServerModal>
-			<SaveFromVarLocally formData={currentTab.content} nitName={currentTab.name} label="Сохранить как..."/>
+			<SaveFromVarLocally
+				formData={currentTab.content}
+				nitName={currentTab.name}
+				label="Сохранить как..."
+			/>
 			<FileChooser folder={scheme}></FileChooser>
 		</div>
 	);

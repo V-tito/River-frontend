@@ -13,8 +13,8 @@ const SortableBarEditor = ({
 	setError,
 	blockEditing = false,
 }) => {
+	console.info('mounted SortableBarEditor component');
 	const [version, setVersion] = useState(0);
-	console.log('setFormData in sortable bar is', setFormData);
 	return (
 		<BarEditor
 			formData={formData}
@@ -26,33 +26,28 @@ const SortableBarEditor = ({
 					key={version}
 					onDragEnd={event => {
 						if (event.canceled) return;
-
 						const { source } = event.operation;
-
 						const { initialIndex, index } = source;
-
 						if (initialIndex !== index) {
 							setFormData(items => {
-								console.log('init fd', items);
 								const newData = [...items];
 								const [removed] = newData.splice(initialIndex, 1);
 								newData.splice(index, 0, removed);
-								setErrorIDs(prev =>
-									prev.map(item =>
-										item == initialIndex
-											? index
-											: initialIndex > index
-												? (item >= index) & (item < initialIndex)
-													? item + 1
-													: item
-												: (item > initialIndex) & (item <= index)
-													? item - 1
-													: item
-									)
-								);
-								console.log('new fd', newData);
 								return newData;
 							});
+							setErrorIDs(prev =>
+								prev.map(item =>
+									item == initialIndex
+										? index
+										: initialIndex > index
+											? (item >= index) & (item < initialIndex)
+												? item + 1
+												: item
+											: (item > initialIndex) & (item <= index)
+												? item - 1
+												: item
+								)
+							);
 							setVersion(prev => prev + 1);
 						}
 						//

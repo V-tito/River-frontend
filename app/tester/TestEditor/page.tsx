@@ -6,6 +6,7 @@ import { useGlobal } from '../../GlobalState';
 
 const TesterPage = () => {
 	const { defaultScheme } = useGlobal();
+	console.info('entered TestEditor page');
 	return <TestUI scheme={defaultScheme}></TestUI>;
 };
 export default TesterPage;

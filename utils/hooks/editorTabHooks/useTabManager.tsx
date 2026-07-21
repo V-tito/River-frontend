@@ -17,7 +17,6 @@ export function useTabManager(scheme: string) {
 			const name = path
 				? path.split('/').pop() || 'untitled' + Date.now()
 				: 'untitled' + Date.now();
-			console.log('adding tab with name', name, 'to tabs', tabs);
 			const existingTab = Object.values(tabs).filter(
 				item => item.name == name
 			)[0];
@@ -35,12 +34,9 @@ export function useTabManager(scheme: string) {
 				commandInExecution: -1,
 				isBeingExecuted: false,
 			};
-			console.log('new tab', tab);
 			setTabs(prev => {
-				console.log('tabs in setting ', { ...prev, [tab.id]: tab });
 				return { ...prev, [tab.id]: tab };
 			});
-			console.log('tabs within hook', tabs);
 			setCurrentTabId(tab.id);
 
 			return tab.id;
@@ -49,8 +45,6 @@ export function useTabManager(scheme: string) {
 	);
 	const deleteTab = useCallback(
 		(id: string) => {
-			console.log('deleting tab by id', id, 'from tabs', tabs);
-			const name = tabs[id].name;
 			let ids = Object.keys(tabs);
 			if (currentTabId == id)
 				if (ids.length > 1) {
@@ -59,7 +53,6 @@ export function useTabManager(scheme: string) {
 				} else setCurrentTabId(null);
 			setTabs(prev => {
 				const { [id]: _, ...res } = prev;
-				console.log('new tabs to be', res);
 				return res;
 			});
 		},
@@ -90,22 +83,15 @@ export function useTabManager(scheme: string) {
 		}
 	}, []);
 	const clearSessionStorage = useCallback(() => {
-		console.debug('triggered clearSessionStorage');
 		clearData();
 	}, [clearData]);
 
 	const initTabs = (filepath: string | null) => {
 		const data = loadData();
-		console.debug('loaded data', data);
 		if (data) {
 			const { tabs_, current } = data;
-			console.debug('tabs_.length', Object.keys(tabs_).length);
-			console.debug('filepath', filepath, '!filepath', !filepath);
 			if (!filepath && Object.keys(tabs_).length == 0) {
-				console.log('no tabs');
 				const newId = addTab();
-				console.log('tabs', tabs);
-				console.log('new id', newId);
 				setCurrentTabId(newId);
 			} else {
 				if (filepath) {
@@ -127,8 +113,6 @@ export function useTabManager(scheme: string) {
 			} else addTab(filepath);
 		} else {
 			const newId = addTab();
-			console.log('tabs', tabs);
-			console.log('new id', newId);
 			setCurrentTabId(newId);
 		}
 	};
@@ -139,7 +123,6 @@ export function useTabManager(scheme: string) {
 			tabId: string | null = currentTabId
 		) => {
 			if (!tabId) return;
-			console.debug('passed content is', content);
 			const newContent = content.map((entry, id) => {
 				try {
 					return CommandConstructionToolkit.makeNew(scheme, entry);
@@ -148,12 +131,6 @@ export function useTabManager(scheme: string) {
 					return CommandConstructionToolkit.makeNew(scheme);
 				}
 			});
-			console.debug(
-				'generated new content for tab with id',
-				currentTabId,
-				'is',
-				newContent
-			);
 			setTabs(prev => {
 				return {
 					...prev,
@@ -169,7 +146,6 @@ export function useTabManager(scheme: string) {
 			tabId: string | null = currentTabId
 		) => {
 			if (!tabId) return;
-			console.log('updater passed to updateCurrentTabContent', updater);
 			setTabs(prev => {
 				return {
 					...prev,

@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import ConfirmDeleteModal from '@/components/modals/confirmDeleteModal';
 
 const ItemCard = ({ type, item, config }) => {
-	console.log('item card with item', item);
 	return (
 		<div className={styles.card}>
 			<h1 className={headerStyles.modalHeader}>{item.name}</h1>

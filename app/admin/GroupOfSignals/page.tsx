@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useGlobal } from '../../GlobalState';
 const RedirectStub = () => {
 	const { defaultScheme } = useGlobal();
-	console.log(defaultScheme)
 	const router = useRouter();
 	useEffect(() => {
 		router.push(`/admin/GroupOfSignals/${defaultScheme.name}`);

@@ -41,31 +41,34 @@ const Editor = ({ scheme }) => {
 		resetTabContent,
 		updateTabContent,
 	} = useTabManager(scheme.name);
-	console.log('updateTabContent in editor is', updateTabContent);
+	console.info('mounted Editor component');
 	const { setCurrentTabErrorIDs, executeTabScript, entryHasEmptyFields } =
-		useExecutionHook(setTabs);
+		useExecutionHook(setTabs, currentTabId);
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const filepath = params.get('filepath');
 	useEffect(() => {
 		const toggleon = async () => {
-			console.debug('toggled on scheme');
+			console.debug('in editor component, toggling on scheme');
 			await toggleScheme(scheme.name);
+			console.debug('in editor component, toggled on scheme');
 		};
 		toggleon();
 	}, [scheme]);
 	useEffect(() => {
 		const toggleOff = () => {
-			console.debug('toggled off scheme');
 			toggleScheme(scheme.name, false);
 		};
-		return () => toggleOff();
+		return () => {
+			console.info('unmounted Editor component');
+			console.debug('in editor component, toggled off scheme');
+			toggleOff();
+		};
 	}, []);
 	//load data on enter
 	const hasInitialized = useRef(false);
 	useEffect(() => {
 		if (!hasInitialized.current) {
-			console.debug('use init tabs effect');
 			initTabs(filepath);
 			setLoading(false);
 			hasInitialized.current = true;

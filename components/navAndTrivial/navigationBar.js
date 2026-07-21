@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 
 const NavigationBar = () => {
 	const path = usePathname();
-	console.log('path', path);
 	const defConfig = JSON.parse(
 		'{"common":[{"id":0,"name":"Главная","link":"/"}],"schemeDependent":[]}'
 	);
@@ -16,25 +15,18 @@ const NavigationBar = () => {
 	const { defaultScheme, navProfile, setNavProfile } = useGlobal();
 
 	useEffect(() => {
-		console.log('pathInEffect', path);
 		setCurrentPath(path);
-		console.log('currentPath', currentPath);
-		console.log('split path', path.split('/')[1]);
 		let addr;
 		if (path.split('/')[1] != 'shared') {
 			setNavProfile(path.split('/')[1]);
-			console.log('set nav profile');
 			addr = path.split('/')[1];
 		} else addr = navProfile;
 
-		console.log('nav profile', navProfile);
 		const fetchConfig = async () => {
 			try {
 				const response = await fetch(`/api/getNavigationConfig/${addr}`);
 				const data = await response.json();
-				console.log('nav data', data);
 				setConfig(data);
-				console.log(data);
 			} catch {
 				setConfig(defConfig);
 			}
@@ -42,8 +34,6 @@ const NavigationBar = () => {
 
 		fetchConfig();
 	}, [path]);
-	console.log('nav conf', config);
-	console.log('link', `/${navProfile} `);
 
 	return (
 		<div className={styles.sidebar}>

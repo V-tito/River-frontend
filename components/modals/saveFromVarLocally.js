@@ -25,7 +25,6 @@ const SaveFromVarLocally = ({
 			const blob = new Blob([JSON.stringify(formData)], {
 				type: 'text/json',
 			});
-			console.log('blob', blob);
 			// Create a download link
 			const url = URL.createObjectURL(blob);
 			const link = document.createElement('a');
@@ -41,7 +40,6 @@ const SaveFromVarLocally = ({
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
-				console.log(`Error: ${err.message}`);
 			}
 		}
 	};

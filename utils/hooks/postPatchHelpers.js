@@ -13,9 +13,7 @@ const fetchGroupsAndBoards = async defaultScheme => {
 			throw new Error(`Ошибка сети ${response.status}`);
 		}
 		return data;
-	} catch (err) {
-		console.log('error fetching nameToIds', err.status, err.message);
-	}
+	} catch (err) {}
 };
 
 async function preprocessData(data, table, defaultScheme) {
@@ -50,7 +48,6 @@ async function preprocessData(data, table, defaultScheme) {
 }
 
 export async function postHelper(data, table, defaultScheme) {
-	console.log('post table data', table, data);
 	const newFormData =
 		table == 'Scheme' ? data : await preprocessData(data, table, defaultScheme);
 	await postEntity(table, newFormData);
@@ -64,16 +61,13 @@ export async function patchHelper(data, table, defaultScheme) {
 }
 
 async function processFileEntry(entry, table, defaultScheme) {
-	console.log('processing entry', entry, 'with type', table);
 	try {
-		console.log('checking existence');
 		const exists = await checkExistence(
 			table,
 			entry.name,
 			entry.parentGroup ? entry.parentGroup : null,
 			defaultScheme != null ? defaultScheme.name : null
 		);
-		console.log('existence', exists);
 		if (exists) {
 			await patchHelper(entry, table, defaultScheme);
 			return 'patch';
@@ -86,14 +80,10 @@ async function processFileEntry(entry, table, defaultScheme) {
 	}
 }
 export async function multiplePostPatch(data, table, defaultScheme = null) {
-	console.log('received data', data);
-	console.log('received type', table);
 	if (table != 'Scheme' && defaultScheme == null) {
 		throw new Error('Не указана схема');
 	}
 	var results = { posted: 0, patched: 0 };
-	console.log('results', results);
-	console.log('processing entries');
 	let newData;
 	if (!Array.isArray(data)) {
 		newData = [data];
@@ -103,7 +93,6 @@ export async function multiplePostPatch(data, table, defaultScheme = null) {
 	const promises = newData.reduce((acc, entry, index) => {
 		let type;
 		type = table;
-		console.log('entry', entry);
 		if (entry == undefined) throw new Error('Некорректные данные');
 		if ('parentSul' in entry) {
 			type = 'SulSignal';
@@ -114,9 +103,7 @@ export async function multiplePostPatch(data, table, defaultScheme = null) {
 		return [...acc, processFileEntry(entry, type, defaultScheme)];
 	}, []);
 	const responses = await Promise.all(promises);
-	console.log('responses', responses);
 	responses.map((item, index) => {
-		console.log('res', item);
 		if (item == 'post') {
 			results.posted += 1;
 		} else {
@@ -127,6 +114,5 @@ export async function multiplePostPatch(data, table, defaultScheme = null) {
 			}
 		}
 	});
-	console.log('end results', results);
 	return results;
 }

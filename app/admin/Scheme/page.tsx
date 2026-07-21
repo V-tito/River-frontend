@@ -13,7 +13,6 @@ const Schemelist = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setPollingError(null);
-			console.log('try get list');
 			try {
 				const result = await getList('Scheme');
 				setData(result);

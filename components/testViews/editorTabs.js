@@ -11,17 +11,14 @@ const EditorTabs = ({
 	tabs,
 	setTabs,
 	currentTabId,
-	updateCurrentTabContent,
+	updateTabContent,
 	setCurrentTabErrorIDs,
 	executeTabScript,
 	scheme,
 	hasEmpty,
 }) => {
+	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
-	console.log(
-		'updateCurrentTabContent in editor tabs is',
-		updateCurrentTabContent
-	);
 	return (
 		<div className={styles.show}>
 			<header className={headerStyles.modalHeader}>Редактор команд: </header>
@@ -33,7 +30,7 @@ const EditorTabs = ({
 				>
 					<SortableBarEditor
 						formData={currentTabId ? tabs[currentTabId].content : []}
-						setFormData={updateCurrentTabContent}
+						setFormData={updateTabContent}
 						setErrorIDs={setCurrentTabErrorIDs}
 						setError={setPollingError}
 						blockEditing={
@@ -44,10 +41,7 @@ const EditorTabs = ({
 			</commandHooksContext.Provider>
 			<button
 				onClick={async e => {
-					//await toggleScheme(scheme);
-					//console.debug('toggled scheme on');
 					await executeTabScript(currentTabId, tabs[currentTabId].content);
-					//await toggleScheme(scheme, false);
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 				disabled={hasEmpty(tabs[currentTabId])}

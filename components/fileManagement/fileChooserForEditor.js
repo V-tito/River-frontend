@@ -15,19 +15,14 @@ const FileChooser = ({ folder }) => {
 				const response = await fetch(`/api/files?folder=${folder}`, {
 					method: 'GET',
 				});
-				console.log(response.ok);
-				console.log(response);
 				if (!response.ok) {
 					throw new Error(
 						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
 					);
 				}
 				const result = await response.json();
-				console.log('res', result);
 				const fileList = result.files;
 				setFiles(fileList);
-				console.log('resfiles', fileList);
-				console.log('resfilesIsArray', Array.isArray(fileList));
 			} catch (err) {
 				setError(err);
 			} finally {

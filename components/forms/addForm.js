@@ -11,7 +11,6 @@ import { postHelper } from '@/utils/hooks/postPatchHelpers';
 
 const AddForm = ({ table, object = {} }) => {
 	const { defaultScheme } = useGlobal();
-	console.log('schemeport', defaultScheme.comPort);
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -29,7 +28,6 @@ const AddForm = ({ table, object = {} }) => {
 			const response = await fetch(`/api/getAddConfig/${table}`);
 			const data = await response.json();
 			setConfig(data);
-			console.log(data);
 		};
 		fetchConfig();
 		if ((table == 'Signal') | (table == 'SulSignal')) {
@@ -43,10 +41,6 @@ const AddForm = ({ table, object = {} }) => {
 					if (!response.ok) {
 						throw new Error(`Ошибка сети ${response.status}`);
 					}
-					console.log('groups and boards', data);
-					console.log('groups', data.groups);
-					console.log('groupnames', Object.keys(data.groups));
-					console.log('sul', sul);
 					setBoardNames(Object.keys(data.boards));
 					setGroupNames(Object.keys(data.groups));
 					setSul(data.sul ? Object.keys(data.sul) : []);
@@ -90,14 +84,11 @@ const AddForm = ({ table, object = {} }) => {
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err);
-				console.log(`Error: ${err.message}`);
 			}
 		}
 	};
 
 	if (loading) return <p>Загружается форма...</p>;
-	console.log('groupNames', groupNames);
-	console.log('sulName', sul);
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
 			{config.map(field => (
