@@ -1,7 +1,7 @@
 import { CommandAction, Command } from '../command/command';
 import { CommandConstructionToolkit } from '../command/commandConstructionToolkit';
 import { EditorTab } from './utils';
-
+import { sigtableEntry } from '../entryTypes';
 export function useCommandHooks(
 	setTabs: React.Dispatch<React.SetStateAction<Record<string, EditorTab>>>,
 	currentTabId: string,
@@ -17,6 +17,7 @@ export function useCommandHooks(
 	function addCommandToCurrentTab(commandIndex: number) {
 		setTabs(prev => {
 			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
 			return {
 				...prev,
 				[currentTabId]: {
@@ -29,6 +30,7 @@ export function useCommandHooks(
 	function deleteCommandFromCurrentTab(commandIndex: number) {
 		setTabs(prev => {
 			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
 			return {
 				...prev,
 				[currentTabId]: {
@@ -44,7 +46,10 @@ export function useCommandHooks(
 	) {
 		setTabs(prev => {
 			const tab = prev[currentTabId];
-			if (tab.content[commandIndex].action == actionType) return prev;
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
+			const content = tab.content[commandIndex];
+			if (content == undefined) throw new Error('Несуществующая команда');
+			if (content.action == actionType) return prev;
 			return {
 				...prev,
 				[currentTabId]: {
@@ -62,33 +67,37 @@ export function useCommandHooks(
 		value: string | number | boolean
 	) {
 		setTabs(prev => {
+			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
 			return {
 				...prev,
 				[currentTabId]: {
 					...prev[currentTabId],
-					content: prev[currentTabId].content.map((item, i) => {
+					content: tab.content.map((item, i) => {
 						return i == commandIndex
 							? updateField(item, field as keyof Command, value)
 							: item;
 					}),
-				},
+				} as EditorTab,
 			};
 		});
 	}
 
 	function autoUpdateCommandSignalSubtype(
 		commandIndex: number,
-		sigtable: Record<string, Record<string, Array<Record<string, any>>>>
+		sigtable: Record<string, sigtableEntry>
 	) {
 		setTabs(prev => {
+			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
 			return {
 				...prev,
 				[currentTabId]: {
 					...prev[currentTabId],
-					content: prev[currentTabId].content.map((item, i) =>
+					content: tab.content.map((item, i) =>
 						i == commandIndex ? autoUpdateSignalSubtype(item, sigtable) : item
 					),
-				},
+				} as EditorTab,
 			};
 		});
 	}
@@ -97,14 +106,16 @@ export function useCommandHooks(
 		sigtable: Record<string, Record<string, Array<Record<string, any>>>>
 	) {
 		setTabs(prev => {
+			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
 			return {
 				...prev,
 				[currentTabId]: {
 					...prev[currentTabId],
-					content: prev[currentTabId].content.map((item, i) =>
+					content: tab.content.map((item, i) =>
 						i == commandIndex ? autoClean(item, sigtable) : item
 					),
-				},
+				} as EditorTab,
 			};
 		});
 	}

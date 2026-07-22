@@ -1,4 +1,10 @@
-import { Command, commandTypeCheckers } from './command';
+import {
+	Command,
+	SetAllCommand,
+	SetSignalCommand,
+	PulseCommand,
+	commandTypeCheckers,
+} from './command';
 const translateFields = {
 	group: 'Группа',
 	signal: 'Сигнал',

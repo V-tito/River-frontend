@@ -1,12 +1,16 @@
 import assert from 'node:assert';
-import { CommandAction, Command, commandTypeCheckers } from './command';
-import { CommandBarHelpers } from './commandBarHelpers';
+import type { Command } from '@/utils/hooks/command/command';
+import {
+	CommandAction,
+	commandTypeCheckers,
+} from '@/utils/hooks/command/command';
+import { CommandBarHelpers } from '../command/commandBarHelpers';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
 import * as protocol from '@/utils/api_wrap/protocol';
 import { netError } from '@/utils/api_wrap/netError';
 import { CommandConstructionToolkit } from './commandConstructionToolkit';
 export interface Result {
-	id: string;
+	id: string | undefined;
 	actionType: string;
 	timestamp: string;
 	res: string | undefined;

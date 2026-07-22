@@ -49,7 +49,11 @@ export function useTabManager(scheme: string) {
 			if (currentTabId == id)
 				if (ids.length > 1) {
 					const index = ids.indexOf(id);
-					setCurrentTabId(ids[index > 0 ? index - 1 : index + 1]);
+					const newIndex = index > 0 ? index - 1 : index + 1;
+					const newId = ids[newIndex];
+					if (newId == undefined)
+						throw new Error('оно умудрилось вытащить undef из массива вкладок');
+					setCurrentTabId(newId);
 				} else setCurrentTabId(null);
 			setTabs(prev => {
 				const { [id]: _, ...res } = prev;
@@ -61,7 +65,7 @@ export function useTabManager(scheme: string) {
 	const renameTab = useCallback(
 		(id: string, name: string) => {
 			setTabs(prev => {
-				return { ...prev, [id]: { ...prev[id], name: name } };
+				return { ...prev, [id]: { ...prev[id], name: name } as EditorTab };
 			});
 		},
 		[setTabs, tabs]
@@ -134,7 +138,7 @@ export function useTabManager(scheme: string) {
 			setTabs(prev => {
 				return {
 					...prev,
-					[tabId]: { ...prev[tabId], content: newContent },
+					[tabId]: { ...prev[tabId], content: newContent } as EditorTab,
 				};
 			});
 		},
@@ -147,15 +151,15 @@ export function useTabManager(scheme: string) {
 		) => {
 			if (!tabId) return;
 			setTabs(prev => {
+				const tab = prev[tabId];
+				if (tab == undefined) throw new Error('Несуществующая вкладка');
 				return {
 					...prev,
 					[tabId]: {
 						...prev[tabId],
 						content:
-							updater instanceof Function
-								? updater(prev[tabId].content)
-								: updater,
-					},
+							updater instanceof Function ? updater(tab.content) : updater,
+					} as EditorTab,
 				};
 			});
 		},

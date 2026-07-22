@@ -15,8 +15,15 @@ export function addErrorId(
 	tabId: string,
 	errorId: number
 ) {
-	setTabs(prev => ({
-		...prev,
-		[tabId]: { ...prev[tabId], errorIDs: [...prev[tabId].errorIDs, errorId] },
-	}));
+	setTabs(prev => {
+		const tab = prev[tabId];
+		if (tab == undefined) throw new Error('Несуществующая вкладка');
+		return {
+			...prev,
+			[tabId]: {
+				...prev[tabId],
+				errorIDs: [...tab.errorIDs, errorId],
+			} as EditorTab,
+		};
+	});
 }

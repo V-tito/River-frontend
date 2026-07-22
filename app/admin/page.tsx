@@ -1,6 +1,6 @@
 'use client';
 import SetDefaultScheme from '../../components/forms/setDefaultSchemeForm';
-import React from 'react';
+import React, { Component } from 'react';
 import headerStyles from '@/styles/headerStyles.module.css';
 const Home = () => {
 	return (

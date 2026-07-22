@@ -14,11 +14,11 @@ export enum CommandAction {
 }
 
 interface BaseCommand {
-	id: string;
+	id: string | undefined;
 	action: CommandAction;
 	schemeName: string;
 }
-interface SignalCommand extends BaseCommand {
+export interface SignalCommand extends BaseCommand {
 	group: string;
 	signal: string;
 	signalSubtype: 'Signal' | 'SulSignal';
@@ -27,7 +27,7 @@ interface CheckSignalCommand extends SignalCommand {
 	action: CommandAction.check | CommandAction.waitForSignal;
 	expectedValue: number;
 }
-interface SetSignalCommand extends SignalCommand {
+export interface SetSignalCommand extends SignalCommand {
 	action:
 		| CommandAction.set
 		| CommandAction.preset
@@ -43,7 +43,7 @@ interface WaitForSignalCommand extends CheckSignalCommand {
 	action: CommandAction.waitForSignal;
 	waitingTime: number | string;
 }
-interface PulseCommand extends SetSignalCommand {
+export interface PulseCommand extends SetSignalCommand {
 	action: CommandAction.setPulse | CommandAction.presetPulse;
 	pulseTime: number;
 	period: number;
@@ -57,7 +57,7 @@ interface IncludeCommand extends BaseCommand {
 interface ExecPresetsCommand extends BaseCommand {
 	action: CommandAction.executePresets;
 }
-interface SetAllCommand extends BaseCommand {
+export interface SetAllCommand extends BaseCommand {
 	action: CommandAction.setAll | CommandAction.presetAll;
 	targetValue: number;
 	board: string;

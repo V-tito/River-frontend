@@ -5,6 +5,7 @@ import {
 	commandTypeCheckers,
 	prototypes,
 } from './command';
+import { sigtableEntry } from '../entryTypes';
 function autoClean<T extends Command>(
 	command: T,
 	sigtable: Record<string, Record<string, Array<Record<string, any>>>>
@@ -16,28 +17,28 @@ function autoClean<T extends Command>(
 }
 function autoUpdateSignalSubtype<T extends Command>(
 	command: T,
-	sigtable: Record<string, Record<string, Array<Record<string, any>>>>
+	sigtable: Record<string, sigtableEntry>
 ) {
 	if (commandTypeCheckers.isSignalCommand(command))
-		if (Object.keys(sigtable).includes(command.group))
-			if (
-				sigtable[command.group].sulSigs.find(
-					item => item.name == command.signal
-				)
-			)
+		if (Object.keys(sigtable).includes(command.group)) {
+			const signalsOfGroup = sigtable[command.group];
+			if (signalsOfGroup == undefined)
+				throw new Error(
+					`Не удалось получить список сигналов группы ${command.group}`
+				);
+			if (signalsOfGroup.sulSigs.find(item => item.name == command.signal))
 				return { ...command, signalSubtype: 'SulSignal' } as T;
 			else if (
-				(sigtable[command.group].outputs.find(
-					item => item.name == command.signal
-				) === undefined &&
+				(signalsOfGroup.outputs.find(item => item.name == command.signal) ===
+					undefined &&
 					(commandTypeCheckers.isSet(command) ||
 						commandTypeCheckers.isPulse(command))) ||
-				(sigtable[command.group].inputs.find(
-					item => item.name == command.signal
-				) === undefined &&
+				(signalsOfGroup.inputs.find(item => item.name == command.signal) ===
+					undefined &&
 					commandTypeCheckers.isCheck(command))
 			)
 				return { ...command, signal: '' } as T;
+		}
 	return command;
 }
 function updateField<T extends Command, K extends keyof T>(
