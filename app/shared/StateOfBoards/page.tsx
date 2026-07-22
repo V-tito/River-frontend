@@ -18,7 +18,13 @@ const StateOfBoards = () => {
 	const pathname = usePathname();
 	useEffect(() => {
 		const handleRouteChange = async () => {
+			console.debug(
+				'due to navigating away from stateOfBoards page, toggling off scheme'
+			);
 			await toggleScheme(defaultScheme.name, false);
+			console.debug(
+				'due to navigating away from stateOfBoards page, toggled off scheme'
+			);
 			return;
 		};
 		window.addEventListener('beforeunload', handleRouteChange);
@@ -38,7 +44,15 @@ const StateOfBoards = () => {
 		};
 		const fetchAll = async () => {
 			try {
+				console.debug(
+					'on stateOfBoards page, toggling on scheme',
+					defaultScheme.name
+				);
 				await toggleScheme(defaultScheme.name);
+				console.debug(
+					'on stateOfBoards page, toggled on scheme',
+					defaultScheme.name
+				);
 				await fetchBoards();
 				await fetchSul();
 			} catch (err: unknown) {

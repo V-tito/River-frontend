@@ -22,7 +22,16 @@ const StateOfSignals = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				console.debug(
+					'on stateOfSignals page, toggling on scheme',
+					defaultScheme.name
+				);
 				await toggleScheme(defaultScheme.name);
+				console.debug(
+					'on stateOfSignals page, toggled on scheme',
+					defaultScheme.name
+				);
+
 				const response = await fetch(
 					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
 				);
@@ -71,7 +80,13 @@ const StateOfSignals = () => {
 	}, [defaultScheme]);
 	useEffect(() => {
 		const toggleOff = async () => {
+			console.debug(
+				'due to navigating away from stateOfSignals page, toggling off scheme'
+			);
 			await toggleScheme(defaultScheme.name, false);
+			console.debug(
+				'due to navigating away from stateOfSignals page, toggled off scheme'
+			);
 		};
 		const handleBeforeUnload = async (event: Event) => {
 			await toggleOff();

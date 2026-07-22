@@ -111,14 +111,14 @@ const Editor = ({ scheme }) => {
 					}, false)}
 					onClick={async e => {
 						console.debug('on hitting the ExecAll button, toggling on scheme');
-						await toggleon();
+						await toggleScheme(scheme.name);
 						console.debug('on hitting the ExecAll button, toggled on scheme');
 						const all = Object.keys(tabs).map(
 							async tabID => await executeTabScript(tabID, tabs[tabID].content)
 						);
 						await Promise.all(all);
 						console.debug('on hitting the ExecAll button, toggling off scheme');
-						await toggleOff();
+						await toggleScheme(scheme.name, false);
 						console.debug('on hitting the ExecAll button, toggled off scheme');
 					}}
 				>
