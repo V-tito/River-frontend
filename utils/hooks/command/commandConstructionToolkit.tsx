@@ -65,7 +65,11 @@ function changeAction<T extends Command>(command: T, newAction: CommandAction) {
 				? { ...acc, [key]: command[key as keyof typeof command] }
 				: { ...acc, [key]: prototype[key as keyof typeof prototype] };
 		},
-		{ action: newAction, schemeName: command.schemeName, id: command.id }
+		{
+			action: newAction,
+			schemeName: command.schemeName,
+			id: typeof command.id == 'string' ? crypto.randomUUID() : command.id,
+		}
 	);
 	console.debug('command after changing action/copying prototype values', res);
 	return res;
@@ -96,7 +100,7 @@ function makeNew(
 		...entry,
 		action: act,
 		schemeName: schemeName,
-		id: entry.id ? entry.id : crypto.randomUUID(),
+		id: typeof entry.id == 'string' ? entry.id : crypto.randomUUID(),
 	} as Command;
 	console.debug('new command before copying prototype values', newCommand);
 	return changeAction(newCommand, act as CommandAction);
