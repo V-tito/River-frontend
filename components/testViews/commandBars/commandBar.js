@@ -222,11 +222,10 @@ const GenInput = ({ command, fieldName, updateAction, disabled }) => {
 	);
 };
 const CommandBar = ({ index, blockEditing = false }) => {
-	const id = crypto.randomUUID();
-	console.info('mounted CommandBar component with id', id);
 	const { formData, sigsByGroup, files } = useContext(BarContext);
-	let script = formData;
-	let command = script[index];
+	const script = formData;
+	const command = script[index];
+	console.info('mounted CommandBar component with id', command.id);
 	const { isHovered, setIsHovered, current } = useContext(
 		execAndMouseDisplayContext
 	);
@@ -246,18 +245,22 @@ const CommandBar = ({ index, blockEditing = false }) => {
 		autoUpdateCommandSignalSubtype(index, sigsByGroup);
 	}, [command.signal]);
 	useEffect(() => {
-		return () => console.info('unmounted CommandBar component with id', id);
+		return () =>
+			console.info('unmounted CommandBar component with id', command.id);
 	}, []);
 	const updateScript = e => {
 		updateCommandField(index, e.target.id, e.target.value);
 	};
 	return (
 		<div
-			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == index ? styles.active : ''}`}
+			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == command.id ? styles.active : ''}`}
 			onMouseEnter={() => {
-				setIsHovered(index);
+				setIsHovered(command.id);
 			}}
-			onMouseLeave={() => setIsHovered(null)}
+			onMouseLeave={() => {
+				setIsHovered(null);
+				console.debug('in commandBar, set IsHovered to null');
+			}}
 		>
 			<div className={`${buttonStyles.delGrid} ${styles.delGrid}`}>
 				<label className={styles.label}>Действие: </label>

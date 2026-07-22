@@ -8,10 +8,13 @@ const ResultsViewWithHighlight = ({ results }) => {
 		<div className={styles.editor}>
 			{results.map((result, i) => (
 				<p
-					onMouseEnter={() => setIsHovered(result.id)}
+					onMouseEnter={() => {
+						console.debug('in results, set IsHovered as', result.id);
+						setIsHovered(result.id);
+					}}
 					onMouseLeave={() => setIsHovered(null)}
 					key={i}
-					className={`${styles[result.actionType]} ${isHovered == result.id ? styles.active : ''}`}
+					className={`${styles[result.actionType]} ${result.id != null && result.id != undefined && isHovered == result.id ? styles.active : ''}`}
 				>
 					{result.timestamp} : {result.res}
 				</p>

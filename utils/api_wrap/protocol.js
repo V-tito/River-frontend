@@ -9,7 +9,8 @@ export async function toggleScheme(schemeName, state = true) {
 	if (!response.ok) {
 		throw netError(response, 'при активации рабочего пространства', schemeName);
 	}
-	return;
+	const result = await response.text();
+	return result;
 }
 export async function getBoardState(name) {
 	const response = await fetch(

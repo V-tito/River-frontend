@@ -9,8 +9,7 @@ export function useExecutionHook(
 	setTabs: React.Dispatch<React.SetStateAction<Record<string, EditorTab>>>,
 	currentTabId: string
 ) {
-	const { preprocess, postprocess, execute, hasEmptyFields } =
-		CommandExecutionToolkit;
+	const { preprocess, execute, hasEmptyFields } = CommandExecutionToolkit;
 	function updateTabResults(id: string, result: Result) {
 		setTabs(prev => {
 			return {
@@ -53,7 +52,7 @@ export function useExecutionHook(
 			[tabId]: { ...prev[tabId], commandInExecution: commandId },
 		}));
 	}
-	function makeErrorResult(id: number, msg: string) {
+	function makeErrorResult(id: string, msg: string) {
 		const now = new Date().toLocaleTimeString();
 		return { id: id, actionType: 'error', timestamp: now, res: msg } as Result;
 	}
@@ -62,27 +61,19 @@ export function useExecutionHook(
 		const prepres = await preprocess(entry, index);
 		if (prepres) updateTabResults(tabId, prepres);
 		try {
-			const res = await execute(entry, index);
+			const iteratorForInclude = async (cont: Command, ind: number) => {
+				await executeEntry(tabId, cont, ind);
+			};
+			const res = await execute(entry, index, iteratorForInclude);
 			updateTabResults(tabId, res);
 		} catch (err: any) {
 			if (err instanceof Error)
-				updateTabResults(tabId, makeErrorResult(index, err.message));
+				updateTabResults(tabId, makeErrorResult(entry.id, err.message));
 			else
-				updateTabResults(tabId, makeErrorResult(index, 'неизвестная ошибка'));
-			addErrorId(setTabs, tabId, index);
-		}
-		const iteratorForInclude = (cont: Command, ind: number) => {
-			executeEntry(tabId, cont, ind);
-		};
-		//still stronger connection that i'd like; todo think on fixing
-		try {
-			const postres = await postprocess(entry, index, iteratorForInclude);
-			if (postres) updateTabResults(tabId, postres);
-		} catch (err: any) {
-			if (err instanceof Error)
-				updateTabResults(tabId, makeErrorResult(index, err.message));
-			else
-				updateTabResults(tabId, makeErrorResult(index, 'неизвестная ошибка'));
+				updateTabResults(
+					tabId,
+					makeErrorResult(entry.id, 'неизвестная ошибка')
+				);
 			addErrorId(setTabs, tabId, index);
 		}
 	}

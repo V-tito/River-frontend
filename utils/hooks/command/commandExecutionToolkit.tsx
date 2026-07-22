@@ -4,8 +4,9 @@ import { CommandBarHelpers } from './commandBarHelpers';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
 import * as protocol from '@/utils/api_wrap/protocol';
 import { netError } from '@/utils/api_wrap/netError';
+import { CommandConstructionToolkit } from './commandConstructionToolkit';
 export interface Result {
-	id: number;
+	id: string;
 	actionType: string;
 	timestamp: string;
 	res: string | undefined;
@@ -33,7 +34,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			res: res,
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'checker',
-			id: index,
+			id: command.id,
 		};
 	} else if (commandTypeCheckers.isInclude(command)) {
 		const now = new Date();
@@ -41,27 +42,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			res: `Подгружаем скрипт ${command.scriptPath}`,
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'include',
-			id: index,
-		};
-	}
-	return;
-}
-async function postprocess<T extends Command>(
-	command: T,
-	index: number,
-	iterate: CallableFunction
-) {
-	if (commandTypeCheckers.isInclude(command)) {
-		for (let i = 0; i < command.scriptContent.length; i++) {
-			const content = command.scriptContent[i];
-			await iterate(content, index);
-		}
-		const now = new Date();
-		return {
-			res: `Выполнен скрипт ${command.scriptPath}`,
-			timestamp: now.toLocaleTimeString(),
-			actionType: 'include',
-			id: index,
+			id: command.id,
 		};
 	}
 	return;
@@ -122,7 +103,11 @@ async function waitForSignalState(
 	else return 'Ошибка исполнения';
 }
 
-async function execute<T extends Command>(command: T, index: number) {
+async function execute<T extends Command>(
+	command: T,
+	index: number,
+	iterate: CallableFunction
+) {
 	console.debug('execute command ', command);
 	let message;
 	let response;
@@ -238,6 +223,7 @@ async function execute<T extends Command>(command: T, index: number) {
 		await protocol.executePresets(command.schemeName);
 	}
 	if (commandTypeCheckers.isInclude(command)) {
+		console.debug('command recognized as include');
 		const response = await fetch(
 			`/api/files?folder=${command.schemeName}&filename=${command.scriptPath}`,
 			{
@@ -248,20 +234,43 @@ async function execute<T extends Command>(command: T, index: number) {
 			throw netError(response);
 		}
 		const result = await response.json();
-		command.scriptContent = result;
+		console.debug(
+			'got scriptContent',
+			result,
+			'parsed would be',
+			JSON.parse(result.content)
+		);
+		command.scriptContent = JSON.parse(result.content);
+		for (let i = 0; i < command.scriptContent.length; i++) {
+			const content = CommandConstructionToolkit.makeNew(command.schemeName, {
+				...command.scriptContent[i],
+				id: command.id,
+			});
+			console.debug(
+				'made command',
+				content,
+				' from loaded entry',
+				command.scriptContent[i]
+			);
+			await iterate(content, index);
+		}
+		message = `Выполнен скрипт ${command.scriptPath}`;
 	}
 	const now = new Date();
 	return {
 		res: message,
 		timestamp: now.toLocaleTimeString(),
-		actionType: CommandBarHelpers.isSetter(command) ? 'setter' : 'checker',
-		id: index,
+		actionType: CommandBarHelpers.isSetter(command)
+			? 'setter'
+			: commandTypeCheckers.isInclude(command)
+				? 'include'
+				: 'checker',
+		id: command.id,
 	};
 }
 
 export const CommandExecutionToolkit = {
 	preprocess,
-	postprocess,
 	execute,
 	hasEmptyFields,
 };

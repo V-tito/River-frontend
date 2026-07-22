@@ -5,6 +5,7 @@ import headerStyles from '@/styles/headerStyles.module.css';
 import SortableBarEditor from './commandBars/sortableBarEditor';
 import { useCommandHooks } from '@/utils/hooks/editorTabHooks/useCommandHooks';
 import { useGlobal } from '@/app/GlobalState';
+import { toggleScheme } from '@/utils/api_wrap/protocol';
 export const errorIDsContext = createContext();
 export const commandHooksContext = createContext();
 const EditorTabs = ({
@@ -14,7 +15,7 @@ const EditorTabs = ({
 	updateTabContent,
 	setCurrentTabErrorIDs,
 	executeTabScript,
-	scheme,
+	schemeName,
 	hasEmpty,
 }) => {
 	console.info('mounted EditorTabs component');
@@ -23,7 +24,7 @@ const EditorTabs = ({
 		<div className={styles.show}>
 			<header className={headerStyles.modalHeader}>Редактор команд: </header>
 			<commandHooksContext.Provider
-				value={useCommandHooks(setTabs, currentTabId, scheme)}
+				value={useCommandHooks(setTabs, currentTabId, schemeName)}
 			>
 				<errorIDsContext.Provider
 					value={currentTabId ? tabs[currentTabId].errorIDs : []}
@@ -41,7 +42,20 @@ const EditorTabs = ({
 			</commandHooksContext.Provider>
 			<button
 				onClick={async e => {
-					await executeTabScript(currentTabId, tabs[currentTabId].content);
+					try {
+						console.debug('on hitting the exec button, toggling on scheme');
+						const toggleres = await toggleScheme(schemeName);
+						console.debug(
+							'on hitting the exec button, toggled on scheme with response',
+							toggleres
+						);
+						await executeTabScript(currentTabId, tabs[currentTabId].content);
+						console.debug('on hitting the exec button, toggling off scheme');
+						await toggleScheme(schemeName, false);
+						console.debug('on hitting the exec button, toggled off scheme');
+					} catch (err) {
+						setPollingError(err);
+					}
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 				disabled={hasEmpty(tabs[currentTabId])}

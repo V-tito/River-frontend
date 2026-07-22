@@ -25,6 +25,7 @@ function getConfig<T extends Command>(command: T) {
 				'schemeName',
 				'action',
 				'scriptContent',
+				'id',
 			].includes(key)
 	);
 }

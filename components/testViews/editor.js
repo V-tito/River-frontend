@@ -47,24 +47,25 @@ const Editor = ({ scheme }) => {
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const filepath = params.get('filepath');
-	useEffect(() => {
-		const toggleon = async () => {
-			console.debug('in editor component, toggling on scheme');
-			await toggleScheme(scheme.name);
-			console.debug('in editor component, toggled on scheme');
-		};
-		toggleon();
-	}, [scheme]);
-	useEffect(() => {
-		const toggleOff = () => {
-			toggleScheme(scheme.name, false);
-		};
-		return () => {
-			console.info('unmounted Editor component');
-			console.debug('in editor component, toggled off scheme');
-			toggleOff();
-		};
-	}, []);
+	const toggleon = async () => {
+		await toggleScheme(scheme.name);
+	};
+	const toggleOff = async () => {
+		await toggleScheme(scheme.name, false);
+	};
+	//useEffect(() => {
+	//console.debug('in editor component, toggling on scheme ', scheme.name);
+	//	toggleon();
+	//console.debug('in editor component, toggled on scheme', scheme.name);
+	//}, []);
+	//useEffect(() => {
+
+	//	return () => {
+	//		console.info('unmounted Editor component');
+	//		console.debug('in editor component, toggled off scheme');
+	//		toggleOff();
+	//	};
+	//}, []);
 	//load data on enter
 	const hasInitialized = useRef(false);
 	useEffect(() => {
@@ -109,10 +110,16 @@ const Editor = ({ scheme }) => {
 						return acc || entryHasEmptyFields(tab);
 					}, false)}
 					onClick={async e => {
-						const all = Object.keys(tabs).map(tabID =>
-							executeTabScript(tabID, tabs[tabID].content)
+						console.debug('on hitting the ExecAll button, toggling on scheme');
+						await toggleon();
+						console.debug('on hitting the ExecAll button, toggled on scheme');
+						const all = Object.keys(tabs).map(
+							async tabID => await executeTabScript(tabID, tabs[tabID].content)
 						);
 						await Promise.all(all);
+						console.debug('on hitting the ExecAll button, toggling off scheme');
+						await toggleOff();
+						console.debug('on hitting the ExecAll button, toggled off scheme');
 					}}
 				>
 					Выполнить все
@@ -150,7 +157,7 @@ const Editor = ({ scheme }) => {
 						updateTabContent={updateTabContent}
 						setCurrentTabErrorIDs={setCurrentTabErrorIDs}
 						executeTabScript={executeTabScript}
-						scheme={scheme.name}
+						schemeName={scheme.name}
 						hasEmpty={entryHasEmptyFields}
 					></EditorTabs>
 

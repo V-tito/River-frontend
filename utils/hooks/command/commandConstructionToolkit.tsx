@@ -53,6 +53,10 @@ function updateField<T extends Command, K extends keyof T>(
 	return command;
 }
 function changeAction<T extends Command>(command: T, newAction: CommandAction) {
+	console.debug(
+		'started changing action/copying prototype values to command',
+		command
+	);
 	const prototype = prototypes[newAction];
 	const res = Object.keys(prototype).reduce(
 		(acc, key) => {
@@ -60,28 +64,40 @@ function changeAction<T extends Command>(command: T, newAction: CommandAction) {
 				? { ...acc, [key]: command[key as keyof typeof command] }
 				: { ...acc, [key]: prototype[key as keyof typeof prototype] };
 		},
-		{ action: newAction, schemeName: command.schemeName }
+		{ action: newAction, schemeName: command.schemeName, id: command.id }
 	);
+	console.debug('command after changing action/copying prototype values', res);
 	return res;
 }
 function makeNew(
 	schemeName: string,
 	entry?: Record<string, string | number> | Command
 ) {
+	console.debug('started creating new command');
 	if (!entry) {
-		return { action: CommandAction.none, schemeName: schemeName } as Command;
+		return {
+			action: CommandAction.none,
+			schemeName: schemeName,
+			id: crypto.randomUUID(),
+		} as Command;
 	}
 	if (!('action' in entry)) throw new Error('Команда не определена');
 	let act = entry.action;
 	assert(typeof act == 'string');
 	if (!Object.values(CommandAction).includes(act as CommandAction))
-		if (!(act in CommandAction)) throw new Error('Неизвестная команда');
+		if (!(act in CommandAction))
+			if (act == 'wait')
+				if ('signal' in entry) act = CommandAction.waitForSignal;
+				else act = CommandAction.waitForTime;
+			else throw new Error('Неизвестная команда');
 		else act = CommandAction[act as keyof typeof CommandAction];
 	const newCommand = {
 		...entry,
 		action: act,
 		schemeName: schemeName,
+		id: entry.id ? entry.id : crypto.randomUUID(),
 	} as Command;
+	console.debug('new command before copying prototype values', newCommand);
 	return changeAction(newCommand, act as CommandAction);
 }
 

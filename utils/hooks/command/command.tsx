@@ -14,6 +14,7 @@ export enum CommandAction {
 }
 
 interface BaseCommand {
+	id: string;
 	action: CommandAction;
 	schemeName: string;
 }
