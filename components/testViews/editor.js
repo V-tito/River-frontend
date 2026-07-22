@@ -28,6 +28,7 @@ import { useExecutionHook } from '@/utils/hooks/editorTabHooks/useExecutionHook'
 export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
 	const [isHovered, setIsHovered] = useState();
+	const [execBlock, setExecBlock] = useState(false);
 	const {
 		currentTabId,
 		setCurrentTabId,
@@ -106,10 +107,9 @@ const Editor = ({ scheme }) => {
 			<div className={tabStyles.tabHeaders}>
 				<button
 					className={tabStyles.execButton}
-					disabled={Object.values(tabs).reduce((acc, tab) => {
-						return acc || entryHasEmptyFields(tab);
-					}, false)}
+					disabled={execBlock}
 					onClick={async e => {
+						setExecBlock(true);
 						console.debug('on hitting the ExecAll button, toggling on scheme');
 						await toggleScheme(scheme.name);
 						console.debug('on hitting the ExecAll button, toggled on scheme');
@@ -120,6 +120,7 @@ const Editor = ({ scheme }) => {
 						console.debug('on hitting the ExecAll button, toggling off scheme');
 						await toggleScheme(scheme.name, false);
 						console.debug('on hitting the ExecAll button, toggled off scheme');
+						setExecBlock(false);
 					}}
 				>
 					Выполнить все
@@ -159,6 +160,8 @@ const Editor = ({ scheme }) => {
 						executeTabScript={executeTabScript}
 						schemeName={scheme.name}
 						hasEmpty={entryHasEmptyFields}
+						execBlock={execBlock}
+						setExecBlock={setExecBlock}
 					></EditorTabs>
 
 					<ResultTabs

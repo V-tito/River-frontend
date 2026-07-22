@@ -30,6 +30,9 @@
 .execButton:hover{
     background-color: var(--controlelementactive);
 }
+.execButton:disabled{
+    cursor:not-allowed
+  }
 .tabAdder {
     background-color: var(--controlelementcolor);
     color: var(--controlelementfont);

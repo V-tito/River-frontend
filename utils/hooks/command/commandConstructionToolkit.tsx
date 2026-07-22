@@ -5,6 +5,7 @@ import {
 	commandTypeCheckers,
 	prototypes,
 } from './command';
+import { CommandBarHelpers } from './commandBarHelpers';
 import { sigtableEntry } from '../entryTypes';
 function autoClean<T extends Command>(
 	command: T,
@@ -59,9 +60,30 @@ function changeAction<T extends Command>(command: T, newAction: CommandAction) {
 		command
 	);
 	const prototype = prototypes[newAction];
+	const matchingSignalCommandType =
+		(CommandBarHelpers.isSetter(command) &&
+			[
+				CommandAction.preset,
+				CommandAction.presetAll,
+				CommandAction.presetPulse,
+				CommandAction.set,
+				CommandAction.setAll,
+				CommandAction.setPulse,
+			].includes(newAction)) ||
+		(!CommandBarHelpers.isSetter(command) &&
+			![
+				CommandAction.preset,
+				CommandAction.presetAll,
+				CommandAction.presetPulse,
+				CommandAction.set,
+				CommandAction.setAll,
+				CommandAction.setPulse,
+			].includes(newAction));
 	const res = Object.keys(prototype).reduce(
 		(acc, key) => {
-			return key in command
+			return key in command &&
+				(!['signal', 'signalSubtype'].includes(key) ||
+					matchingSignalCommandType)
 				? { ...acc, [key]: command[key as keyof typeof command] }
 				: { ...acc, [key]: prototype[key as keyof typeof prototype] };
 		},
