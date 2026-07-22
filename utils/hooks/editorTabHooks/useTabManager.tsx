@@ -44,7 +44,8 @@ export function useTabManager(scheme: string) {
 		[tabs, setCurrentTabId, setTabs]
 	);
 	const deleteTab = useCallback(
-		(id: string) => {
+		(id: string | undefined) => {
+			if (id == undefined) throw new Error('Несуществующая вкладка');
 			let ids = Object.keys(tabs);
 			if (currentTabId == id)
 				if (ids.length > 1) {
@@ -63,7 +64,8 @@ export function useTabManager(scheme: string) {
 		[currentTabId, tabs, setTabs]
 	);
 	const renameTab = useCallback(
-		(id: string, name: string) => {
+		(id: string | undefined, name: string) => {
+			if (id == undefined) throw new Error('Несуществующая вкладка');
 			setTabs(prev => {
 				return { ...prev, [id]: { ...prev[id], name: name } as EditorTab };
 			});
