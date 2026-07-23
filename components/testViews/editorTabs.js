@@ -6,6 +6,7 @@ import SortableBarEditor from './commandBars/sortableBarEditor';
 import { useCommandHooks } from '@/utils/hooks/editorTabHooks/useCommandHooks';
 import { useGlobal } from '@/app/GlobalState';
 import { toggleScheme } from '@/utils/api_wrap/protocol';
+
 export const errorIDsContext = createContext();
 export const commandHooksContext = createContext();
 const EditorTabs = ({
@@ -17,6 +18,8 @@ const EditorTabs = ({
 	executeTabScript,
 	schemeName,
 	hasEmpty,
+	execBlock,
+	setExecBlock,
 }) => {
 	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
@@ -43,6 +46,7 @@ const EditorTabs = ({
 			<button
 				onClick={async e => {
 					try {
+						setExecBlock(true);
 						console.debug('on hitting the exec button, toggling on scheme');
 						const toggleres = await toggleScheme(schemeName);
 						console.debug(
@@ -55,10 +59,18 @@ const EditorTabs = ({
 						console.debug('on hitting the exec button, toggled off scheme');
 					} catch (err) {
 						setPollingError(err);
+					} finally {
+						setExecBlock(false);
 					}
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
-				disabled={hasEmpty(tabs[currentTabId])}
+				disabled={execBlock || hasEmpty(tabs[currentTabId])}
+				title={
+					hasEmpty(tabs[currentTabId])
+						? 'В скрипте есть команды с незаполненными полями'
+						: 'Выполнить'
+				}
+				onMouseEnter={console.debug('hasEmpty', hasEmpty)}
 			>
 				Выполнить текущий скрипт
 			</button>

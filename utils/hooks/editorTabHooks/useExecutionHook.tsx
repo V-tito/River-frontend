@@ -97,7 +97,10 @@ export function useExecutionHook(
 		tabContent: Array<Command>
 	) {
 		if (id == undefined) throw new Error('Не определен идентификатор вкладки');
+
 		console.info('start executing tab ', id, 'with contents ', tabContent);
+		await new Promise(res => setTimeout(res, 1500));
+		console.log('waited 1.5 seconds');
 		clearTabResults(id);
 		clearTabErrorIds(id);
 		setTabs(prev => ({
