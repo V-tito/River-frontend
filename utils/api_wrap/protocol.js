@@ -83,7 +83,7 @@ export async function presetSignalState(
 	signalName,
 	value
 ) {
-	const api = `${process.env.API_URL}/api/river/v1/protocol/preset?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}`;
+	const api = `${process.env.API_URL}/api/river/v1/protocol/preset?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value==1}`;
 	console.debug('presetting signal state on api ', api);
 	const response = await fetch(api, {
 		method: 'POST',
@@ -110,7 +110,7 @@ export async function setPulse(
 	pulseTime,
 	period
 ) {
-	const api = `${process.env.API_URL}/api/river/v1/protocol/setPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}&pulseTime=${pulseTime}&period=${period}`;
+	const api = `${process.env.API_URL}/api/river/v1/protocol/setPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value==1}&pulseTime=${pulseTime}&period=${period}`;
 	const response = await fetch(api, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -133,7 +133,7 @@ export async function presetPulse(
 	pulseTime,
 	period
 ) {
-	const api = `${process.env.API_URL}/api/river/v1/protocol/presetPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}&pulseTime=${pulseTime}&period=${period}`;
+	const api = `${process.env.API_URL}/api/river/v1/protocol/presetPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value==1}&pulseTime=${pulseTime}&period=${period}`;
 	const response = await fetch(api, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

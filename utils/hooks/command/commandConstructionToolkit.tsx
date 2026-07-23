@@ -48,10 +48,15 @@ function updateField<T extends Command, K extends keyof T>(
 	value: string | number | boolean
 ) {
 	if (field in command) {
+		console.debug('field recognized as command field')
 		const val = value as T[K];
-		const newCommand = { ...command, [field]: val };
-		return newCommand as T;
-	}
+		console.debug('setting field to val',val)
+		const newCommand = { ...command, [field]: val }  as T;
+		console.log('returning new command',newCommand)
+		return newCommand;
+	} else {
+		console.debug('field not recognized')
+		throw new Error('Неизвестное поле')}
 	return command;
 }
 function changeAction<T extends Command>(command: T, newAction: CommandAction) {

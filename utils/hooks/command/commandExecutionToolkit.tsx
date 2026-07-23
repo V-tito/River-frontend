@@ -61,6 +61,7 @@ const checkExpected = (command: Command, result: Record<string, any>) => {
 	)
 		throw new Error('Неверный тип команды');
 	if (command.signalSubtype == 'Signal') {
+		console.debug('triggered check with expectedValue', command.expectedValue, 'equivalency of which to 0 is', command.expectedValue == 0)
 		return command.expectedValue == 0
 			? result.value == command.expectedValue
 			: result.value > 0;
