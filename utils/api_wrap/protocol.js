@@ -57,7 +57,8 @@ export async function getSignalState(schemeName, groupName, signalName) {
 	return result;
 }
 export async function setSignalState(schemeName, groupName, signalName, value) {
-	const api = `${process.env.API_URL}/api/river/v1/protocol/set?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${Boolean(value)}`;
+	console.debug('setting state with value', value)
+	const api = `${process.env.API_URL}/api/river/v1/protocol/set?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value==1}`;
 	console.debug('setting signal state on api ', api);
 	const response = await fetch(api, {
 		method: 'POST',

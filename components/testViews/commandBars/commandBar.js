@@ -132,7 +132,7 @@ const ValueRadio = ({ command, fieldName, updateAction, disabled }) => {
 				type="radio"
 				id={fieldName}
 				value={0}
-				onChange={updateAction}
+				onChange={(e)=>{console.debug('setting value',0);updateAction(e);console.log('value',command[fieldName],'bool',Boolean(command[fieldName]))}}
 				checked={command[fieldName] == 0}
 				disabled={disabled}
 			/>{' '}
