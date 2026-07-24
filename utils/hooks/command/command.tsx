@@ -26,6 +26,7 @@ export interface SignalCommand extends BaseCommand {
 interface CheckSignalCommand extends SignalCommand {
 	action: CommandAction.check | CommandAction.waitForSignal;
 	expectedValue: number;
+	fatal: boolean;
 }
 export interface SetSignalCommand extends SignalCommand {
 	action:
@@ -102,6 +103,7 @@ export const prototypes = {
 		signal: '',
 		signalSubtype: 'Signal',
 		expectedValue: 0,
+		fatal: false,
 		waitingTime: 1000,
 	},
 	[CommandAction.waitForTime]: {
@@ -112,6 +114,7 @@ export const prototypes = {
 		signal: '',
 		signalSubtype: 'Signal',
 		expectedValue: 0,
+		fatal: false,
 	},
 	[CommandAction.set]: {
 		group: '',

@@ -19,7 +19,7 @@ export const GlobalProvider = ({ children }) => {
 		}
 	});
 	const [pollingError, setPollingError] = useState(null);
-
+	const [schemeOn, setSchemeOn] = useState(null);
 	const [defaultScheme, setDefaultScheme] = useState(() => {
 		if (typeof window !== 'undefined') {
 			//logger.info("Setting up default scheme")
@@ -61,6 +61,8 @@ export const GlobalProvider = ({ children }) => {
 				setPollingError,
 				navProfile,
 				setNavProfile,
+				schemeOn,
+				setSchemeOn,
 			}}
 		>
 			{children}

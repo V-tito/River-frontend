@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import StateTable from '@/components/forStatePages/signalTables';
 import { useGlobal } from '@/app/GlobalState';
 import headerStyles from '@/styles/headerStyles.module.css';
-import { toggleScheme } from '@/utils/api_wrap/protocol';
+
 interface MyDataType {
 	id: number;
 	name: string;
@@ -22,16 +22,6 @@ const StateOfSignals = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				console.debug(
-					'on stateOfSignals page, toggling on scheme',
-					defaultScheme.name
-				);
-				await toggleScheme(defaultScheme.name);
-				console.debug(
-					'on stateOfSignals page, toggled on scheme',
-					defaultScheme.name
-				);
-
 				const response = await fetch(
 					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
 				);
@@ -78,28 +68,7 @@ const StateOfSignals = () => {
 		//fetchAll()
 		fetchData();
 	}, [defaultScheme]);
-	useEffect(() => {
-		const toggleOff = async () => {
-			console.debug(
-				'due to navigating away from stateOfSignals page, toggling off scheme'
-			);
-			await toggleScheme(defaultScheme.name, false);
-			console.debug(
-				'due to navigating away from stateOfSignals page, toggled off scheme'
-			);
-		};
-		const handleBeforeUnload = async (event: Event) => {
-			await toggleOff();
-			event.preventDefault();
-			return;
-		};
 
-		window.addEventListener('beforeunload', handleBeforeUnload);
-
-		return () => {
-			window.removeEventListener('beforeunload', handleBeforeUnload);
-		};
-	}, []);
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;
 	return (

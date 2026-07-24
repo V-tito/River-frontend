@@ -8,6 +8,7 @@ import EnvUpload from '@/components/fileManagement/envUpload';
 import { useGlobal } from '../app/GlobalState';
 import PropTypes from 'prop-types';
 import { usePathname } from 'next/navigation';
+import SchemeToggler from '@/components/forStatePages/schemeToggler';
 
 const LeftSidebar = ({ children }) => {
 	const path = usePathname();
@@ -34,6 +35,7 @@ const LeftSidebar = ({ children }) => {
 				) : (
 					''
 				)}
+				{path.split('/')[1] == 'shared' ? <SchemeToggler></SchemeToggler> : ''}
 				<ErrorIndicatorBar err={pollingError}></ErrorIndicatorBar>
 			</aside>
 			<main className={styles.main}>{children}</main>

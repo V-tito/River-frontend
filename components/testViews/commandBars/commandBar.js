@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import styles from './commandBar.module.css';
+import colorStyles from '../commandStatusColors.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import { BarContext } from './barEditor';
@@ -132,7 +133,16 @@ const ValueRadio = ({ command, fieldName, updateAction, disabled }) => {
 				type="radio"
 				id={fieldName}
 				value={0}
-				onChange={(e)=>{console.debug('setting value',0);updateAction(e);console.log('value',command[fieldName],'bool',Boolean(command[fieldName]))}}
+				onChange={e => {
+					console.debug('setting value', 0);
+					updateAction(e);
+					console.log(
+						'value',
+						command[fieldName],
+						'bool',
+						Boolean(command[fieldName])
+					);
+				}}
 				checked={command[fieldName] == 0}
 				disabled={disabled}
 			/>{' '}
@@ -164,6 +174,7 @@ const ValueInput = ({
 						command={command}
 						fieldName={fieldName}
 						updateAction={updateAction}
+						disabled={disabled}
 					></ValueRadio>
 				) : (
 					<div>
@@ -202,6 +213,24 @@ const ScriptSelection = ({ command, updateAction, filenames, disabled }) => {
 					</option>
 				))}
 			</select>
+		</div>
+	);
+};
+
+const FatalCheckbox = ({ command, fieldName, updateAction, disabled }) => {
+	return (
+		<div>
+			<label>
+				<input
+					type="checkbox"
+					id={fieldName}
+					checked={command.fatal}
+					onChange={updateAction}
+					disabled={disabled}
+				/>
+				Прекратить исполнение скрипта при отрицательном результате
+				{command.waitForSignal}
+			</label>
 		</div>
 	);
 };
@@ -249,11 +278,15 @@ const CommandBar = ({ index, blockEditing = false }) => {
 			console.info('unmounted CommandBar component with id', command.id);
 	}, []);
 	const updateScript = e => {
-		updateCommandField(index, e.target.id, e.target.value);
+		updateCommandField(
+			index,
+			e.target.id,
+			e.target.id == 'fatal' ? e.target.checked : e.target.value
+		);
 	};
 	return (
 		<div
-			className={`${styles.commandBar} ${errorIDs.includes(index) ? styles.error : current == index ? styles.current : current > index ? styles.done : styles.upcoming} ${isHovered == command.id ? styles.active : ''}`}
+			className={`${styles.commandBar} ${errorIDs.includes(index) ? colorStyles.error : current == index ? colorStyles.current : current > index ? colorStyles.done : colorStyles.upcoming} ${isHovered == command.id ? colorStyles.active : ''}`}
 			onMouseEnter={() => {
 				setIsHovered(command.id);
 			}}
@@ -300,6 +333,14 @@ const CommandBar = ({ index, blockEditing = false }) => {
 						filenames={files}
 						disabled={blockEditing}
 					></ScriptSelection>
+				) : item == 'fatal' ? (
+					<FatalCheckbox
+						command={command}
+						updateAction={updateScript}
+						fieldName={item}
+						key={ind}
+						disabled={blockEditing}
+					/>
 				) : (
 					<GenInput
 						command={command}

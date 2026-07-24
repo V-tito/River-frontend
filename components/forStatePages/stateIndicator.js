@@ -17,10 +17,11 @@ const StateIndicator = memo(function StateIndicator({
 	on,
 	turnedOnStatusName,
 	turnedOffStatusName,
-	lastCheckTime,
+	lastCheckTime = null,
+	unknownStatusName = 'Ошибка при получении состояния',
 }) {
 	return (
-		<div>
+		<div className="flex flex-row">
 			<div
 				className={`${styles.indicator} ${
 					on == undefined || on < 0
@@ -31,14 +32,16 @@ const StateIndicator = memo(function StateIndicator({
 				}`}
 			></div>
 
-			<span>
+			<span className={styles.indicatorLabel}>
 				{on == undefined || on < 0
-					? 'Ошибка при получении состояния'
+					? unknownStatusName
 					: on == 1
 						? turnedOnStatusName
 						: turnedOffStatusName}
 			</span>
-			{lastCheckTime == null ? '' : <p>Сигнал получен в {lastCheckTime}</p>}
+			<span className={styles.indicatorLabel}>
+				{lastCheckTime == null ? '' : <p>Сигнал получен в {lastCheckTime}</p>}
+			</span>
 		</div>
 	);
 });

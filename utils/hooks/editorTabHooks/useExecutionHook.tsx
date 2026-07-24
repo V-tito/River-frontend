@@ -3,7 +3,7 @@ import {
 	Result,
 } from '../command/commandExecutionToolkit';
 import { EditorTab, addErrorId } from './utils';
-import { Command } from '../command/command';
+import { Command, commandTypeCheckers } from '../command/command';
 import assert from 'node:assert';
 
 export function useExecutionHook(
@@ -79,16 +79,20 @@ export function useExecutionHook(
 				await executeEntry(tabId, cont, ind);
 			};
 			const res = await execute(entry, index, iteratorForInclude);
-			updateTabResults(tabId, res);
+			//updateTabResults(tabId, res);
+			return res;
 		} catch (err: any) {
-			if (err instanceof Error)
-				updateTabResults(tabId, makeErrorResult(entry.id, err.message));
-			else
-				updateTabResults(
-					tabId,
-					makeErrorResult(entry.id, 'неизвестная ошибка')
-				);
+			console.debug('caught err while executing entry', err);
 			addErrorId(setTabs, tabId, index);
+			if (err instanceof Error) return makeErrorResult(entry.id, err.message);
+			//updateTabResults(tabId, makeErrorResult(entry.id, err.message));
+			else return makeErrorResult(entry.id, 'неизвестная ошибка');
+			//updateTabResults(
+			//	tabId,
+			//	makeErrorResult(entry.id, 'неизвестная ошибка')
+			//);
+
+			//return false;
 		}
 	}
 
@@ -107,16 +111,50 @@ export function useExecutionHook(
 			...prev,
 			[id]: { ...prev[id], isBeingExecuted: true } as EditorTab,
 		}));
-		for (let i = 0; i < tabContent.length; i++) {
-			const item = tabContent[i];
-			setCurrentCommand(id, i);
-			if (item != undefined) await executeEntry(id, item, i);
+
+		let fatal = false;
+		let executed = 0,
+			checks = 0,
+			checkErrors = 0,
+			netErrors = 0;
+		for (executed; executed < tabContent.length; executed++) {
+			const item = tabContent[executed];
+			setCurrentCommand(id, executed);
+			if (item != undefined) {
+				const res = await executeEntry(id, item, executed);
+				updateTabResults(id, res);
+				if (
+					commandTypeCheckers.isCheck(item) ||
+					commandTypeCheckers.isWaitForSignal(item)
+				) {
+					if (res.actionType == 'checkError') {
+						checkErrors++;
+						if (item.fatal) {
+							fatal = true;
+							break;
+						}
+					} else {
+						checks++;
+					}
+				} else if (res.actionType == 'error') netErrors++;
+				if (fatal) break;
+			}
 		}
-		setCurrentCommand(id, tabContent.length);
+		if (!fatal) setCurrentCommand(id, tabContent.length);
+		else executed++;
 		setTabs(prev => ({
 			...prev,
 			[id]: { ...prev[id], isBeingExecuted: false } as EditorTab,
 		}));
+		const now = new Date().toLocaleTimeString();
+		const msg = `Выполнено команд: ${executed}.\n Успешных тестов: ${checks}.\n Ошибочных тестов: ${checkErrors}. \n Других инструкций: ${executed - checks - checkErrors}. \n ${netErrors > 0 ? `${netErrors} команд не были выполнены из-за внутренних ошибок стенда. \n` : ''} Выполнение завешилось ${fatal ? 'из-за ошибки теста' : 'штатно'}.`;
+		const summary = {
+			id: id,
+			actionType: checkErrors + netErrors > 0 ? 'error' : 'summary',
+			timestamp: now,
+			res: msg,
+		};
+		updateTabResults(id, summary as Result);
 	}
 	function entryHasEmptyFields(entry: EditorTab) {
 		entry.content.reduce((acc, command) => {

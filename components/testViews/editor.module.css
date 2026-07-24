@@ -43,38 +43,6 @@
 
   }
 
-  .setter{
-    background-color: lightskyblue;
-  }
-  .checker{
-    background-color: lightgreen;
-  }
-  .include{
-    background-color: rgb(248, 197, 70);
-  }
-  .active{
-    background-color: yellow !important
-  }
-  .error{background-color: lightcoral;
-
-  }
-  @media (prefers-color-scheme: dark) {
-    .setter{
-      background-color: rgb(0, 138, 136);
-    }
-    .checker{
-      background-color: #007328;
-    }
-    .include{
-      background-color: rgb(188, 118, 5);
-    }
-    .error{background-color: rgb(127, 3, 3);
-    
-    }
-    .active{
-      background-color: rgb(50, 0, 150) !important
-    }
-  }
   .list {
     display: flex;
     flex-wrap: wrap;

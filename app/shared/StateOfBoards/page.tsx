@@ -5,8 +5,6 @@ import { useGlobal } from '../../GlobalState';
 import headerStyles from '@/styles/headerStyles.module.css';
 import React from 'react';
 import { getList } from '@/utils/api_wrap/configAPI';
-import { toggleScheme } from '@/utils/api_wrap/protocol';
-import { useRouter, usePathname } from 'next/navigation';
 
 const StateOfBoards = () => {
 	const { defaultScheme, setPollingError } = useGlobal();
@@ -14,25 +12,6 @@ const StateOfBoards = () => {
 	const [sul, setSul] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
-	const router = useRouter();
-	const pathname = usePathname();
-	useEffect(() => {
-		const handleRouteChange = async () => {
-			console.debug(
-				'due to navigating away from stateOfBoards page, toggling off scheme'
-			);
-			await toggleScheme(defaultScheme.name, false);
-			console.debug(
-				'due to navigating away from stateOfBoards page, toggled off scheme'
-			);
-			return;
-		};
-		window.addEventListener('beforeunload', handleRouteChange);
-
-		return () => {
-			window.removeEventListener('beforeunload', handleRouteChange);
-		};
-	}, [pathname]);
 	useEffect(() => {
 		const fetchBoards = async () => {
 			const result = await getList('TestBoard', defaultScheme.name);
@@ -44,15 +23,6 @@ const StateOfBoards = () => {
 		};
 		const fetchAll = async () => {
 			try {
-				console.debug(
-					'on stateOfBoards page, toggling on scheme',
-					defaultScheme.name
-				);
-				await toggleScheme(defaultScheme.name);
-				console.debug(
-					'on stateOfBoards page, toggled on scheme',
-					defaultScheme.name
-				);
 				await fetchBoards();
 				await fetchSul();
 			} catch (err: unknown) {

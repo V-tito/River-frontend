@@ -1,0 +1,16 @@
+  .schemeControls {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    justify-content: left;
+    max-width:15em;
+    min-width:min-content;
+    border: 5px solid var(--controlelementcolor);
+    padding: 10px;
+    margin-top:10px;
+    margin-bottom: 10px;
+    border-radius: 5%;
+    height:fit-content;
+    position: relative;
+    align-self: first baseline;
+  }

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import styles from './editor.module.css';
+import colorStyles from './commandStatusColors.module.css';
 import PropTypes from 'prop-types';
 import { execAndMouseDisplayContext } from './editor';
 const ResultsViewWithHighlight = ({ results }) => {
@@ -14,7 +15,7 @@ const ResultsViewWithHighlight = ({ results }) => {
 					}}
 					onMouseLeave={() => setIsHovered(null)}
 					key={i}
-					className={`${styles[result.actionType]} ${result.id != null && result.id != undefined && isHovered == result.id ? styles.active : ''}`}
+					className={`${colorStyles[result.actionType]} ${result.id != null && result.id != undefined && isHovered == result.id ? colorStyles.active : ''}`}
 				>
 					{result.timestamp} : {result.res}
 				</p>

@@ -30,7 +30,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 	) {
 		let res: string;
 		if (commandTypeCheckers.isWaitForSignal(command))
-			res = `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue ? 'активен' : 'неактивен'}`;
+			res = `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue != 0 ? 'активен' : 'неактивен'}`;
 		else res = 'Ожидание...';
 
 		const now = new Date();
@@ -39,6 +39,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'checker',
 			id: command.id,
+			fatal: false,
 		};
 	} else if (commandTypeCheckers.isInclude(command)) {
 		const now = new Date();
@@ -47,6 +48,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'include',
 			id: command.id,
+			fatal: false,
 		};
 	}
 	return;
@@ -61,7 +63,12 @@ const checkExpected = (command: Command, result: Record<string, any>) => {
 	)
 		throw new Error('Неверный тип команды');
 	if (command.signalSubtype == 'Signal') {
-		console.debug('triggered check with expectedValue', command.expectedValue, 'equivalency of which to 0 is', command.expectedValue == 0)
+		console.debug(
+			'triggered check with expectedValue',
+			command.expectedValue,
+			'equivalency of which to 0 is',
+			command.expectedValue == 0
+		);
 		return command.expectedValue == 0
 			? result.value == command.expectedValue
 			: result.value > 0;
@@ -102,10 +109,16 @@ async function waitForSignalState(
 
 	if (cond) {
 		assert(result.freshness);
-		return `Сигнал ${command.signal} ${command.expectedValue ? 'активен' : 'неактивен'} в момент времени ${result.freshness}`;
+		return {
+			message: `Сигнал ${command.signal} ${command.expectedValue != 0 ? 'активен' : 'неактивен'} в момент времени ${result.freshness}`,
+			checkError: false,
+		};
 	} else if (elapsedTime >= dur)
-		return `Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`;
-	else return 'Ошибка исполнения';
+		return {
+			message: `Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`,
+			checkError: true,
+		};
+	else return { message: 'Ошибка исполнения', checkError: true };
 }
 
 async function execute<T extends Command>(
@@ -116,6 +129,7 @@ async function execute<T extends Command>(
 	console.debug('execute command ', command);
 	let message;
 	let response;
+	let checkError = false;
 	if (commandTypeCheckers.isSignalCommand(command)) {
 		console.debug('command is signal command');
 		const exists = await checkExistence(
@@ -188,7 +202,9 @@ async function execute<T extends Command>(
 		}
 		if (commandTypeCheckers.isWaitForSignal(command)) {
 			console.debug('command is recognized as waitForSignalState');
-			message = await waitForSignalState(command);
+			const res = await waitForSignalState(command);
+			message = res.message;
+			checkError = res.checkError;
 			console.debug('result of waitForSignalState execution is ', message);
 		}
 		if (commandTypeCheckers.isCheck(command)) {
@@ -203,8 +219,10 @@ async function execute<T extends Command>(
 			console.debug('result of checking for expected value is', cond);
 			if (cond)
 				message = `Уровень сигнала ${command.signal} равен эталону ${command.expectedValue}`;
-			else
+			else {
 				message = `Уровень сигнала ${command.signal} НЕ равен эталону ${command.expectedValue}`;
+				checkError = true;
+			}
 		}
 	}
 	if (commandTypeCheckers.isWaitForTime(command)) {
@@ -265,11 +283,13 @@ async function execute<T extends Command>(
 	return {
 		res: message,
 		timestamp: now.toLocaleTimeString(),
-		actionType: CommandBarHelpers.isSetter(command)
-			? 'setter'
-			: commandTypeCheckers.isInclude(command)
-				? 'include'
-				: 'checker',
+		actionType: checkError
+			? 'checkError'
+			: CommandBarHelpers.isSetter(command)
+				? 'setter'
+				: commandTypeCheckers.isInclude(command)
+					? 'include'
+					: 'checker',
 		id: command.id,
 	};
 }

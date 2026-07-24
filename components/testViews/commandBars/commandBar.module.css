@@ -19,39 +19,7 @@
   border: 1px solid var(--defaultgrey);
   border-radius: 5px;
 }
-.upcoming{
-  background-color: lightgray;
-}
-.done{
-  background-color: lightgreen;
-}
-.current{
-  background-color: lightseagreen;
-}
-.error{background-color: lightcoral;
 
-}
-.active{
-  background-color: yellow !important
-}
-
-@media (prefers-color-scheme: dark) {
-  .upcoming{
-    background-color: rgb(66, 83, 97);
-  }
-  .done{
-    background-color: rgb(12, 110, 66);
-  }
-  .current{
-    background-color: rgb(9, 111, 109);
-  }
-  .error{background-color: rgb(127, 3, 3);
-  
-  }
-  .active{
-    background-color: rgb(50, 0, 150) !important
-  }
-}
 .label{
   margin-top: auto;
   margin-bottom: 1px;
