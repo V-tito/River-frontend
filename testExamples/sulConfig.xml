@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SulSignals>
+    <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="" turnedOffStatusName="" description="G5"/>
+    <SulSignal name="G6" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="4" lastBit="4" turnedOnStatusName="Есть Режим Погрузка" turnedOffStatusName="Нет Режима Погрузка" description=""/>
+    <SulSignal name="G3" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="3" lastBit="3" turnedOnStatusName="Есть Режим МП1" turnedOffStatusName="Нет Режима МП1" description=""/>
+    <SulSignal name="G4" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="2" lastBit="2" turnedOnStatusName="Есть Режим МП2" turnedOffStatusName="Нет Режима МП2" description=""/>
+    <SulSignal name="G1" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="1" lastBit="1" turnedOnStatusName="Есть Режим Нормальна работа" turnedOffStatusName="Нет Режима Нормальна работа" description=""/>
+    <SulSignal name="G2" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="0" lastBit="0" turnedOnStatusName="Есть Режим Ревизия" turnedOffStatusName="Нет Режима Ревизия" description=""/>
+    <SulSignal name="МП" parentGroup="2" parentSul="СУЛ" byteShift="6" firstBit="7" lastBit="7" turnedOnStatusName="Сработала Защита МП" turnedOffStatusName="Нет проникновения в МП" description=""/>
+    <SulSignal name="ПД" parentGroup="1" parentSul="СУЛ" byteShift="6" firstBit="6" lastBit="6" turnedOnStatusName="Сработал ПД" turnedOffStatusName="Нет срабатывания ПД" description=""/>
+    <SulSignal name="Inp2" parentGroup="2" parentSul="СУЛ" byteShift="6" firstBit="5" lastBit="5" turnedOnStatusName="Сработал вход 2" turnedOffStatusName="Нет срабатывания входа 2" description=""/>
+    <SulSignal name="Выключатель ГП" parentGroup="2" parentSul="СУЛ" byteShift="6" firstBit="4" lastBit="4" turnedOnStatusName="Разомкнут" turnedOffStatusName="Нет срабатывания входа 2" description=""/>
+    <SulSignal name="Эвак1 Стат." parentGroup="1" parentSul="СУЛ" byteShift="6" firstBit="3" lastBit="3" turnedOnStatusName="Выключен" turnedOffStatusName="Замкнут" description=""/>
+    <SulSignal name="Эвак2 Стат." parentGroup="2" parentSul="СУЛ" byteShift="6" firstBit="2" lastBit="2" turnedOnStatusName="Выключен" turnedOffStatusName="Норма" description=""/>
+    <SulSignal name="Л1" parentGroup="2" parentSul="СУЛ" byteShift="6" firstBit="1" lastBit="1" turnedOnStatusName="Есть Л1" turnedOffStatusName="Норма" description=""/>
+    <SulSignal name="Л2" parentGroup="1" parentSul="СУЛ" byteShift="6" firstBit="0" lastBit="0" turnedOnStatusName="Есть Л2" turnedOffStatusName="Нет Л1" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="7" lastBit="7" turnedOnStatusName="да" turnedOffStatusName="Нет Л2" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="6" lastBit="6" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+     <SulSignal name="ЛЗ" parentGroup="1" parentSul="СУЛ" byteShift="5" firstBit="7" lastBit="7" turnedOnStatusName="Есть Фаза 3" turnedOffStatusName="Нет Фазы 3" description="ЛЗ"/>
+    <SulSignal name="ЭМТ" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="6" lastBit="6" turnedOnStatusName="Есть напряжение на ЭМТ" turnedOffStatusName="Нет напряжения на ЭМТ" description="ЭМТ"/>
+    <SulSignal name="G5" parentGroup="2" parentSul="СУЛ" byteShift="5" firstBit="5" lastBit="5" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="4" lastBit="4" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="3" lastBit="3" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="2" lastBit="2" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="1" parentSul="СУЛ" byteShift="4" firstBit="1" lastBit="1" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+    <SulSignal name="" parentGroup="2" parentSul="СУЛ" byteShift="4" firstBit="0" lastBit="0" turnedOnStatusName="да" turnedOffStatusName="нет" description=""/>
+</SulSignals>

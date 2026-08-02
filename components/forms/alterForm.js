@@ -11,7 +11,13 @@ import { patchHelper } from '@/utils/hooks/postPatchHelpers';
 const AlterForm = ({ table, object }) => {
 	const defaults =
 		table != 'Signal'
-			? { ...object }
+			? table != 'SulSignal'
+				? { ...object }
+				: {
+						...object,
+						parentGroup: object.parentGroup,
+						parentSul: object.parentSul.name,
+					}
 			: {
 					...object,
 					parentGroup: object.parentGroup,
@@ -27,7 +33,7 @@ const AlterForm = ({ table, object }) => {
 	const [loading, setLoading] = useState(true);
 	const [groupNames, setGroupNames] = useState([]);
 	const [boardNames, setBoardNames] = useState([]);
-	const [sul, setSul] = useState({});
+	const [sul, setSul] = useState([]);
 	const nameAliases = {
 		testBoard: boardNames,
 		parentGroup: groupNames,
@@ -48,7 +54,9 @@ const AlterForm = ({ table, object }) => {
 		if ((table == 'Signal') | (table == 'SulSignal')) {
 			const fetchGroupsAndBoards = async () => {
 				try {
-					console.log(`/api/getListsOfGroupsAndBoards/${defaultScheme.name}`);
+					console.log(
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}ы`
+					);
 					const response = await fetch(
 						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
 					);
@@ -73,6 +81,7 @@ const AlterForm = ({ table, object }) => {
 
 	const onSubmit = async data => {
 		try {
+			console.debug('alter form data', data);
 			await patchHelper(data, table, defaultScheme);
 			window.location.reload();
 		} catch (err) {

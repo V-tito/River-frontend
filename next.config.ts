@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  experimental: {
+    useTypeScriptCli: true,
+  }
     };
 
 export default nextConfig;
