@@ -21,6 +21,7 @@ import EditorTabs from './editorTabs';
 import ResultTabs from './resultTabs';
 import AddTabButton from './addTabButton';
 //hooks
+import { useGlobal } from '@/app/GlobalState';
 import { toggleScheme } from '@/utils/api_wrap/protocol';
 import { useTabManager } from '@/utils/hooks/editorTabHooks/useTabManager';
 import { useExecutionHook } from '@/utils/hooks/editorTabHooks/useExecutionHook';
@@ -29,6 +30,7 @@ export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
 	const [isHovered, setIsHovered] = useState();
 	const [execBlock, setExecBlock] = useState(false);
+	const { pollingError, setPollingError } = useGlobal();
 	const {
 		currentTabId,
 		setCurrentTabId,
@@ -47,35 +49,38 @@ const Editor = ({ scheme }) => {
 		useExecutionHook(setTabs, currentTabId);
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
-	const filepath = params.get('filepath');
-	const toggleon = async () => {
-		await toggleScheme(scheme.name);
-	};
-	const toggleOff = async () => {
-		await toggleScheme(scheme.name, false);
-	};
-	//useEffect(() => {
-	//console.debug('in editor component, toggling on scheme ', scheme.name);
-	//	toggleon();
-	//console.debug('in editor component, toggled on scheme', scheme.name);
-	//}, []);
-	//useEffect(() => {
-
-	//	return () => {
-	//		console.info('unmounted Editor component');
-	//		console.debug('in editor component, toggled off scheme');
-	//		toggleOff();
-	//	};
-	//}, []);
+	const folder = params.get('folder');
+	const filename = params.get('filename');
+	const filepath =
+		folder && filename
+			? {
+					folder: folder,
+					filename: filename,
+				}
+			: null;
 	//load data on enter
 	const hasInitialized = useRef(false);
 	useEffect(() => {
-		if (!hasInitialized.current) {
-			initTabs(filepath);
-			setLoading(false);
-			hasInitialized.current = true;
-		}
-	}, [filepath]);
+		const init = async () => {
+			if (!hasInitialized.current) {
+				try {
+					const promise = initTabs(filepath);
+					setLoading(false);
+					hasInitialized.current = true;
+					const errors = await promise;
+					if (errors.length > 0)
+						setPollingError({
+							message: errors.reduce((acc, item) => {
+								return acc + '\n' + item;
+							}, ''),
+						});
+				} catch (err) {
+					setPollingError(err);
+				}
+			}
+		};
+		init();
+	}, []);
 	//save data on exit
 	const router = useRouter();
 	// Auto-save on change (with debounce)

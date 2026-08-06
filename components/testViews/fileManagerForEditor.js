@@ -18,10 +18,10 @@ const FileManager = ({
 
 		const reader = new FileReader();
 
-		reader.onload = e => {
+		reader.onload = async e => {
 			try {
 				const content = e.target.result;
-				const newTabId = addTab();
+				const newTabId = await addTab();
 				if ('name' in file) renameTab(newTabId, file.name);
 				resetTabContent(JSON.parse(content), newTabId);
 				setReaderError(null);

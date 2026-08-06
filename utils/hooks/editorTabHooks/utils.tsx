@@ -1,9 +1,13 @@
 import { Result } from '../command/commandExecutionToolkit';
 import { Command } from '../command/command';
+export interface fpath {
+	folder: string;
+	filename: string;
+}
 export interface EditorTab {
 	id: string;
 	name: string;
-	path: null | string;
+	path: null | fpath;
 	content: Array<Command>;
 	result: Array<Result>;
 	errorIDs: Array<number>;
