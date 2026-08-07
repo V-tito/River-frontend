@@ -27,6 +27,23 @@ export function useCommandHooks(
 			};
 		});
 	}
+	function addCommandCopy(commandIndex: number) {
+		setTabs(prev => {
+			const tab = prev[currentTabId];
+			if (tab == undefined) throw new Error('Несуществующая вкладка');
+			return {
+				...prev,
+				[currentTabId]: {
+					...tab,
+					content: tab.content.toSpliced(
+						commandIndex,
+						0,
+						makeNew(scheme, tab.content[commandIndex])
+					),
+				},
+			};
+		});
+	}
 	function deleteCommandFromCurrentTab(commandIndex: number) {
 		setTabs(prev => {
 			const tab = prev[currentTabId];
@@ -122,6 +139,7 @@ export function useCommandHooks(
 
 	return {
 		addCommandToCurrentTab,
+		addCommandCopy,
 		deleteCommandFromCurrentTab,
 		changeCommandActionType,
 		updateCommandField,

@@ -13,6 +13,7 @@ import {
 	commandTypeCheckers,
 } from '@/utils/hooks/command/command';
 import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
+import { Copy } from '@deemlol/next-icons';
 
 const { translateFields, isSetter, getConfig } = CommandBarHelpers;
 
@@ -265,6 +266,7 @@ const CommandBar = ({ index, blockEditing = false }) => {
 		updateCommandField,
 		autoUpdateCommandSignalSubtype,
 		autoCleanCommand,
+		addCommandCopy,
 	} = useContext(commandHooksContext);
 
 	useEffect(() => {
@@ -295,8 +297,14 @@ const CommandBar = ({ index, blockEditing = false }) => {
 				console.debug('in commandBar, set IsHovered to null');
 			}}
 		>
-			<div className={`${buttonStyles.delGrid} ${styles.delGrid}`}>
+			<div className={`${buttonStyles.delCopyGrid} ${styles.delGrid}`}>
 				<label className={styles.label}>Действие: </label>
+				<button
+					className={buttonStyles.button}
+					onClick={() => addCommandCopy(index)}
+				>
+					<Copy color="#000000"></Copy>
+				</button>
 				<DelScriptButton
 					delAction={() => deleteCommandFromCurrentTab(index)}
 					disabled={blockEditing}
