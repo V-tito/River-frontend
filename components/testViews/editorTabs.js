@@ -20,6 +20,7 @@ const EditorTabs = ({
 	hasEmpty,
 	execBlock,
 	setExecBlock,
+	abortControllers,
 }) => {
 	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
@@ -73,6 +74,14 @@ const EditorTabs = ({
 				onMouseEnter={console.debug('hasEmpty', hasEmpty)}
 			>
 				Выполнить текущий скрипт
+			</button>
+			<button
+				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
+				onClick={e => {
+					abortControllers.current[currentTabId].abort();
+				}}
+			>
+				Остановить
 			</button>
 		</div>
 	);

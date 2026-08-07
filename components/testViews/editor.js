@@ -30,7 +30,8 @@ export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
 	const [isHovered, setIsHovered] = useState();
 	const [execBlock, setExecBlock] = useState(false);
-	const { pollingError, setPollingError } = useGlobal();
+	const { setPollingError } = useGlobal();
+
 	const {
 		currentTabId,
 		setCurrentTabId,
@@ -45,8 +46,12 @@ const Editor = ({ scheme }) => {
 		updateTabContent,
 	} = useTabManager(scheme.name);
 	console.info('mounted Editor component');
-	const { setCurrentTabErrorIDs, executeTabScript, entryHasEmptyFields } =
-		useExecutionHook(setTabs, currentTabId);
+	const {
+		setCurrentTabErrorIDs,
+		executeTabScript,
+		entryHasEmptyFields,
+		abortControllers,
+	} = useExecutionHook(setTabs, currentTabId);
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const folder = params.get('folder');
@@ -130,6 +135,16 @@ const Editor = ({ scheme }) => {
 				>
 					Выполнить все
 				</button>
+				<button
+					className={tabStyles.execButton}
+					onClick={e => {
+						Object.keys(abortControllers.current).map(id => {
+							abortControllers.current[id].abort();
+						});
+					}}
+				>
+					Остановить все
+				</button>
 				{Object.keys(tabs).map(
 					(
 						tabID //TODO make sortable
@@ -167,6 +182,7 @@ const Editor = ({ scheme }) => {
 						hasEmpty={entryHasEmptyFields}
 						execBlock={execBlock}
 						setExecBlock={setExecBlock}
+						abortControllers={abortControllers}
 					></EditorTabs>
 
 					<ResultTabs

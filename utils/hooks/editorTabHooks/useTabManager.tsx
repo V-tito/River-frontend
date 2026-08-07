@@ -124,7 +124,7 @@ export function useTabManager(scheme: string) {
 	const initTabs = useCallback(
 		async (filepath: Array<fpath> | fpath | null) => {
 			console.debug('entered init tabs');
-			const fileErrors = [];
+			const fileErrors = [] as Array<string>;
 			const data = loadData();
 			if (data) {
 				const { tabs_, current } = data;
@@ -171,6 +171,7 @@ export function useTabManager(scheme: string) {
 				const newId = await addTab();
 				setCurrentTabId(newId);
 			}
+			return fileErrors;
 		},
 		[addTab, setCurrentTabId, setTabs]
 	);
