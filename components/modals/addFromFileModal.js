@@ -75,8 +75,29 @@ const addFromFileForm = ({
 					console.dir(content);
 					let report;
 					if (table != null) {
-						const newContent = content.map(translateEntry);
-						report = await multiplePostPatch(newContent, table, defaultScheme);
+						let newContent = [];
+						const key = table + 's';
+						if (key in content) {
+							newContent = content[key][table];
+						}
+						if (table == 'Signal') {
+							if ('SulSignals' in content)
+								newContent = [...newContent, ...content.SulSignals.SulSignal]; //content.map(translateEntry);
+						}
+						if (table == 'TestBoard') {
+							if ('Sul' in content)
+								newContent = [...newContent, ...content.Sul.Sul]; //content.map(translateEntry);
+						}
+						console.debug('content in process in addFromFileModal', content);
+						console.debug(
+							'new content in process in addFromFileModal',
+							newContent
+						);
+						report = await multiplePostPatch(
+							newContent.map(item => item.$),
+							table,
+							defaultScheme
+						);
 					} else {
 						console.log('content', content);
 						const newContent = validateContent(content);

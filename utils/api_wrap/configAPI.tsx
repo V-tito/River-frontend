@@ -31,8 +31,9 @@ export async function checkExistence(
 	group: string | null = null,
 	schemeName: string | null = null
 ) {
+	console.debug('params of CheckExistense', type, name, group, schemeName);
 	let api;
-	if (['Signal', 'SulSignal'].includes(type)) {
+	if (type == 'Signal') {
 		if (group == null) {
 			throw new Error(`Не указана группа сигнала`);
 		}

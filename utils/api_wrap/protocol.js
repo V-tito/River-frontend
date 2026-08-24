@@ -150,3 +150,21 @@ export async function executePresets(scheme, abort = null) {
 	const result = await abortableFetch(api, abort, '', scheme);
 	return result;
 }
+/**
+ * setAll протокола
+ * @param {string} schemeName имя схемы
+ * @param {string} board имя платы (пока только ТП)
+ * @param {Array<number>} vals массив значений
+ */
+export async function setAll(schemeName, board, vals) {
+	pass;
+}
+/**
+ * presetAll протокола
+ * @param {string} schemeName имя схемы
+ * @param {string} board имя платы (пока только ТП)
+ * @param {Array<number>} vals массив значений
+ */
+export async function presetAll(schemeName, board, vals) {
+	pass;
+}

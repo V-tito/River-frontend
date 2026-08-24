@@ -14,6 +14,7 @@ const translateFields = {
 	period: 'Периодичность импульсов, мс',
 	waitForSignal: 'Ждать состояния сигнала',
 	waitingTime: 'Время ожидания, мс',
+	numberOfIterations: 'Число повторений',
 };
 function isSetter<T extends Command>(command: T) {
 	return (

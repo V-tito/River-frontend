@@ -17,6 +17,7 @@ const fetchGroupsAndBoards = async defaultScheme => {
 };
 
 async function preprocessData(data, table, defaultScheme) {
+	console.debug('dta in preprocess data', data);
 	let newFormData = { ...data };
 	const nameToId = await fetchGroupsAndBoards(defaultScheme);
 	if (
@@ -30,13 +31,16 @@ async function preprocessData(data, table, defaultScheme) {
 		};
 	}
 	if ('parentGroup' in data) {
-		newFormData['parentGroup'] = { id: nameToId.groups[data.parentGroup] };
+		if (typeof data.parentGroup != 'object')
+			newFormData['parentGroup'] = { id: nameToId.groups[data.parentGroup] };
 	}
 	if ('testBoard' in data) {
-		newFormData['testBoard'] = { id: nameToId.boards[data.testBoard] };
+		if (typeof data.testBoard != 'object')
+			newFormData['testBoard'] = { id: nameToId.boards[data.testBoard] };
 	}
 	if ('parentSul' in data) {
-		newFormData['parentSul'] = { id: nameToId.sul[data.parentSul] };
+		if (typeof data.parentSul != 'object')
+			newFormData['parentSul'] = { id: nameToId.sul[data.parentSul] };
 	}
 	if (table == 'Signal') {
 		delete newFormData.parentSul;
@@ -44,10 +48,12 @@ async function preprocessData(data, table, defaultScheme) {
 	if (table == 'SulSignal') {
 		delete newFormData.testBoard;
 	}
+	console.debug('preprocessed data', newFormData);
 	return newFormData;
 }
 
 export async function postHelper(data, table, defaultScheme) {
+	console.debug('data in postHelper', data);
 	const newFormData =
 		table == 'Scheme' ? data : await preprocessData(data, table, defaultScheme);
 	await postEntity(table, newFormData);
@@ -61,6 +67,7 @@ export async function patchHelper(data, table, defaultScheme) {
 }
 
 async function processFileEntry(entry, table, defaultScheme) {
+	console.debug('entry in processFileEntry', entry);
 	try {
 		const exists = await checkExistence(
 			table,
@@ -80,6 +87,7 @@ async function processFileEntry(entry, table, defaultScheme) {
 	}
 }
 export async function multiplePostPatch(data, table, defaultScheme = null) {
+	console.debug('data in multiple post patch', data);
 	if (table != 'Scheme' && defaultScheme == null) {
 		throw new Error('Не указана схема');
 	}

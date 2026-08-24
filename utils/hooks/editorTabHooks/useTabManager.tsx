@@ -20,9 +20,10 @@ export function useTabManager(scheme: string) {
 				: 'untitled' + Date.now();
 			console.debug('name in addTab', name);
 			console.debug('tab vals in addTab', tabs);
-			const existingTabs = Object.values(tabs).filter(
-				item => item.name == name
-			);
+			const existingTabs = Object.values(tabs).filter(item => {
+				console.debug('names', item.name, name);
+				return item.name == name;
+			});
 			console.debug('found existing tabs in addTab', existingTabs);
 			if (existingTabs[0] != undefined) {
 				console.debug('returning existing tab in addTab', existingTabs[0]);
@@ -54,7 +55,12 @@ export function useTabManager(scheme: string) {
 				if (contentFile.type != 'file') {
 					throw new Error(`${path.folder}/${path.filename} не является файлом`);
 				}
-				tab.content = JSON.parse(contentFile.content);
+				const content = JSON.parse(contentFile.content);
+				tab.content = Array.isArray(content)
+					? content.map(item =>
+							CommandConstructionToolkit.makeNew(scheme, item)
+						)
+					: ([] as Array<Command>);
 			}
 			console.debug('made tab in addTab', tab);
 			setTabs(prev => {
@@ -142,6 +148,14 @@ export function useTabManager(scheme: string) {
 							await Promise.all(
 								filepath.map(async path => {
 									try {
+										const existingTabs = Object.values(tabs_).filter(item => {
+											return typeof item == 'object' && item != undefined
+												? 'name' in item
+													? item.name == path.filename
+													: false
+												: false;
+										});
+										if (existingTabs[0] != undefined) return;
 										await addTab(path);
 									} catch (err) {
 										fileErrors.push(
@@ -152,6 +166,14 @@ export function useTabManager(scheme: string) {
 							);
 						} else
 							try {
+								const existingTabs = Object.values(tabs_).filter(item => {
+									return typeof item == 'object' && item != undefined
+										? 'name' in item
+											? item.name == filepath.filename
+											: false
+										: false;
+								});
+								if (existingTabs[0] != undefined) return;
 								await addTab(filepath);
 							} catch (err) {
 								fileErrors.push(

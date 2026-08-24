@@ -8,7 +8,8 @@ import { useGlobal } from '@/app/GlobalState';
 import { toggleScheme } from '@/utils/api_wrap/protocol';
 
 export const errorIDsContext = createContext();
-export const commandHooksContext = createContext();
+//export const commandHooksContext = createContext();
+export const SchemeContext = createContext();
 const EditorTabs = ({
 	tabs,
 	setTabs,
@@ -24,15 +25,29 @@ const EditorTabs = ({
 }) => {
 	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
+	const setScript = updater =>
+		setTabs(prev => {
+			return {
+				...prev,
+				[currentTabId]: {
+					...prev[currentTabId],
+					content:
+						typeof updater == 'function'
+							? updater(prev[currentTabId].content)
+							: updater,
+				},
+			};
+		});
 	return (
 		<div className={styles.show}>
 			<header className={headerStyles.modalHeader}>Редактор команд: </header>
-			<commandHooksContext.Provider
-				value={useCommandHooks(setTabs, currentTabId, schemeName)}
+			<errorIDsContext.Provider
+				value={{
+					errorIDs: currentTabId ? tabs[currentTabId].errorIDs : [],
+					setErrorIDs: setCurrentTabErrorIDs,
+				}}
 			>
-				<errorIDsContext.Provider
-					value={currentTabId ? tabs[currentTabId].errorIDs : []}
-				>
+				<SchemeContext.Provider value={schemeName}>
 					<SortableBarEditor
 						formData={currentTabId ? tabs[currentTabId].content : []}
 						setFormData={updateTabContent}
@@ -41,9 +56,10 @@ const EditorTabs = ({
 						blockEditing={
 							currentTabId ? tabs[currentTabId].isBeingExecuted : false
 						}
+						hooks={useCommandHooks(setScript, schemeName)}
 					></SortableBarEditor>
-				</errorIDsContext.Provider>
-			</commandHooksContext.Provider>
+				</SchemeContext.Provider>
+			</errorIDsContext.Provider>
 			<button
 				onClick={async e => {
 					try {
@@ -65,13 +81,12 @@ const EditorTabs = ({
 					}
 				}}
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
-				disabled={execBlock || hasEmpty(tabs[currentTabId])}
+				disabled={execBlock} //|| hasEmpty(tabs[currentTabId])
 				title={
-					hasEmpty(tabs[currentTabId])
-						? 'В скрипте есть команды с незаполненными полями'
-						: 'Выполнить'
+					//hasEmpty(tabs[currentTabId])
+					//</div>	? 'В скрипте есть команды с незаполненными полями'
+					'Выполнить'
 				}
-				onMouseEnter={console.debug('hasEmpty', hasEmpty)}
 			>
 				Выполнить текущий скрипт
 			</button>

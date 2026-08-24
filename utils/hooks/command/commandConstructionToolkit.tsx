@@ -45,18 +45,19 @@ function autoUpdateSignalSubtype<T extends Command>(
 function updateField<T extends Command, K extends keyof T>(
 	command: T,
 	field: K,
-	value: string | number | boolean
+	value: string | number | boolean | Array<Command>
 ) {
 	if (field in command) {
-		console.debug('field recognized as command field')
+		console.debug('field recognized as command field');
 		const val = value as T[K];
-		console.debug('setting field to val',val)
-		const newCommand = { ...command, [field]: val }  as T;
-		console.log('returning new command',newCommand)
+		console.debug('setting field to val', val);
+		const newCommand = { ...command, [field]: val } as T;
+		console.log('returning new command', newCommand);
 		return newCommand;
 	} else {
-		console.debug('field not recognized')
-		throw new Error('Неизвестное поле')}
+		console.debug('field not recognized');
+		throw new Error('Неизвестное поле');
+	}
 	return command;
 }
 function changeAction<T extends Command>(command: T, newAction: CommandAction) {

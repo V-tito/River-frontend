@@ -1,19 +1,23 @@
 'use client';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './commandBar.module.css';
 import colorStyles from '../commandStatusColors.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import { BarContext } from './barEditor';
-import { errorIDsContext, commandHooksContext } from '../editorTabs';
+import { errorIDsContext, SchemeContext } from '../editorTabs';
 import { execAndMouseDisplayContext } from '../editor';
+import { DragDropProvider } from '@dnd-kit/react';
+import { useSortable } from '@dnd-kit/react/sortable';
+import { Sortable } from '@dnd-kit/dom/sortable';
 import {
 	CommandAction,
 	commandTypeCheckers,
 } from '@/utils/hooks/command/command';
 import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
 import { Copy } from '@deemlol/next-icons';
+import { useCommandHooks } from '@/utils/hooks/editorTabHooks/useCommandHooks';
 
 const { translateFields, isSetter, getConfig } = CommandBarHelpers;
 
@@ -251,23 +255,108 @@ const GenInput = ({ command, fieldName, updateAction, disabled }) => {
 		</div>
 	);
 };
-const CommandBar = ({ index, blockEditing = false }) => {
-	const { formData, sigsByGroup, files } = useContext(BarContext);
-	const script = formData;
+const IterateEditorWindow = ({
+	command,
+	fieldName,
+	setErrorIDs,
+	setScript,
+	commandIndex,
+	disabled,
+}) => {
+	const schemeName = useContext(SchemeContext);
+	const formData = command[fieldName];
+	const [version, setVersion] = useState(0);
+	const hooks = useCommandHooks(setScript, schemeName);
+	console.debug('setScript in iterate component', setScript);
+	return (
+		<div style={{ width: '80%', placeSelf: 'center' }}>
+			<ul>
+				<DragDropProvider
+					key={version}
+					onDragEnd={event => {
+						if (event.canceled) return;
+						const { source } = event.operation;
+						const { initialIndex, index } = source;
+						if (initialIndex !== index) {
+							const newData = [...command[fieldName]];
+							const [removed] = newData.splice(initialIndex, 1);
+							newData.splice(index, 0, removed);
+							updateAction(commandIndex, fieldName, newData);
+							setErrorIDs(prev =>
+								prev.map(item =>
+									item == initialIndex
+										? index
+										: initialIndex > index
+											? (item >= index) & (item < initialIndex)
+												? item + 1
+												: item
+											: (item > initialIndex) & (item <= index)
+												? item - 1
+												: item
+								)
+							);
+							setVersion(prev => prev + 1);
+						}
+						//
+					}}
+				>
+					{command[fieldName].length > 0
+						? command[fieldName].map((item, i) => {
+								//const { ref } = useSortable({ id: i, index: i });
+								console.debug(
+									'setScript in mapping function in cycle',
+									setScript
+								);
+								return (
+									//<li ref={ref} key={i} className="flex flex-col w-full">
+									<CommandBar
+										key={i}
+										index={i}
+										script={command[fieldName]}
+										setScript={setScript}
+										blockEditing={disabled}
+										hooks={hooks}
+									></CommandBar>
+									//</li>
+								);
+							})
+						: ''}
+				</DragDropProvider>
+			</ul>
+			<button
+				className={`${buttonStyles.button} ${buttonStyles.menuButton} w-full`}
+				onClick={e => hooks.addCommandToScript(formData.length)}
+			>
+				Добавить
+			</button>
+		</div>
+	);
+};
+const CommandBar = ({
+	index,
+	script,
+	setScript,
+	hooks,
+	blockEditing = false,
+}) => {
+	console.debug;
+	console.debug('script in commandBar', script);
+	console.debug('setScript in commandBar', setScript);
+	const { sigsByGroup, files } = useContext(BarContext);
 	const command = script[index];
 	console.info('mounted CommandBar component with id', command.id);
 	const { isHovered, setIsHovered, current } = useContext(
 		execAndMouseDisplayContext
 	);
-	const errorIDs = useContext(errorIDsContext);
+	const { errorIDs, setErrorIDs } = useContext(errorIDsContext);
 	const {
-		deleteCommandFromCurrentTab,
+		deleteCommandFromScript,
 		changeCommandActionType,
 		updateCommandField,
 		autoUpdateCommandSignalSubtype,
 		autoCleanCommand,
 		addCommandCopy,
-	} = useContext(commandHooksContext);
+	} = hooks;
 
 	useEffect(() => {
 		autoCleanCommand(index, sigsByGroup);
@@ -284,6 +373,23 @@ const CommandBar = ({ index, blockEditing = false }) => {
 			index,
 			e.target.id,
 			e.target.id == 'fatal' ? e.target.checked : e.target.value
+		);
+	};
+	const UpdateScriptInCycle = updater => {
+		console.debug('setScript in commandBar', setScript);
+		return setScript(prev =>
+			prev.map((item, i) => {
+				console.debug('prev in setScript', prev);
+				console.debug('typeof updater in setScript', typeof updater);
+				console.debug('updater in setScript', updater);
+				return i == index
+					? 'iteratorContent' in item
+						? typeof updater == 'function'
+							? { ...item, iteratorContent: updater(item.iteratorContent) }
+							: { ...item, iteratorContent: updater }
+						: item
+					: item;
+			})
 		);
 	};
 	return (
@@ -306,7 +412,7 @@ const CommandBar = ({ index, blockEditing = false }) => {
 					<Copy color="#000000"></Copy>
 				</button>
 				<DelScriptButton
-					delAction={() => deleteCommandFromCurrentTab(index)}
+					delAction={() => deleteCommandFromScript(index)}
 					disabled={blockEditing}
 				></DelScriptButton>
 			</div>
@@ -349,6 +455,16 @@ const CommandBar = ({ index, blockEditing = false }) => {
 						key={ind}
 						disabled={blockEditing}
 					/>
+				) : item == 'iteratorContent' ? (
+					<IterateEditorWindow
+						command={command}
+						fieldName={item}
+						setScript={UpdateScriptInCycle}
+						key={ind}
+						commandIndex={index}
+						disabled={blockEditing}
+						setErrorIDs={setErrorIDs}
+					></IterateEditorWindow>
 				) : (
 					<GenInput
 						command={command}

@@ -84,18 +84,26 @@ export function useExecutionHook(
 		const prepres = await preprocess(entry, index);
 		if (prepres) updateTabResults(tabId, prepres);
 		try {
-			const iteratorForInclude = async (cont: Command, ind: number) => {
+			const iteratorLambda = async (cont: Command, ind: number) => {
 				await executeEntry(tabId, cont, ind);
 			};
-			const res = await execute(entry, index, iteratorForInclude);
-			//updateTabResults(tabId, res);
+			const res = await execute(entry, index, iteratorLambda);
+			updateTabResults(tabId, res);
 			return res;
 		} catch (err: any) {
 			console.debug('caught err while executing entry', err);
 			addErrorId(setTabs, tabId, index);
-			if (err instanceof Error) return makeErrorResult(entry.id, err.message);
+			if (err instanceof Error) {
+				const err_ = makeErrorResult(entry.id, err.message);
+				updateTabResults(tabId, err_);
+				return err_;
+			}
 			//updateTabResults(tabId, makeErrorResult(entry.id, err.message));
-			else return makeErrorResult(entry.id, 'неизвестная ошибка');
+			else {
+				const err_ = makeErrorResult(entry.id, 'неизвестная ошибка');
+				updateTabResults(tabId, err_);
+				return err_;
+			}
 			//updateTabResults(
 			//	tabId,
 			//	makeErrorResult(entry.id, 'неизвестная ошибка')
@@ -138,7 +146,7 @@ export function useExecutionHook(
 			setCurrentCommand(id, executed);
 			if (item != undefined) {
 				const res = await executeEntry(id, item, executed);
-				updateTabResults(id, res);
+				//updateTabResults(id, res);
 				if (
 					commandTypeCheckers.isCheck(item) ||
 					commandTypeCheckers.isWaitForSignal(item)
@@ -173,7 +181,12 @@ export function useExecutionHook(
 		updateTabResults(id, summary as Result);
 	}
 	function entryHasEmptyFields(entry: EditorTab) {
+		console.debug('entry in entryHasEmptyFields', entry);
 		entry.content.reduce((acc, command) => {
+			console.debug(
+				'command in tab being processed in etry has empty fields',
+				command
+			);
 			return acc || hasEmptyFields(command);
 		}, false);
 	}

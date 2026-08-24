@@ -7,7 +7,7 @@ export enum CommandAction {
 	waitForSignal = 'Ждать состояния сигнала',
 	waitForTime = 'Бездействовать заданное время',
 	check = 'Сравнить состояние сигнала',
-
+	iterate = 'Цикл',
 	executePresets = 'Запустить предустановленные',
 	none = 'Выберите команду',
 	setAll = 'Установить все',
@@ -15,7 +15,7 @@ export enum CommandAction {
 }
 
 interface BaseCommand {
-	id: string | undefined;
+	id: string;
 	action: CommandAction;
 	schemeName: string;
 }
@@ -59,10 +59,21 @@ interface IncludeCommand extends BaseCommand {
 interface ExecPresetsCommand extends BaseCommand {
 	action: CommandAction.executePresets;
 }
+interface IterateCommand extends BaseCommand {
+	action: CommandAction.iterate;
+	iteratorContent: Array<Command>;
+	numberOfIterations: number;
+}
+/**
+ * интерфейс для команд, соответствующих setAll и presetAll протокола СУЛ
+ */
 export interface SetAllCommand extends BaseCommand {
 	action: CommandAction.setAll | CommandAction.presetAll;
-	targetValue: number;
 	board: string;
+	/**
+	 * Массив значений сигналов платы, упорядоченный по каналам
+	 */
+	values: Array<number>;
 }
 export type Command =
 	| BaseCommand
@@ -73,6 +84,7 @@ export type Command =
 	| PulseCommand
 	| IncludeCommand
 	| ExecPresetsCommand
+	| IterateCommand
 	| SetAllCommand;
 
 const isCheck = (command: Command): command is CheckSignalCommand =>
@@ -87,6 +99,8 @@ const isPulse = (command: Command): command is PulseCommand =>
 	[CommandAction.setPulse, CommandAction.presetPulse].includes(command.action);
 const isInclude = (command: Command): command is IncludeCommand =>
 	command.action === CommandAction.include;
+const isIterate = (command: Command): command is IterateCommand =>
+	command.action === CommandAction.iterate;
 const isExec = (command: Command): command is ExecPresetsCommand =>
 	command.action === CommandAction.executePresets;
 const isSetAll = (command: Command): command is SetAllCommand =>
@@ -145,10 +159,17 @@ export const prototypes = {
 		pulseTime: 500,
 		period: 500,
 	},
+	[CommandAction.iterate]: {
+		iteratorContent: [] as Array<Command>,
+		numberOfIterations: 1,
+	},
 	[CommandAction.executePresets]: {},
 	[CommandAction.none]: {},
-	[CommandAction.setAll]: { targetValue: 0, board: '' },
-	[CommandAction.presetAll]: { targetValue: 0, board: '' },
+	[CommandAction.setAll]: { board: '', values: [] },
+	[CommandAction.presetAll]: {
+		board: '',
+		values: [],
+	},
 };
 export const commandTypeCheckers = {
 	isCheck,
@@ -160,4 +181,5 @@ export const commandTypeCheckers = {
 	isExec,
 	isSetAll,
 	isSignalCommand,
+	isIterate,
 };
