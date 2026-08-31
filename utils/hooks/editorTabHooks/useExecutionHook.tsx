@@ -121,7 +121,7 @@ export function useExecutionHook(
 		if (id == undefined) throw new Error('Не определен идентификатор вкладки');
 		const abort = addAbortController(id);
 		console.info('start executing tab ', id, 'with contents ', tabContent);
-		await new Promise(res => setTimeout(res, 1500));
+		await new Promise(res => setTimeout(res, 500));
 		console.log('waited 1.5 seconds');
 		clearTabResults(id);
 		clearTabErrorIds(id);
