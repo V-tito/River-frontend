@@ -22,8 +22,8 @@ function hasEmptyFields(command: Command) {
 		res = res || command.group == '' || command.signal == '';
 	if (commandTypeCheckers.isInclude(command))
 		res = res || command.scriptPath == '';
-	if (commandTypeCheckers.isIterate(command))
-		res = res || command.iteratorContent.length == 0;
+	if (commandTypeCheckers.isLoop(command))
+		res = res || command.loopContent.length == 0;
 	return res;
 }
 async function preprocess<T extends Command>(command: T, index: number) {
@@ -54,7 +54,7 @@ async function preprocess<T extends Command>(command: T, index: number) {
 			fatal: false,
 		};
 	}
-	if (commandTypeCheckers.isIterate(command)) {
+	if (commandTypeCheckers.isLoop(command)) {
 		const now = new Date();
 		return {
 			res: `Начинаем цикл`,
@@ -301,10 +301,10 @@ async function execute<T extends Command>(
 		}
 		message = `Выполнен скрипт ${command.scriptPath}`;
 	}
-	if (commandTypeCheckers.isIterate(command)) {
+	if (commandTypeCheckers.isLoop(command)) {
 		for (let j = 0; j < command.numberOfIterations; j++)
-			for (let i = 0; i < command.iteratorContent.length; i++) {
-				const content = command.iteratorContent[i];
+			for (let i = 0; i < command.loopContent.length; i++) {
+				const content = command.loopContent[i];
 				await iterate(content, index);
 			}
 		message = `Цикл завершен`;
@@ -318,7 +318,7 @@ async function execute<T extends Command>(
 			: CommandBarHelpers.isSetter(command)
 				? 'setter'
 				: commandTypeCheckers.isInclude(command) ||
-					  commandTypeCheckers.isIterate(command)
+					  commandTypeCheckers.isLoop(command)
 					? 'include'
 					: 'checker',
 		id: command.id,

@@ -152,19 +152,46 @@ export async function executePresets(scheme, abort = null) {
 }
 /**
  * setAll протокола
- * @param {string} schemeName имя схемы
+ * @param {string} scheme имя схемы
  * @param {string} board имя платы (пока только ТП)
- * @param {Array<number>} vals массив значений
+ * @param {Record<number,number>} vals массив значений
  */
-export async function setAll(schemeName, board, vals) {
-	pass;
+export async function setAll(scheme, board, vals, abort = null) {
+	let api = `${process.env.API_URL}/api/river/v1/protocol/setAll?testBoardName=${board}&`;
+	Object.keys(vals).map(key => {
+		if (vals[key] != -1) {
+			api += 'value' + key + '=' + vals[key];
+			api += '&';
+		}
+	});
+	if (!api.includes('value'))
+		throw new Error('Не указано новое значение ни для одного сигнала платы');
+	api = api[api.length - 1] == '&' ? api.substring(0, api.length - 1) : api;
+	const result = await abortableFetch(api, abort, '', scheme);
+	return result;
 }
 /**
  * presetAll протокола
  * @param {string} schemeName имя схемы
  * @param {string} board имя платы (пока только ТП)
- * @param {Array<number>} vals массив значений
+ * @param {Record<number,number>} vals массив значений
  */
-export async function presetAll(schemeName, board, vals) {
-	pass;
+export async function presetAll(scheme, board, vals, abort = null) {
+	let api = `${process.env.API_URL}/api/river/v1/protocol/presetAll?testBoardName=${board}`;
+	Object.keys(vals).map(key => {
+		console.debug(
+			'vals[key]',
+			vals[key],
+			'!=-1',
+			vals[key] != -1,
+			'!="-1"',
+			vals[key] != '-1'
+		);
+		if (vals[key] != -1) {
+			api += 'value' + key + '=' + vals[key];
+			if (key < 31) api += '&';
+		}
+	});
+	const result = await abortableFetch(api, abort, '', scheme);
+	return result;
 }

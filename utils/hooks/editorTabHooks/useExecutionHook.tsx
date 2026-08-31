@@ -171,7 +171,7 @@ export function useExecutionHook(
 			[id]: { ...prev[id], isBeingExecuted: false } as EditorTab,
 		}));
 		const now = new Date().toLocaleTimeString();
-		const msg = `Выполнено команд: ${executed}.\n Успешных тестов: ${checks}.\n Ошибочных тестов: ${checkErrors}. \n Других инструкций: ${executed - checks - checkErrors}. \n ${netErrors > 0 ? `${netErrors} команд завершились с ошибкой из-за внутренних ошибок стенда. \n` : ''} Выполнение ${aborted ? 'было прервано' : `завершилось ${fatal ? 'из-за ошибки теста' : 'штатно'}`}.`;
+		const msg = `Выполнено команд: ${executed}.\n Успешных тестов: ${checks}.\n Ошибочных тестов: ${checkErrors}. \n Других инструкций: ${executed - checks - checkErrors}. \n ${netErrors > 0 ? `${netErrors} команд завершились с ошибкой из-за внутренних ошибок стенда или ошибок скрипта. \n` : ''} Выполнение ${aborted ? 'было прервано' : ` ${fatal ? 'завершилось из-за фатальной ошибки теста' : 'завершилось БЕЗ фатальных ошибок теста'}`}.`;
 		const summary = {
 			id: id,
 			actionType: checkErrors + netErrors > 0 ? 'error' : 'summary',

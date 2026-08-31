@@ -7,12 +7,7 @@ export default function handler(req, res) {
 	const slug = req.query.slug;
 	const fetch = async () => {
 		try {
-			const result = await fetchAllSignalsInTheEnv(
-				slug,
-				false,
-				namesOnly,
-				true
-			);
+			const result = await fetchAllSignalsInTheEnv(slug, false, true);
 			res.status(200).json(result);
 		} catch (err) {
 			if (err instanceof Error) {

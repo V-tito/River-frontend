@@ -7,7 +7,7 @@ export enum CommandAction {
 	waitForSignal = 'Ждать состояния сигнала',
 	waitForTime = 'Бездействовать заданное время',
 	check = 'Сравнить состояние сигнала',
-	iterate = 'Цикл',
+	loop = 'Цикл',
 	executePresets = 'Запустить предустановленные',
 	none = 'Выберите команду',
 	setAll = 'Установить все',
@@ -59,9 +59,9 @@ interface IncludeCommand extends BaseCommand {
 interface ExecPresetsCommand extends BaseCommand {
 	action: CommandAction.executePresets;
 }
-interface IterateCommand extends BaseCommand {
-	action: CommandAction.iterate;
-	iteratorContent: Array<Command>;
+interface LoopCommand extends BaseCommand {
+	action: CommandAction.loop;
+	loopContent: Array<Command>;
 	numberOfIterations: number;
 }
 /**
@@ -73,7 +73,7 @@ export interface SetAllCommand extends BaseCommand {
 	/**
 	 * Массив значений сигналов платы, упорядоченный по каналам
 	 */
-	values: Array<number>;
+	values: Record<number, number>;
 }
 export type Command =
 	| BaseCommand
@@ -84,7 +84,7 @@ export type Command =
 	| PulseCommand
 	| IncludeCommand
 	| ExecPresetsCommand
-	| IterateCommand
+	| LoopCommand
 	| SetAllCommand;
 
 const isCheck = (command: Command): command is CheckSignalCommand =>
@@ -99,8 +99,8 @@ const isPulse = (command: Command): command is PulseCommand =>
 	[CommandAction.setPulse, CommandAction.presetPulse].includes(command.action);
 const isInclude = (command: Command): command is IncludeCommand =>
 	command.action === CommandAction.include;
-const isIterate = (command: Command): command is IterateCommand =>
-	command.action === CommandAction.iterate;
+const isLoop = (command: Command): command is LoopCommand =>
+	command.action === CommandAction.loop;
 const isExec = (command: Command): command is ExecPresetsCommand =>
 	command.action === CommandAction.executePresets;
 const isSetAll = (command: Command): command is SetAllCommand =>
@@ -110,7 +110,13 @@ const isSignalCommand = (command: Command): command is SignalCommand =>
 	isWaitForSignal(command) ||
 	isSet(command) ||
 	isPulse(command);
-
+const formVals = () => {
+	let res = {} as Record<number, number>;
+	for (var i = 0; i < 32; i++) {
+		res[i] = -1;
+	}
+	return res;
+};
 export const prototypes = {
 	[CommandAction.include]: { scriptPath: '', scriptContent: {} },
 	[CommandAction.waitForSignal]: {
@@ -159,13 +165,16 @@ export const prototypes = {
 		pulseTime: 500,
 		period: 500,
 	},
-	[CommandAction.iterate]: {
-		iteratorContent: [] as Array<Command>,
+	[CommandAction.loop]: {
+		loopContent: [] as Array<Command>,
 		numberOfIterations: 1,
 	},
 	[CommandAction.executePresets]: {},
 	[CommandAction.none]: {},
-	[CommandAction.setAll]: { board: '', values: [] },
+	[CommandAction.setAll]: {
+		board: '',
+		values: formVals(),
+	},
 	[CommandAction.presetAll]: {
 		board: '',
 		values: [],
@@ -181,5 +190,5 @@ export const commandTypeCheckers = {
 	isExec,
 	isSetAll,
 	isSignalCommand,
-	isIterate,
+	isLoop,
 };

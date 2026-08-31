@@ -10,7 +10,8 @@ const BarEditor = ({ setError, children }) => {
 	const { defaultScheme } = useGlobal();
 	const schemeName = defaultScheme.name;
 	const [files, setFiles] = useState([]);
-	const [sigsByGroup, setSigs] = useState();
+	const [sigsByGroup, setSigs] = useState({});
+	const [inputsByBoard, setInputs] = useState({});
 	const [loading, setLoading] = useState(true);
 
 	console.info(
@@ -20,7 +21,7 @@ const BarEditor = ({ setError, children }) => {
 		const fetchSigs = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${schemeName}?sortedSignals=true`
+					`/api/getSignalsForTests/${schemeName}?sortedSignals=true`
 				);
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
@@ -33,8 +34,8 @@ const BarEditor = ({ setError, children }) => {
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
-				const tempGroups = conf.groups;
-				const tempData = conf.data;
+				const tempGroups = conf.byGroup.groups;
+				const tempData = conf.byGroup.data;
 				const tempData2 = tempGroups.reduce((acc, group) => {
 					return {
 						...acc,
@@ -45,6 +46,7 @@ const BarEditor = ({ setError, children }) => {
 					};
 				}, tempData);
 				setSigs(tempData2);
+				setInputs(conf.byBoard);
 			} catch (err) {
 				if (err instanceof Error) {
 					setSigs({});
@@ -87,6 +89,7 @@ const BarEditor = ({ setError, children }) => {
 			<BarContext.Provider
 				value={{
 					sigsByGroup,
+					inputsByBoard,
 					files,
 				}}
 			>
