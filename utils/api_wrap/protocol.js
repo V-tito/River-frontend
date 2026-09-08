@@ -190,7 +190,7 @@ export async function presetAll(scheme, board, vals, abort = null) {
 		if (vals[key] != -1) {
 			api += 'value' + key + '=' + vals[key];
 			if (key < 31) api += '&';
-		}
+		} else throw new Error('Не указано значение на канале ' + key);
 	});
 	const result = await abortableFetch(api, abort, '', scheme);
 	return result;

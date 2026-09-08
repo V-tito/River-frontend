@@ -8,6 +8,37 @@ import { BarContext } from '../barEditor';
 export default function SetAll({ command, fieldName, updateAction, disabled }) {
 	const { inputsByBoard } = useContext(BarContext);
 	console.debug('inputs by board in setAll');
+	const channels = [];
+	for (let i = 0; i < 32; i++) {
+		const channelform = (
+			<div className="flex flex-row" key={i}>
+				<label className={styles.label}>Канал {i}</label>
+				<input
+					type="radio"
+					id="values"
+					value={1}
+					onChange={updateAction}
+					data-flagindex={i}
+					checked={command.values[i] == 1}
+					className={`${inputStyles.radio} ${styles.radio}`}
+					disabled={disabled}
+				/>
+				Активен
+				<input
+					type="radio"
+					id="values"
+					value={0}
+					onChange={updateAction}
+					data-flagindex={i}
+					checked={command.values[i] == 0}
+					className={`${inputStyles.radio} ${styles.radio}`}
+					disabled={disabled}
+				/>
+				Неактивен
+			</div>
+		);
+		channels.push(channelform);
+	}
 
 	return (
 		<div>
@@ -32,35 +63,7 @@ export default function SetAll({ command, fieldName, updateAction, disabled }) {
 			{[undefined, ''].includes(command.board) ? (
 				''
 			) : (
-				<div className="flex flex-col">
-					{inputsByBoard[command.board].map((signal, i) => (
-						<div className="flex flex-row" key={i}>
-							<label className={styles.label}>{signal.name}</label>
-							<input
-								type="radio"
-								id="values"
-								value={1}
-								onChange={updateAction}
-								data-flagindex={signal.channel}
-								checked={command.values[signal.channel] == 1}
-								className={`${inputStyles.radio} ${styles.radio}`}
-								disabled={disabled}
-							/>
-							Активен
-							<input
-								type="radio"
-								id="values"
-								value={0}
-								onChange={updateAction}
-								data-flagindex={signal.channel}
-								checked={command.values[signal.channel] == 0}
-								className={`${inputStyles.radio} ${styles.radio}`}
-								disabled={disabled}
-							/>
-							Неактивен
-						</div>
-					))}
-				</div>
+				<div className="flex flex-col">{channels}</div>
 			)}
 		</div>
 	);
