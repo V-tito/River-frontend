@@ -16,11 +16,14 @@ export interface Result {
 	res: string | undefined;
 }
 function hasEmptyFields(command: Command) {
+	console.debug('command in hasEmptyFields', command);
 	let res = command.action == CommandAction.none;
 	if (commandTypeCheckers.isSignalCommand(command))
 		res = res || command.group == '' || command.signal == '';
 	if (commandTypeCheckers.isInclude(command))
 		res = res || command.scriptPath == '';
+	if (commandTypeCheckers.isLoop(command))
+		res = res || command.loopContent.length == 0;
 	return res;
 }
 async function preprocess<T extends Command>(command: T, index: number) {
@@ -45,6 +48,16 @@ async function preprocess<T extends Command>(command: T, index: number) {
 		const now = new Date();
 		return {
 			res: `Подгружаем скрипт ${command.scriptPath}`,
+			timestamp: now.toLocaleTimeString(),
+			actionType: 'include',
+			id: command.id,
+			fatal: false,
+		};
+	}
+	if (commandTypeCheckers.isLoop(command)) {
+		const now = new Date();
+		return {
+			res: `Начинаем цикл`,
 			timestamp: now.toLocaleTimeString(),
 			actionType: 'include',
 			id: command.id,
@@ -233,11 +246,20 @@ async function execute<T extends Command>(
 	if (commandTypeCheckers.isSetAll(command)) {
 		switch (command.action) {
 			case CommandAction.setAll:
-				message = `Сигналы платы ${command.board} установлены на ${command.targetValue}`;
-
+				message = `Сигналы платы ${command.board} установлены`;
+				await protocol.setAll(
+					command.schemeName,
+					command.board,
+					command.values
+				);
 				break;
 			case CommandAction.presetAll:
-				message = `Сигналы платы ${command.board} предустановлены на ${command.targetValue}`;
+				message = `Сигналы платы ${command.board} предустановлены`;
+				await protocol.presetAll(
+					command.schemeName,
+					command.board,
+					command.values
+				);
 				break;
 		}
 	}
@@ -279,6 +301,14 @@ async function execute<T extends Command>(
 		}
 		message = `Выполнен скрипт ${command.scriptPath}`;
 	}
+	if (commandTypeCheckers.isLoop(command)) {
+		for (let j = 0; j < command.numberOfIterations; j++)
+			for (let i = 0; i < command.loopContent.length; i++) {
+				const content = command.loopContent[i];
+				await iterate(content, index);
+			}
+		message = `Цикл завершен`;
+	}
 	const now = new Date();
 	return {
 		res: message,
@@ -287,7 +317,8 @@ async function execute<T extends Command>(
 			? 'checkError'
 			: CommandBarHelpers.isSetter(command)
 				? 'setter'
-				: commandTypeCheckers.isInclude(command)
+				: commandTypeCheckers.isInclude(command) ||
+					  commandTypeCheckers.isLoop(command)
 					? 'include'
 					: 'checker',
 		id: command.id,

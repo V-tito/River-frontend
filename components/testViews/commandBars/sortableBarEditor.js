@@ -1,26 +1,26 @@
 'use client';
 
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import SortableBar from './sortableBar';
 import BarEditor from './barEditor';
 import { DragDropProvider } from '@dnd-kit/react';
+import { commandHooksContext } from '../editorTabs';
+import buttonStyles from '@/styles/buttonStyles.module.css';
 
 const SortableBarEditor = ({
 	formData,
 	setFormData,
+	hooks,
 	setErrorIDs,
 	setError,
 	blockEditing = false,
 }) => {
+	const { addCommandToScript } = hooks;
 	console.info('mounted SortableBarEditor component');
 	const [version, setVersion] = useState(0);
 	return (
-		<BarEditor
-			formData={formData}
-			setFormData={setFormData}
-			setError={setError}
-		>
+		<BarEditor setError={setError}>
 			<ul>
 				<DragDropProvider
 					key={version}
@@ -59,12 +59,21 @@ const SortableBarEditor = ({
 									key={i}
 									id={i}
 									index={i}
+									hooks={hooks}
+									script={formData}
+									setScript={setFormData}
 									blockEditing={blockEditing}
 								></SortableBar>
 							))
 						: ''}
 				</DragDropProvider>
 			</ul>
+			<button
+				className={`${buttonStyles.button} ${buttonStyles.menuButton} w-full`}
+				onClick={e => addCommandToScript(formData.length)}
+			>
+				Добавить
+			</button>
 		</BarEditor>
 	);
 };

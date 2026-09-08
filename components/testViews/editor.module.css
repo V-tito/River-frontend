@@ -1,7 +1,8 @@
 .main {
   display: flex;
   flex-direction: row;
-  width: 100%;
+box-sizing: border-box;
+max-width: 90%;
   height:85vh;
   margin:5px;
 

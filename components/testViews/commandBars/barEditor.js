@@ -1,18 +1,19 @@
 'use client';
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
-import buttonStyles from '@/styles/buttonStyles.module.css';
+
 import React, { createContext, useEffect, useState, useContext } from 'react';
 export const BarContext = createContext();
-import { commandHooksContext } from '../editorTabs';
+
 import { useGlobal } from '@/app/GlobalState';
-const BarEditor = ({ formData, setFormData, setError, children }) => {
+const BarEditor = ({ setError, children }) => {
 	const { defaultScheme } = useGlobal();
 	const schemeName = defaultScheme.name;
 	const [files, setFiles] = useState([]);
-	const [sigsByGroup, setSigs] = useState();
+	const [sigsByGroup, setSigs] = useState({});
+	const [inputsByBoard, setInputs] = useState({});
 	const [loading, setLoading] = useState(true);
-	let { addCommandToCurrentTab } = useContext(commandHooksContext);
+
 	console.info(
 		'mounted BarEditor component (answers for providing lists of groups and signals'
 	);
@@ -20,7 +21,7 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 		const fetchSigs = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${schemeName}?sortedSignals=true`
+					`/api/getSignalsForTests/${schemeName}?sortedSignals=true`
 				);
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
@@ -33,8 +34,8 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
-				const tempGroups = conf.groups;
-				const tempData = conf.data;
+				const tempGroups = conf.byGroup.groups;
+				const tempData = conf.byGroup.data;
 				const tempData2 = tempGroups.reduce((acc, group) => {
 					return {
 						...acc,
@@ -45,6 +46,7 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 					};
 				}, tempData);
 				setSigs(tempData2);
+				setInputs(conf.byBoard);
 			} catch (err) {
 				if (err instanceof Error) {
 					setSigs({});
@@ -86,20 +88,13 @@ const BarEditor = ({ formData, setFormData, setError, children }) => {
 		<div className={styles.edit}>
 			<BarContext.Provider
 				value={{
-					formData,
-					setFormData,
 					sigsByGroup,
+					inputsByBoard,
 					files,
 				}}
 			>
 				{children}
 			</BarContext.Provider>
-			<button
-				className={`${buttonStyles.button} ${buttonStyles.menuButton} w-full`}
-				onClick={e => addCommandToCurrentTab(formData.length)}
-			>
-				Добавить
-			</button>
 		</div>
 	);
 };

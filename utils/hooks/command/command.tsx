@@ -1,12 +1,13 @@
 export enum CommandAction {
-	include = 'Выполнить скрипт',
-	waitForSignal = 'Ждать состояния сигнала',
-	waitForTime = 'Бездействовать заданное время',
-	check = 'Сравнить состояние сигнала',
 	set = 'Установить сигнал',
 	setPulse = 'Установить пульсацию',
 	preset = 'Предустановить сигнал',
 	presetPulse = 'Предустановить пульсацию',
+	include = 'Выполнить скрипт',
+	waitForSignal = 'Ждать состояния сигнала',
+	waitForTime = 'Бездействовать заданное время',
+	check = 'Сравнить состояние сигнала',
+	loop = 'Цикл',
 	executePresets = 'Запустить предустановленные',
 	none = 'Выберите команду',
 	setAll = 'Установить все',
@@ -14,7 +15,7 @@ export enum CommandAction {
 }
 
 interface BaseCommand {
-	id: string | undefined;
+	id: string;
 	action: CommandAction;
 	schemeName: string;
 }
@@ -58,10 +59,21 @@ interface IncludeCommand extends BaseCommand {
 interface ExecPresetsCommand extends BaseCommand {
 	action: CommandAction.executePresets;
 }
+interface LoopCommand extends BaseCommand {
+	action: CommandAction.loop;
+	loopContent: Array<Command>;
+	numberOfIterations: number;
+}
+/**
+ * интерфейс для команд, соответствующих setAll и presetAll протокола СУЛ
+ */
 export interface SetAllCommand extends BaseCommand {
 	action: CommandAction.setAll | CommandAction.presetAll;
-	targetValue: number;
 	board: string;
+	/**
+	 * Массив значений сигналов платы, упорядоченный по каналам
+	 */
+	values: Record<number, number>;
 }
 export type Command =
 	| BaseCommand
@@ -72,6 +84,7 @@ export type Command =
 	| PulseCommand
 	| IncludeCommand
 	| ExecPresetsCommand
+	| LoopCommand
 	| SetAllCommand;
 
 const isCheck = (command: Command): command is CheckSignalCommand =>
@@ -86,6 +99,8 @@ const isPulse = (command: Command): command is PulseCommand =>
 	[CommandAction.setPulse, CommandAction.presetPulse].includes(command.action);
 const isInclude = (command: Command): command is IncludeCommand =>
 	command.action === CommandAction.include;
+const isLoop = (command: Command): command is LoopCommand =>
+	command.action === CommandAction.loop;
 const isExec = (command: Command): command is ExecPresetsCommand =>
 	command.action === CommandAction.executePresets;
 const isSetAll = (command: Command): command is SetAllCommand =>
@@ -95,7 +110,13 @@ const isSignalCommand = (command: Command): command is SignalCommand =>
 	isWaitForSignal(command) ||
 	isSet(command) ||
 	isPulse(command);
-
+const formVals = () => {
+	let res = {} as Record<number, number>;
+	for (var i = 0; i < 32; i++) {
+		res[i] = -1;
+	}
+	return res;
+};
 export const prototypes = {
 	[CommandAction.include]: { scriptPath: '', scriptContent: {} },
 	[CommandAction.waitForSignal]: {
@@ -144,10 +165,20 @@ export const prototypes = {
 		pulseTime: 500,
 		period: 500,
 	},
+	[CommandAction.loop]: {
+		loopContent: [] as Array<Command>,
+		numberOfIterations: 1,
+	},
 	[CommandAction.executePresets]: {},
 	[CommandAction.none]: {},
-	[CommandAction.setAll]: { targetValue: 0, board: '' },
-	[CommandAction.presetAll]: { targetValue: 0, board: '' },
+	[CommandAction.setAll]: {
+		board: '',
+		values: formVals(),
+	},
+	[CommandAction.presetAll]: {
+		board: '',
+		values: [],
+	},
 };
 export const commandTypeCheckers = {
 	isCheck,
@@ -159,4 +190,5 @@ export const commandTypeCheckers = {
 	isExec,
 	isSetAll,
 	isSignalCommand,
+	isLoop,
 };

@@ -1,11 +1,17 @@
 import CommandBar from './commandBar';
 import { useSortable } from '@dnd-kit/react/sortable';
 import React from 'react';
-const SortableBar = ({ id, index, blockEditing }) => {
+const SortableBar = ({ script, setScript, id, index, blockEditing, hooks }) => {
 	const { ref } = useSortable({ id, index });
 	return (
 		<li ref={ref}>
-			<CommandBar index={index} blockEditing={blockEditing}></CommandBar>
+			<CommandBar
+				script={script}
+				setScript={setScript}
+				index={index}
+				blockEditing={blockEditing}
+				hooks={hooks}
+			></CommandBar>
 		</li>
 	);
 };

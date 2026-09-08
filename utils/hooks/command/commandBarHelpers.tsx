@@ -14,6 +14,8 @@ const translateFields = {
 	period: 'Периодичность импульсов, мс',
 	waitForSignal: 'Ждать состояния сигнала',
 	waitingTime: 'Время ожидания, мс',
+	numberOfIterations: 'Число повторений',
+	board: 'Плата',
 };
 function isSetter<T extends Command>(command: T) {
 	return (
@@ -22,6 +24,11 @@ function isSetter<T extends Command>(command: T) {
 		commandTypeCheckers.isSetAll(command)
 	);
 }
+/**
+ * filters out the command's attributes that should not be mapped onto commandBar's form fields during dynamic generation
+ * @param command the command
+ * @returns filtered array of fields
+ */
 function getConfig<T extends Command>(command: T) {
 	return Object.keys(command).filter(
 		key =>
@@ -32,6 +39,7 @@ function getConfig<T extends Command>(command: T) {
 				'action',
 				'scriptContent',
 				'id',
+				'values',
 			].includes(key)
 	);
 }

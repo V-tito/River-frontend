@@ -18,17 +18,7 @@ const CommandBarEditor = ({
 	schemeName,
 }) => {
 	return (
-		<BarEditor
-			formData={formData}
-			setFormData={setFormData}
-			isHovered={isHovered}
-			setIsHovered={setIsHovered}
-			current={current}
-			errorIDs={errorIDs}
-			setErrorIDs={setErrorIDs}
-			setError={setError}
-			schemeName={schemeName}
-		>
+		<BarEditor formData={formData} setError={setError}>
 			{formData.length > 0
 				? formData.map((item, i) => (
 						<div key={i} className="flex flex-col w-full">
@@ -45,7 +35,7 @@ const CommandBarEditor = ({
 							>
 								Добавить
 							</button>
-							<CommandBar index={i}></CommandBar>
+							<CommandBar index={i} formData={formData}></CommandBar>
 						</div>
 					))
 				: ''}
