@@ -61,3 +61,7 @@
     background-color:var(--controlelementfont);
     border:5px solid var(--controlelementactive);
   }
+  .label {
+    display: block;
+    margin-top: 5px;
+  }
