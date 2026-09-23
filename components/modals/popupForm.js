@@ -7,11 +7,12 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import './popup.css';
 
-const PopupForm = ({ buttonLabel, label = null, children }) => {
+const PopupForm = ({ buttonLabel, buttonTitle, label = null, children }) => {
 	return (
 		<Popup
 			trigger={
 				<button
+					title={buttonTitle}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
 					{buttonLabel}

@@ -1,7 +1,7 @@
-import triggerOn from './icons/triggerOn.jpg';
-import triggerOff from './icons/triggerOff.jpg';
-import lampOn from './icons/lampOn.jpg';
-import lampOff from './icons/lampOff.jpg';
+import triggerOn from './triggerOn.jpg';
+import triggerOff from './triggerOff.jpg';
+import lampOn from './lampOn.png';
+import lampOff from './lampOff.png';
 
 const icons = {
 	trigger: { on: triggerOn, off: triggerOff },

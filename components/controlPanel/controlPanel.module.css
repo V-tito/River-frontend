@@ -1,7 +1,35 @@
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30ex,1fr));
-    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(56px,1fr));
+    grid-auto-rows:min-content;
     gap: 1rem;
     align-items: stretch; 
+    flex-grow: 1;
+  }
+  .loader{
+    display: flex;
+    justify-content: center;
+    padding: 10vh
+  }
+  .CPset{
+    cursor: pointer;
+    width:64px;
+height: fit-content;font-size: small;
+  }
+  .CPget{
+    width:64px;
+height: fit-content;font-size: small;
+place-self: center;
+  }
+  .errs {
+    margin:5px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height:20vh;
+    padding: 4px;
+    border: 1px solid var(--defaultgrey);
+    border-radius: 5px;
+    font-size: smaller;
+    overflow-y: scroll;
   }

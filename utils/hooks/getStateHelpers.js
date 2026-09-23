@@ -1,3 +1,8 @@
+import {
+	getSulState,
+	getBoardState,
+	getSignalState,
+} from '@/utils/api_wrap/protocol';
 async function fetchCurrentState(
 	schemeName,
 	sig,
@@ -6,7 +11,7 @@ async function fetchCurrentState(
 ) {
 	let result;
 	let last = Date.now();
-	console.log('fetching', sig.id, 'start', last);
+	console.log('fetching', sig.name, 'start', last);
 	try {
 		if (board) {
 			if (sul) result = await getSulState(schemeName);
@@ -14,30 +19,25 @@ async function fetchCurrentState(
 		} else {
 			result = await getSignalState(schemeName, sig.parentGroup, sig.name);
 		}
-		console.log('fetching', sig.id, 'set api in', Date.now() - last);
+		console.log('fetching', sig.name, 'set api in', Date.now() - last);
 		last = Date.now();
 		console.log(
 			'fetching',
-			sig.id,
+			sig.name,
 			'waiting for response in',
 			Date.now() - last
 		);
 		last = Date.now();
-		console.log('fetching', sig.id, 'waiting for result in', Date.now() - last);
+		console.log(
+			'fetching',
+			sig.name,
+			'waiting for result in',
+			Date.now() - last
+		);
 		console.log('received:', result);
 		setPollingError('ok');
 
 		if (!board) {
-			console.log(
-				'with name',
-				sig.name,
-				'set state',
-				result.value,
-				'with last check time',
-				String(result.freshness.split('.')[0]),
-				'states',
-				allStates
-			);
 			return [
 				sig.name,
 				{
@@ -71,8 +71,8 @@ export async function fetchAllStates(
 	setPollingError,
 	responseWaiting,
 	setResponseWaiting,
+
 	setAllStates,
-	setLoading,
 	board = false
 ) {
 	if (!responseWaiting) {
@@ -107,7 +107,6 @@ export async function fetchAllStates(
 			);
 		} finally {
 			setResponseWaiting(false);
-			setLoading(false);
 		}
 	}
 }

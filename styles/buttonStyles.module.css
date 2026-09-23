@@ -38,6 +38,8 @@
     color: var(--controlelementfont);
     cursor: pointer;
     margin:5px;
+    justify-content: center;
+    align-content: center;
   }
   .button:disabled{
     cursor:not-allowed
@@ -46,6 +48,7 @@
     margin-top:10px;
     border-radius: 5%;
     border: 1px solid white;
+    
   }
   .menuButton {
     background-color: var(--controlelementcolor);

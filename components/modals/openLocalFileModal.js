@@ -7,7 +7,7 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import PropTypes from 'prop-types';
 import styles from './modal.module.css';
-
+import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const OpenLocalFileModal = ({
 	uploadAction,
 	uploadError = null,
@@ -25,9 +25,10 @@ const OpenLocalFileModal = ({
 		<Popup
 			trigger={
 				<button
+					title={label ? label : 'Открыть локальный скрипт'}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					{label ? label : 'Открыть локальный скрипт'}
+					{label ? label : <Upload />}
 				</button>
 			}
 			closeOnDocumentClick={false}

@@ -4,6 +4,7 @@ import OpenLocalFileModal from '../modals/openLocalFileModal';
 import FileChooser from '../fileManagement/fileChooserForEditor';
 import SaveFromVarLocally from '../modals/saveFromVarLocally';
 import styles from './editor.module.css';
+import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 import PropTypes from 'prop-types';
 const FileManager = ({
 	currentTab,
@@ -38,7 +39,7 @@ const FileManager = ({
 		reader.readAsText(file);
 	};
 	return (
-		<div className={styles.fileManager}>
+		<div className={styles.buttons}>
 			<OpenLocalFileModal
 				uploadAction={handleFileRead}
 				uploadError={readerError}
@@ -51,8 +52,9 @@ const FileManager = ({
 			></SaveFromEditorToServerModal>
 			<SaveFromVarLocally
 				formData={currentTab.content}
-				nitName={currentTab.name}
-				label="Сохранить как..."
+				initName={currentTab.name}
+				label={<Download />}
+				title="Экспорт скрипта"
 			/>
 			<FileChooser folder={scheme}></FileChooser>
 		</div>

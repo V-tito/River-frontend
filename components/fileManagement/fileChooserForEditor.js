@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
 import PopupForm from '../modals/popupForm';
 import styles from './fileBar.module.css';
+import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const FileChooser = ({ folder }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -35,7 +36,10 @@ const FileChooser = ({ folder }) => {
 	}, []);
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<PopupForm buttonLabel={'Открыть файл с сервера'}>
+		<PopupForm
+			buttonLabel={<FilePlus></FilePlus>}
+			buttonTitle="Открыть файл из хранилища рабочего пространства"
+		>
 			<p>Нажмите на название файла, чтобы открыть</p>
 			{Array.isArray(files)
 				? files.map((file, index) => (

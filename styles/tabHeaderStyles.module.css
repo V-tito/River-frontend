@@ -3,8 +3,10 @@
     flex-direction: row;
     margin:0px;
     padding:0px;
-    max-width: 90%;
+    min-width: 140px;
+    max-width: 100%;
     overflow-x: scroll;
+    height: 2.25rem
 }
 .tabHeader {
     display:grid;
@@ -14,19 +16,19 @@
     cursor: pointer;
     margin:0px;
     padding:0vh;
-    border-top-left-radius: 5%;
-    border-top-right-radius: 5%;
+    max-width:35%;
+}
+.tabName{
+    overflow-x:scroll;
+    padding: 0vh 1vh;
+    min-width: 5rem;
 }
 .execButton {
-    display:grid;
-    grid-template-columns: auto auto;
     background-color: var(--controlelementcolor);
     color: var(--controlelementfont);
     cursor: pointer;
     margin:0px;
-    padding:0.5vh 2vh  0vh 2vh;
-    border-top-left-radius: 5%;
-    border-top-right-radius: 10%;
+    padding:0vh 1vh;
 }
 .execButton:hover{
     background-color: var(--controlelementactive);
@@ -37,15 +39,9 @@
 .tabAdder {
     background-color: var(--controlelementcolor);
     color: var(--controlelementfont);
-    padding: 0vh 2vh  0.5vh 2vh;
+    padding: 0vh 1vh;
     cursor: pointer;
     margin:0px;
-    width:min-content;
-    height: min-content;
-    border-radius: 15%;
-    justify-self: right;
-    align-self: center;
-    font-size: larger;
 
 }
 .tabAdder:hover{
@@ -53,15 +49,10 @@
 }
 
 .tabDeleter{
-    padding: 0vh 2vh  0.5vh 2vh;
+    padding: 0vh 1vh;
     cursor: pointer;
     margin:0px;
-    width:min-content;
-    height: min-content;
-    border-radius: 15%;
-    justify-self: right;
-    align-self: center;
-    font-size: larger;
+    width: min-content;
 
 }
 .tabDeleter:hover{

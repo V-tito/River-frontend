@@ -1,6 +1,6 @@
 import styles from '@/styles/tabHeaderStyles.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
-
+import { XCircle } from '@deemlol/next-icons';
 const TabHeader = ({
 	id,
 	name,
@@ -27,7 +27,7 @@ const TabHeader = ({
 						: 'Закрыть вкладку'
 				}
 			>
-				&times;
+				<XCircle></XCircle>
 			</button>
 		</div>
 	);

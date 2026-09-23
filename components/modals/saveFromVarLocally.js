@@ -12,6 +12,7 @@ const SaveFromVarLocally = ({
 	formData,
 	initName = null,
 	label = 'Сохранить',
+	title = 'Сохранить',
 	xml = false,
 }) => {
 	const [filename, setFilename] = useState(
@@ -58,6 +59,7 @@ const SaveFromVarLocally = ({
 		<Popup
 			trigger={
 				<button
+					title={title}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
 					{label}

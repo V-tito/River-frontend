@@ -11,18 +11,15 @@ import { useBeforeUnload } from 'react-use';
 
 //styles
 import styles from './editor.module.css';
-import tabStyles from '@/styles/tabHeaderStyles.module.css';
-import buttonStyles from '@/styles/buttonStyles.module.css';
-import headerStyles from '@/styles/headerStyles.module.css';
 //components
-import TabHeader from './tabHeader';
+import CPview from '@/components/controlPanel/testingMode/CPview';
 import FileManager from './fileManagerForEditor';
 import EditorTabs from './editorTabs';
 import ResultTabs from './resultTabs';
-import AddTabButton from './addTabButton';
+import TabHeaders from './tabHeaders';
+import ExecCurrentButtons from './execCurrentButtons';
 //hooks
 import { useGlobal } from '@/app/GlobalState';
-import { toggleScheme } from '@/utils/api_wrap/protocol';
 import { useTabManager } from '@/utils/hooks/editorTabHooks/useTabManager';
 import { useExecutionHook } from '@/utils/hooks/editorTabHooks/useExecutionHook';
 
@@ -31,7 +28,6 @@ const Editor = ({ scheme }) => {
 	const [isHovered, setIsHovered] = useState();
 	const [execBlock, setExecBlock] = useState(false);
 	const { setPollingError } = useGlobal();
-
 	const {
 		currentTabId,
 		setCurrentTabId,
@@ -114,55 +110,6 @@ const Editor = ({ scheme }) => {
 
 	return (
 		<div className="flex flex-col">
-			<div className={tabStyles.tabHeaders}>
-				<button
-					className={tabStyles.execButton}
-					disabled={execBlock}
-					onClick={async e => {
-						setExecBlock(true);
-						console.debug('on hitting the ExecAll button, toggling on scheme');
-						await toggleScheme(scheme.name);
-						console.debug('on hitting the ExecAll button, toggled on scheme');
-						const all = Object.keys(tabs).map(
-							async tabID => await executeTabScript(tabID, tabs[tabID].content)
-						);
-						await Promise.all(all);
-						console.debug('on hitting the ExecAll button, toggling off scheme');
-						await toggleScheme(scheme.name, false);
-						console.debug('on hitting the ExecAll button, toggled off scheme');
-						setExecBlock(false);
-					}}
-				>
-					Выполнить все
-				</button>
-				<button
-					className={tabStyles.execButton}
-					onClick={e => {
-						Object.keys(abortControllers.current).map(id => {
-							abortControllers.current[id].abort();
-						});
-					}}
-				>
-					Остановить все
-				</button>
-				{Object.keys(tabs).map(
-					(
-						tabID //TODO make sortable
-					) => (
-						<TabHeader
-							key={tabID}
-							id={tabID}
-							name={tabs[tabID].name}
-							overallCount={Object.keys(tabs).length}
-							current={currentTabId}
-							setCurrent={setCurrentTabId}
-							deleteTab={deleteTab}
-						></TabHeader>
-					)
-				)}
-
-				<AddTabButton addTab={addTab}></AddTabButton>
-			</div>
 			<execAndMouseDisplayContext.Provider
 				value={{
 					isHovered,
@@ -171,34 +118,59 @@ const Editor = ({ scheme }) => {
 				}}
 			>
 				<div className={styles.main}>
-					<EditorTabs
-						tabs={tabs}
-						setTabs={setTabs}
-						currentTabId={currentTabId}
-						updateTabContent={updateTabContent}
-						setCurrentTabErrorIDs={setCurrentTabErrorIDs}
-						executeTabScript={executeTabScript}
-						schemeName={scheme.name}
-						hasEmpty={entryHasEmptyFields}
-						execBlock={execBlock}
-						setExecBlock={setExecBlock}
-						abortControllers={abortControllers}
-					></EditorTabs>
-
-					<ResultTabs
-						results={currentTabId ? tabs[currentTabId].result : []}
-					></ResultTabs>
+					<CPview schemeName={scheme.name} className={styles.show}></CPview>
+					<div className="flex flex-col">
+						<TabHeaders
+							execBlock={execBlock}
+							setExecBlock={setExecBlock}
+							executeTabScript={executeTabScript}
+							abortControllers={abortControllers}
+							tabs={tabs}
+							currentTabId={currentTabId}
+							setCurrentTabId={setCurrentTabId}
+							deleteTab={deleteTab}
+							addTab={addTab}
+						/>
+						<div className={styles.show}>
+							<EditorTabs
+								tabs={tabs}
+								setTabs={setTabs}
+								currentTabId={currentTabId}
+								updateTabContent={updateTabContent}
+								setCurrentTabErrorIDs={setCurrentTabErrorIDs}
+								schemeName={scheme.name}
+							></EditorTabs>
+							<div className={styles.buttonGroups}>
+								<ExecCurrentButtons
+									executeTabScript={executeTabScript}
+									schemeName={scheme.name}
+									tabs={tabs}
+									currentTabId={currentTabId}
+									setPollingError={setPollingError}
+									execBlock={execBlock}
+									setExecBlock={setExecBlock}
+									abortControllers={abortControllers}
+								/>
+								<FileManager
+									currentTab={
+										currentTabId
+											? tabs[currentTabId]
+											: { content: [], name: '' }
+									}
+									addTab={addTab}
+									renameTab={renameTab}
+									resetTabContent={resetTabContent}
+									scheme={scheme.name}
+								></FileManager>
+							</div>
+						</div>
+					</div>
 				</div>
+				<ResultTabs
+					className={styles.results}
+					results={currentTabId ? tabs[currentTabId].result : []}
+				></ResultTabs>
 			</execAndMouseDisplayContext.Provider>
-			<FileManager
-				currentTab={
-					currentTabId ? tabs[currentTabId] : { content: [], name: '' }
-				}
-				addTab={addTab}
-				renameTab={renameTab}
-				resetTabContent={resetTabContent}
-				scheme={scheme.name}
-			></FileManager>
 		</div>
 	);
 };

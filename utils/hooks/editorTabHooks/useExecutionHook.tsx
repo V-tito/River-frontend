@@ -4,7 +4,7 @@ import {
 } from '../command/commandExecutionToolkit';
 import { EditorTab, addErrorId } from './utils';
 import { Command, commandTypeCheckers } from '../command/command';
-import assert from 'node:assert';
+
 import { useRef, Ref, RefObject } from 'react';
 
 export function useExecutionHook(

@@ -6,6 +6,7 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
+import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	const [filename, setFilename] = useState(
 		initName
@@ -51,9 +52,10 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 		<Popup
 			trigger={
 				<button
+					title="Сохранить скрипт в хранилище рабочего пространства"
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					Сохранить
+					<Save />
 				</button>
 			}
 			closeOnDocumentClick={false}

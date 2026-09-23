@@ -2,9 +2,9 @@ import headerStyles from '@/styles/headerStyles.module.css';
 import styles from './editor.module.css';
 import ResultsViewWithHighlight from './resultsViewWithHighlight';
 
-const ResultTabs = ({ results }) => {
+const ResultTabs = ({ results, className = '' }) => {
 	return (
-		<div className={styles.show}>
+		<div className={className}>
 			<header className={headerStyles.modalHeader}>
 				Результат выполнения:{' '}
 			</header>
