@@ -33,3 +33,9 @@ place-self: center;
     font-size: smaller;
     overflow-y: scroll;
   }
+  .error{
+    background-color: lightcoral;
+  }
+  @media (prefers-color-scheme: dark) {
+    .error{background-color: rgb(127, 3, 3);}
+    }

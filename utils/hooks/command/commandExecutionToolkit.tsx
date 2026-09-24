@@ -90,6 +90,7 @@ const checkExpected = (command: Command, result: Record<string, any>) => {
 
 async function waitForSignalState(
 	command: Command,
+	abort: AbortController,
 	interval = 500,
 	duration = 30000
 ) {
@@ -104,7 +105,8 @@ async function waitForSignalState(
 		result = await protocol.getSignalState(
 			command.schemeName,
 			command.group,
-			command.signal
+			command.signal,
+			abort
 		);
 		cond = checkExpected(command, result);
 	};
@@ -112,7 +114,17 @@ async function waitForSignalState(
 		try {
 			await makeRequest();
 			elapsedTime += interval;
-			await new Promise(res => setTimeout(res, interval));
+			await new Promise((resolve, reject) => {
+				abort.signal.throwIfAborted();
+				const timeoutId = setTimeout(resolve, interval);
+				function onAbort() {
+					// Stop the main operation and reject with the abort reason.
+					clearTimeout(timeoutId);
+					reject(abort.signal.reason);
+				}
+
+				abort.signal.addEventListener('abort', onAbort, { once: true });
+			});
 		} catch (err) {
 			error = err;
 			break;
@@ -131,13 +143,19 @@ async function waitForSignalState(
 			message: `Время ожидания истекло. Сигнал ${command.signal} не принял ожидаемого значения`,
 			checkError: true,
 		};
+	else if (abort.signal.aborted)
+		return {
+			message: `Выполнение прервано`,
+			checkError: false,
+		};
 	else return { message: 'Ошибка исполнения', checkError: true };
 }
 
 async function execute<T extends Command>(
 	command: T,
 	index: number,
-	iterate: CallableFunction
+	iterate: CallableFunction,
+	abort: AbortController
 ) {
 	console.debug('execute command ', command);
 	let message;
@@ -163,7 +181,8 @@ async function execute<T extends Command>(
 						command.schemeName,
 						command.group,
 						command.signal,
-						command.targetValue
+						command.targetValue,
+						abort
 					);
 					console.debug(
 						'result of protocol.setSignalState execution is ',
@@ -215,7 +234,7 @@ async function execute<T extends Command>(
 		}
 		if (commandTypeCheckers.isWaitForSignal(command)) {
 			console.debug('command is recognized as waitForSignalState');
-			const res = await waitForSignalState(command);
+			const res = await waitForSignalState(command, abort);
 			message = res.message;
 			checkError = res.checkError;
 			console.debug('result of waitForSignalState execution is ', message);
@@ -240,7 +259,17 @@ async function execute<T extends Command>(
 	}
 	if (commandTypeCheckers.isWaitForTime(command)) {
 		console.debug('command is recognized as waitForTime');
-		await new Promise(res => setTimeout(res, command.waitingTime as number));
+		await await new Promise((resolve, reject) => {
+			abort.signal.throwIfAborted();
+			const timeoutId = setTimeout(resolve, command.waitingTime as number);
+			function onAbort() {
+				// Stop the main operation and reject with the abort reason.
+				clearTimeout(timeoutId);
+				reject(abort.signal.reason);
+			}
+
+			abort.signal.addEventListener('abort', onAbort, { once: true });
+		});
 		message = `Прошло ${command.waitingTime as number} миллисекунд`;
 	}
 	if (commandTypeCheckers.isSetAll(command)) {
@@ -250,7 +279,8 @@ async function execute<T extends Command>(
 				await protocol.setAll(
 					command.schemeName,
 					command.board,
-					command.values
+					command.values,
+					abort
 				);
 				break;
 			case CommandAction.presetAll:
@@ -258,7 +288,8 @@ async function execute<T extends Command>(
 				await protocol.presetAll(
 					command.schemeName,
 					command.board,
-					command.values
+					command.values,
+					abort
 				);
 				break;
 		}

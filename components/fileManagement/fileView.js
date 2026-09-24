@@ -2,7 +2,7 @@ import { React, useEffect, useState } from 'react';
 import FileBar from './fileBar';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
-import OpenLocalFileModal from '../modals/openLocalFileModal';
+import UploadFileModal from './uploadFileModal';
 
 const FileView = ({ folder }) => {
 	const [files, setFiles] = useState([]);
@@ -33,20 +33,6 @@ const FileView = ({ folder }) => {
 		}
 	}, []);
 
-	const handleFileUpload = async (e, file) => {
-		e.preventDefault();
-		const formData = new FormData();
-		formData.append('file', file);
-		const response = await fetch(`/api/files?folder=${folder}`, {
-			method: 'POST',
-			body: formData,
-		});
-
-		if (response.ok) {
-		} else {
-		}
-		window.location.reload();
-	};
 	if (loading) return <p>Загрузка...</p>;
 	return (
 		<div>
@@ -56,7 +42,7 @@ const FileView = ({ folder }) => {
 					))
 				: ''}
 			<Modal state={error}>{error ? error.message : ''}</Modal>
-			<OpenLocalFileModal uploadAction={handleFileUpload}></OpenLocalFileModal>
+			<UploadFileModal folder={folder}></UploadFileModal>
 		</div>
 	);
 };

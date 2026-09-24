@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
-
-export default function ChooseCP({ schemeName, setCurrentCP }) {
+import UploadFileModal from '@/components/fileManagement/uploadFileModal';
+export default function ChooseCP({ schemeName, currentCP, setCurrentCP }) {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -34,13 +34,15 @@ export default function ChooseCP({ schemeName, setCurrentCP }) {
 	if (error)
 		return <p>{'message' in error ? error.message : 'Неизвестная ошибка'}</p>;
 	return (
-		<div>
+		<div className="flex flex-row">
+			<UploadFileModal folder={`${schemeName}/CPs`} />
 			<select
 				className={inputStyles.select}
 				onChange={e => {
 					console.debug('changed CP to', e.target.value);
 					setCurrentCP(e.target.value);
 				}}
+				value={currentCP}
 			>
 				<option value={null}>Выбрать панель</option>
 				{files.map((file, index) => (

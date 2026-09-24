@@ -2,6 +2,7 @@ import styles from '../controlPanel.module.css';
 import icons from '../icons/icons';
 import lampOn from '../icons/lampOn.png';
 import lampOff from '../icons/lampOff.png';
+import lampError from '../icons/lampError.png';
 import Image from 'next/image';
 /**
  * generates CP get selement for panel in test mode only (for the time being)
@@ -15,9 +16,17 @@ function CPget({ specs, onTable }) {
 	return (
 		<div className={styles.CPget}>
 			<Image
-				src={on > 0 ? lampOn : lampOff}
+				src={
+					(on == -1) | (on == undefined) ? lampError : on > 0 ? lampOn : lampOff
+				}
 				className={styles.icon}
-				alt={on > 0 ? "lamp's on" : "lamp's off"}
+				alt={
+					(on == -1) | (on == undefined)
+						? 'error fetching signal'
+						: on > 0
+							? "lamp's on"
+							: "lamp's off"
+				}
 			></Image>
 			<span className={styles.label}>{name}</span>
 		</div>

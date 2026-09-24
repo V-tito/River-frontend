@@ -23,7 +23,12 @@ const LeftSidebar = ({ children }) => {
 					defaultScheme={defaultScheme}
 					admin={path.split('/')[1] == 'admin'}
 				/>
-				{path.split('/')[1] == 'shared' ? <SchemeToggler></SchemeToggler> : ''}
+				{(path.split('/')[1] == 'shared') |
+				(path.split('/')[2] == 'TestEditor') ? (
+					<SchemeToggler></SchemeToggler>
+				) : (
+					''
+				)}
 				<ErrorIndicatorBar err={pollingError}></ErrorIndicatorBar>
 			</aside>
 			<main className={styles.main}>{children}</main>

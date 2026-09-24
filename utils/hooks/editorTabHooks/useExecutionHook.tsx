@@ -14,11 +14,12 @@ export function useExecutionHook(
 	const { preprocess, execute, hasEmptyFields } = CommandExecutionToolkit;
 	const abortControllers = useRef<Record<string, AbortController>>({});
 	function addAbortController(id: string) {
+		const res = new AbortController();
 		abortControllers.current = {
 			...abortControllers.current,
-			[id]: new AbortController(),
+			[id]: res,
 		};
-		return abortControllers.current[id];
+		return res;
 	}
 	function updateTabResults(id: string | undefined, result: Result) {
 		if (id == undefined) throw new Error('Не определен идентификатор вкладки');
@@ -79,15 +80,20 @@ export function useExecutionHook(
 		const now = new Date().toLocaleTimeString();
 		return { id: id, actionType: 'error', timestamp: now, res: msg } as Result;
 	}
-	async function executeEntry(tabId: string, entry: Command, index: number) {
+	async function executeEntry(
+		tabId: string,
+		entry: Command,
+		index: number,
+		abort: AbortController
+	) {
 		console.debug('started executing entry ', entry);
 		const prepres = await preprocess(entry, index);
 		if (prepres) updateTabResults(tabId, prepres);
 		try {
 			const iteratorLambda = async (cont: Command, ind: number) => {
-				await executeEntry(tabId, cont, ind);
+				await executeEntry(tabId, cont, ind, abort);
 			};
-			const res = await execute(entry, index, iteratorLambda);
+			const res = await execute(entry, index, iteratorLambda, abort);
 			updateTabResults(tabId, res);
 			return res;
 		} catch (err: any) {
@@ -136,6 +142,7 @@ export function useExecutionHook(
 			checks = 0,
 			checkErrors = 0,
 			netErrors = 0;
+		console.debug('abort current in exhook', abort);
 		for (executed; executed < tabContent.length; executed++) {
 			if (abort?.signal.aborted) {
 				console.debug('aborting exec');
@@ -145,7 +152,7 @@ export function useExecutionHook(
 			const item = tabContent[executed];
 			setCurrentCommand(id, executed);
 			if (item != undefined) {
-				const res = await executeEntry(id, item, executed);
+				const res = await executeEntry(id, item, executed, abort);
 				//updateTabResults(id, res);
 				if (
 					commandTypeCheckers.isCheck(item) ||

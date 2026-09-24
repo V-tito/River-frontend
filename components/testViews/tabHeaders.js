@@ -6,6 +6,7 @@ import TabHeader from './tabHeader';
 import AddTabButton from './addTabButton';
 import { FastForward, Pause, StopCircle } from '@deemlol/next-icons';
 function TabHeaders({
+	schemeName,
 	execBlock,
 	setExecBlock,
 	executeTabScript,
@@ -24,16 +25,16 @@ function TabHeaders({
 				title="Выполнить все"
 				onClick={async e => {
 					setExecBlock(true);
-					console.debug('on hitting the ExecAll button, toggling on scheme');
-					await toggleScheme(scheme.name);
-					console.debug('on hitting the ExecAll button, toggled on scheme');
+					//console.debug('on hitting the ExecAll button, toggling on scheme');
+					//await toggleScheme(schemeName);
+					//console.debug('on hitting the ExecAll button, toggled on scheme');
 					const all = Object.keys(tabs).map(
 						async tabID => await executeTabScript(tabID, tabs[tabID].content)
 					);
 					await Promise.all(all);
-					console.debug('on hitting the ExecAll button, toggling off scheme');
-					await toggleScheme(scheme.name, false);
-					console.debug('on hitting the ExecAll button, toggled off scheme');
+					//console.debug('on hitting the ExecAll button, toggling off scheme');
+					//await toggleScheme(schemeName, false);
+					//console.debug('on hitting the ExecAll button, toggled off scheme');
 					setExecBlock(false);
 				}}
 			>

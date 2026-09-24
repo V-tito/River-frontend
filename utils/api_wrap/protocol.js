@@ -18,12 +18,13 @@ async function abortableFetch(
 	if (!response.ok) {
 		throw netError(response, errMessage, errEntity);
 	}
+	console.debug('response on abortable fetch', response);
 	const result =
 		method == 'POST' ? await response.text() : await response.json();
 	return result;
 }
 
-export async function toggleScheme(schemeName, state = true, abort = null) {
+export async function toggleScheme(schemeName, state = true, abort) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/turnOn?schemeName=${schemeName}&isTurnOn=${state}`;
 	const result = await abortableFetch(
 		api,
@@ -33,7 +34,7 @@ export async function toggleScheme(schemeName, state = true, abort = null) {
 	);
 	return result;
 }
-export async function getBoardState(name, abort = null) {
+export async function getBoardState(name, abort) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/nop?name=${name}`;
 	const result = await abortableFetch(
 		api,
@@ -44,7 +45,7 @@ export async function getBoardState(name, abort = null) {
 	);
 	return result;
 }
-export async function getSulState(schemeName, abort = null) {
+export async function getSulState(schemeName, abort) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/sulNop?name=${schemeName}`;
 
 	const result = await abortableFetch(
@@ -56,12 +57,7 @@ export async function getSulState(schemeName, abort = null) {
 	);
 	return result;
 }
-export async function getSignalState(
-	schemeName,
-	groupName,
-	signalName,
-	abort = null
-) {
+export async function getSignalState(schemeName, groupName, signalName, abort) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/get?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}`;
 	const result = await abortableFetch(
 		api,
@@ -77,7 +73,7 @@ export async function setSignalState(
 	groupName,
 	signalName,
 	value,
-	abort = null
+	abort
 ) {
 	console.debug('setting state with value', value);
 	const api = `${process.env.API_URL}/api/river/v1/protocol/set?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value == 1}`;
@@ -96,7 +92,7 @@ export async function presetSignalState(
 	groupName,
 	signalName,
 	value,
-	abort = null
+	abort
 ) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/preset?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value == 1}`;
 	console.debug('presetting signal state on api ', api);
@@ -116,7 +112,7 @@ export async function setPulse(
 	value,
 	pulseTime,
 	period,
-	abort = null
+	abort
 ) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/setPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value == 1}&pulseTime=${pulseTime}&period=${period}`;
 	const result = await abortableFetch(
@@ -134,7 +130,7 @@ export async function presetPulse(
 	value,
 	pulseTime,
 	period,
-	abort = null
+	abort
 ) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/presetPulse?schemeName=${schemeName}&groupName=${groupName}&signalName=${signalName}&value=${value == 1}&pulseTime=${pulseTime}&period=${period}`;
 	const result = await abortableFetch(
@@ -145,7 +141,7 @@ export async function presetPulse(
 	);
 	return result;
 }
-export async function executePresets(scheme, abort = null) {
+export async function executePresets(scheme, abort) {
 	const api = `${process.env.API_URL}/api/river/v1/protocol/executePresets?schemeName=${scheme}`;
 	const result = await abortableFetch(api, abort, '', scheme);
 	return result;
@@ -156,7 +152,7 @@ export async function executePresets(scheme, abort = null) {
  * @param {string} board имя платы (пока только ТП)
  * @param {Record<number,number>} vals массив значений
  */
-export async function setAll(scheme, board, vals, abort = null) {
+export async function setAll(scheme, board, vals, abort) {
 	let api = `${process.env.API_URL}/api/river/v1/protocol/setAll?testBoardName=${board}&`;
 	Object.keys(vals).map(key => {
 		if (vals[key] != -1) {
@@ -176,7 +172,7 @@ export async function setAll(scheme, board, vals, abort = null) {
  * @param {string} board имя платы (пока только ТП)
  * @param {Record<number,number>} vals массив значений
  */
-export async function presetAll(scheme, board, vals, abort = null) {
+export async function presetAll(scheme, board, vals, abort) {
 	let api = `${process.env.API_URL}/api/river/v1/protocol/presetAll?testBoardName=${board}`;
 	Object.keys(vals).map(key => {
 		console.debug(

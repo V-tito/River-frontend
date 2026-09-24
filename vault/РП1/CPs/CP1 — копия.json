@@ -1,0 +1,3 @@
+[{"signal":{"parentGroup":"Группа1","name":"Сигнал1"}, "icon":"trigger", "default_":0,"type":"setter"
+
+},{"signal":{"parentGroup":"Группа1","name":"Сигнал2"}, "icon":"lamp", "type":"getter"}]

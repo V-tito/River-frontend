@@ -24,7 +24,7 @@ const PopupForm = ({ buttonLabel, buttonTitle, label = null, children }) => {
 				<div className={styles.container}>
 					<div className={buttonStyles.delGrid}>
 						<p className={headerStyles.modalHeader}>
-							{label ? label : buttonLabel}
+							{label ? label : buttonTitle}
 						</p>
 						<button
 							onClick={() => close()}

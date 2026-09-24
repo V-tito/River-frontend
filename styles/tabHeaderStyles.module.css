@@ -5,7 +5,7 @@
     padding:0px;
     min-width: 140px;
     max-width: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
     height: 2.25rem
 }
 .tabHeader {
@@ -19,7 +19,7 @@
     max-width:35%;
 }
 .tabName{
-    overflow-x:scroll;
+    overflow-x:auto;
     padding: 0vh 1vh;
     min-width: 5rem;
 }

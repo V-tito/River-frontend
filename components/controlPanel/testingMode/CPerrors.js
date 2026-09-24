@@ -5,7 +5,9 @@ function CPerrors({ errorList }) {
 	return (
 		<div className={styles.errs}>
 			{errorList.map((err, index) => (
-				<span key={index}>{err}</span>
+				<span key={index} className={styles.error}>
+					{err}
+				</span>
 			))}
 		</div>
 	);

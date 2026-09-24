@@ -82,8 +82,6 @@ const Editor = ({ scheme }) => {
 		};
 		init();
 	}, []);
-	//save data on exit
-	const router = useRouter();
 	// Auto-save on change (with debounce)
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
@@ -92,22 +90,19 @@ const Editor = ({ scheme }) => {
 
 		return () => clearTimeout(timeoutId);
 	}, [saveTabsToSessionStorage]);
-	// Save before page unload
-	useBeforeUnload(() => {
-		saveTabsToSessionStorage();
-	}, true);
 	useEffect(() => {
-		const handleRouteChange = () => {
-			saveTabsToSessionStorage();
-		};
-		// Using Next.js router events
-		router.events?.on('routeChangeStart', handleRouteChange);
 		return () => {
-			router.events?.off('routeChangeStart', handleRouteChange);
+			Object.keys(abortControllers.current).map(id => {
+				abortControllers.current[id].abort();
+			});
 		};
-	}, [router, saveTabsToSessionStorage]);
+	}, [abortControllers]);
+	console.debug(
+		'abort controllers in editor',
+		abortControllers,
+		abortControllers.current
+	);
 	if (loading) return <p>Загрузка...</p>;
-
 	return (
 		<div className="flex flex-col">
 			<execAndMouseDisplayContext.Provider
@@ -152,11 +147,8 @@ const Editor = ({ scheme }) => {
 									abortControllers={abortControllers}
 								/>
 								<FileManager
-									currentTab={
-										currentTabId
-											? tabs[currentTabId]
-											: { content: [], name: '' }
-									}
+									currentTabId={currentTabId}
+									tabs={tabs}
 									addTab={addTab}
 									renameTab={renameTab}
 									resetTabContent={resetTabContent}

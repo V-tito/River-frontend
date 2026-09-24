@@ -7,7 +7,8 @@ import styles from './editor.module.css';
 import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 import PropTypes from 'prop-types';
 const FileManager = ({
-	currentTab,
+	currentTabId,
+	tabs,
 	addTab,
 	renameTab,
 	resetTabContent,
@@ -38,6 +39,7 @@ const FileManager = ({
 
 		reader.readAsText(file);
 	};
+	console.debug('current tab name in file manager', tabs[currentTabId].name);
 	return (
 		<div className={styles.buttons}>
 			<OpenLocalFileModal
@@ -46,13 +48,13 @@ const FileManager = ({
 				closeAfter={true}
 			></OpenLocalFileModal>
 			<SaveFromEditorToServerModal
-				formData={currentTab.content}
-				initName={currentTab.name}
+				formData={currentTabId ? tabs[currentTabId].content : []}
+				initName={currentTabId ? tabs[currentTabId].name : ''}
 				scheme={scheme}
 			></SaveFromEditorToServerModal>
 			<SaveFromVarLocally
-				formData={currentTab.content}
-				initName={currentTab.name}
+				formData={currentTabId ? tabs[currentTabId].content : []}
+				initName={currentTabId ? tabs[currentTabId].name : ''}
 				label={<Download />}
 				title="Экспорт скрипта"
 			/>

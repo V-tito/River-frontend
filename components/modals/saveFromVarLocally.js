@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import Modal from './inlineModal';
@@ -17,9 +17,14 @@ const SaveFromVarLocally = ({
 }) => {
 	const [filename, setFilename] = useState(
 		initName
-			? initName
-			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}`
+			? initName.endsWith('.json')
+				? initName
+				: initName + '.json'
+			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
 	);
+	useEffect(() => {
+		setFilename(initName.endsWith('.json') ? initName : initName + '.json');
+	}, [initName]);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
 		try {
@@ -70,9 +75,7 @@ const SaveFromVarLocally = ({
 			{close => (
 				<div className={styles.container}>
 					<div className={buttonStyles.delGrid}>
-						<p className={headerStyles.modalHeader}>
-							{label ? label : buttonLabel}
-						</p>
+						<p className={headerStyles.modalHeader}>{title}</p>
 						<button
 							onClick={() => close()}
 							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}

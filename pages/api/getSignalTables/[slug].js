@@ -1,10 +1,13 @@
 import { fetchAllSignalsInTheEnv } from '@/utils/hooks/getHelpers';
 export default function handler(req, res) {
 	const slug = req.query.slug; //schemeName
-
+	let sorted = false;
+	if ('sortedSignals' in req.query) {
+		sorted = req.query.sortedSignals;
+	}
 	const fetch = async () => {
 		try {
-			const result = await fetchAllSignalsInTheEnv(slug, false);
+			const result = await fetchAllSignalsInTheEnv(slug, sorted);
 			res.status(200).json(result);
 		} catch (err) {
 			if (err instanceof Error) {

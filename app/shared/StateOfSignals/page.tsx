@@ -10,7 +10,7 @@ interface MyDataType {
 	name: string;
 }
 interface DynamicRecord {
-	[key: string]: [];
+	[key: string]: {} | [];
 }
 
 const StateOfSignals = () => {
@@ -71,6 +71,7 @@ const StateOfSignals = () => {
 
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;
+	console.debug('data', data);
 	return (
 		<div className="flex flex-col">
 			{groups.map(group => (

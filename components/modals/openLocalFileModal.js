@@ -28,7 +28,7 @@ const OpenLocalFileModal = ({
 					title={label ? label : 'Открыть локальный скрипт'}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					{label ? label : <Upload />}
+					{<Upload />}
 				</button>
 			}
 			closeOnDocumentClick={false}
@@ -37,7 +37,7 @@ const OpenLocalFileModal = ({
 				<div className={styles.container}>
 					<div className={buttonStyles.delGrid}>
 						<span className={headerStyles.modalHeader}>
-							Открыть локальный скрипт
+							{label ? label : 'Открыть локальный скрипт'}
 						</span>
 						<button
 							onClick={() =>

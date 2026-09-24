@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
@@ -10,9 +10,14 @@ import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	const [filename, setFilename] = useState(
 		initName
-			? initName
-			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}`
+			? initName.endsWith('.json')
+				? initName
+				: initName + '.json'
+			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
 	);
+	useEffect(() => {
+		setFilename(initName.endsWith('.json') ? initName : initName + '.json');
+	}, [initName]);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
 		try {
@@ -47,7 +52,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 			}
 		}
 	};
-
+	console.debug('current tab name in file saver', initName);
 	return (
 		<Popup
 			trigger={

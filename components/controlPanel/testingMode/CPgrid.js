@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CPset from './CPset';
 import CPget from './CPget';
 import styles from '../controlPanel.module.css';
@@ -18,6 +18,7 @@ function CPgrid({
 		.map(elem => elem.signal);
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
+
 	useEffect(() => {
 		console.debug('setting up fetch with sigs', signals);
 		fetchAllStates(
@@ -26,18 +27,16 @@ function CPgrid({
 			setPollingError,
 			responseWaiting,
 			setResponseWaiting,
-
 			setAllStates
 		);
 		const intervalId = setInterval(
 			fetchAllStates,
-			1000,
+			500,
 			schemeName,
 			signals,
 			setPollingError,
 			responseWaiting,
 			setResponseWaiting,
-
 			setAllStates
 		);
 		return () => clearInterval(intervalId);
