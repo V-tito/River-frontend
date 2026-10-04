@@ -1,6 +1,6 @@
 'use client';
 import AlterForm from '../forms/alterForm';
-import PopupForm from './popupForm';
+import PopupForm from '../templateComponents/popupForm';
 import React from 'react';
 import PropTypes from 'prop-types';
 

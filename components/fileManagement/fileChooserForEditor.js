@@ -1,19 +1,19 @@
 import { React, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
-import PopupForm from '../modals/popupForm';
+import PopupForm from '../templateComponents/popupForm';
 import styles from './fileBar.module.css';
 import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const FileChooser = ({ folder }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	//const url = new URL(`/api/files?folder=${folder}`);
+	//const url = new URL(`/api/files/gen?folder=${folder}`);
 	//url.searchParams.set('folder', folder);
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files?folder=${folder}`, {
+				const response = await fetch(`/api/files/gen?folder=${folder}`, {
 					method: 'GET',
 				});
 				if (!response.ok) {

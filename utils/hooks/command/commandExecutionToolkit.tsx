@@ -301,7 +301,7 @@ async function execute<T extends Command>(
 	if (commandTypeCheckers.isInclude(command)) {
 		console.debug('command recognized as include');
 		const response = await fetch(
-			`/api/files?folder=${command.schemeName}&filename=${command.scriptPath}`,
+			`/api/files/gen?folder=${command.schemeName}&filename=${command.scriptPath}`,
 			{
 				method: 'GET',
 			}

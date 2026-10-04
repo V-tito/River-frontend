@@ -1,3 +1,1 @@
-[{"signal":{"parentGroup":"Группа1","name":"Сигнал1"}, "icon":"trigger", "default_":0,"type":"setter"
-
-},{"signal":{"parentGroup":"Группа1","name":"Сигнал2"}, "icon":"lamp", "type":"getter"}]
+[{"icon":"lamp","type":"getter","id":"b4fa342f-98d9-4f4c-9beb-10447d709454","signal":{"parentGroup":"Группа1","name":"Сигнал2"},"default_":0},{"id":"ee171b77-9140-49bb-8952-a2a8b7b21564","signal":{"parentGroup":"Группа1","name":"Сигнал1"},"icon":"trigger","type":"setter","default_":1}]

@@ -4,7 +4,7 @@ function UploadFileModal({ folder }) {
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('file', file);
-		const response = await fetch(`/api/files?folder=${folder}`, {
+		const response = await fetch(`/api/files/gen?folder=${folder}`, {
 			method: 'POST',
 			body: formData,
 		});

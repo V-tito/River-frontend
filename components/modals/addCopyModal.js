@@ -1,5 +1,5 @@
 import AddForm from '../forms/addForm';
-import PopupForm from './popupForm';
+import PopupForm from '../templateComponents/popupForm';
 import React from 'react';
 import PropTypes, { object } from 'prop-types';
 const AddCopyModal = ({ table, object }) => {

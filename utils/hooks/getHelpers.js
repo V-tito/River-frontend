@@ -6,7 +6,7 @@ function formatSignalsByType(signals, groupName) {
 			const sigFormated = { ...item, parentGroup: groupName };
 			return item.isOutput
 				? { ...acc, outputs: [...acc.outputs, sigFormated] }
-				: { ...acc, inputs: [...acc.outputs, sigFormated] };
+				: { ...acc, inputs: [...acc.inputs, sigFormated] };
 		},
 		{ outputs: [], inputs: [] }
 	);

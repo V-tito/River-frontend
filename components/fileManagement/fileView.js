@@ -11,7 +11,7 @@ const FileView = ({ folder }) => {
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files?folder=${folder}`, {
+				const response = await fetch(`/api/files/gen?folder=${folder}`, {
 					method: 'GET',
 				});
 				if (!response.ok) {

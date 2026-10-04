@@ -1,6 +1,6 @@
 'use client';
 import AddForm from '../forms/addForm';
-import PopupForm from './popupForm';
+import PopupForm from '../templateComponents/popupForm';
 import React from 'react';
 import PropTypes from 'prop-types';
 const AddModal = ({ table }) => {

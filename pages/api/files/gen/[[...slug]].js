@@ -66,8 +66,8 @@ const processEnvConfig = async envName => {
 //return;
 export default async function handler(req, res) {
 	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
-	const relativePath = req.query.folder || '';
-	const filename = req.query.filename ? req.query.filename : '';
+	const relativePath = req.query.folder ?? '';
+	const filename = req.query.filename ?? '';
 	const fullPath = `${safeBasePath}/${relativePath}/${filename}`;
 	if (req.query.envСonfig) {
 		const envconf = req.query.envСonfig;
@@ -115,7 +115,6 @@ export default async function handler(req, res) {
 					res.status(500).json({ message: 'Неизвестная ошибка' });
 					return;
 				}
-
 				// Move the file to the desired location
 				const oldPath = files.file[0].filepath;
 				const newPath = path.join(
@@ -132,7 +131,7 @@ export default async function handler(req, res) {
 			});
 		}
 		if (req.method == 'DELETE') {
-			fs.unlink(fullPath);
+			fs.unlinkSync(fullPath);
 			res.status(200).json({ status: 'файл удален' });
 		}
 		// Upload logic

@@ -3,7 +3,9 @@
     "schemeDependent":[
     {"id":1,"name":"СУЛ и тестовые платы","link":"/admin/TestBoard"},
     {"id":3,"name":"Группы сигналов","link":"/admin/GroupOfSignals"},
-    {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},{"id":0,"name":"Список схем","link":"/admin/Scheme"}
+    {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},
+    {"id":0,"name":"Список схем","link":"/admin/Scheme"},
+    {"id":10,"name":"Панели управления","link":"/admin/CP"}
 ]}, 
 "shared":{
     "common":[{"id":0,"name":"Главная","link":"/"}],

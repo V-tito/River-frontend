@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
-import { Save } from '@deemlol/next-icons';
+import { Delete } from '@deemlol/next-icons';
 import FlexMenuButton from '@/components/templateComponents/buttons/flexMenuButton';
 import PopupControlled from '@/components/templateComponents/popupControlled';
-export default function SaveButton({ saveConf }) {
+export default function DeleteButton({ del }) {
 	const [displayMessage, setDisplay] = useState(false);
 	return (
 		<>
 			<FlexMenuButton
-				buttonTitle="Сохранить"
-				buttonLabel={<Save />}
+				buttonTitle="Удалить"
+				buttonLabel={<Delete />}
 				onClick={() => {
-					saveConf();
+					del();
 					setDisplay(true);
 				}}
 			/>
 			<PopupControlled
 				open={displayMessage}
 				setOpen={setDisplay}
-				label="Сохранено"
+				label="Удалено"
 			>
-				<p>Сохранено!</p>
+				<p>Удалено!</p>
 			</PopupControlled>
 		</>
 	);

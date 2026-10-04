@@ -3,14 +3,7 @@ import ConfirmFileDeleteModal from '../modals/confirmFileDeleteModal';
 import PropTypes from 'prop-types';
 const DeleteButton = ({ filepath, className }) => {
 	const confirmUrl = `/api/files${filepath}`;
-	return (
-		<div>
-			<ConfirmFileDeleteModal
-				buttonStyle={className}
-				state={confirmUrl}
-			></ConfirmFileDeleteModal>
-		</div>
-	);
+	return <ConfirmFileDeleteModal buttonStyle={className} state={confirmUrl} />;
 };
 DeleteButton.propTypes = {
 	filepath: PropTypes.string,

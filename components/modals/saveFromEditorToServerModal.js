@@ -26,7 +26,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 			});
 			const dataToSend = new FormData();
 			dataToSend.append('file', blob, filename);
-			const response = await fetch(`/api/files?folder=${scheme}`, {
+			const response = await fetch(`/api/files/gen?folder=${scheme}`, {
 				method: 'POST',
 				body: dataToSend,
 			});

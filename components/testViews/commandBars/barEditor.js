@@ -56,7 +56,7 @@ const BarEditor = ({ setError, children }) => {
 		};
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files?folder=${schemeName}`, {
+				const response = await fetch(`/api/files/gen?folder=${schemeName}`, {
 					method: 'GET',
 				});
 				if (!response.ok) {

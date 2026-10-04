@@ -8,22 +8,33 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 
 import './popup.css';
-const SaveFromVarLocally = ({
+export default function SaveFromVarLocally({
 	formData,
 	initName = null,
 	label = 'Сохранить',
 	title = 'Сохранить',
 	xml = false,
-}) => {
+}) {
+	console.debug('initname in sfvl', initName);
 	const [filename, setFilename] = useState(
 		initName
-			? initName.endsWith('.json')
-				? initName
-				: initName + '.json'
-			: `test-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
+			? initName != null
+				? initName.endsWith('.json')
+					? initName
+					: initName + '.json'
+				: `new-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
+			: `new-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
 	);
 	useEffect(() => {
-		setFilename(initName.endsWith('.json') ? initName : initName + '.json');
+		setFilename(
+			initName
+				? initName != null
+					? initName.endsWith('.json')
+						? initName
+						: initName + '.json'
+					: `new-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
+				: `new-${new Date().toLocaleString().replace(/\.|,| |:/g, '-')}.json`
+		);
 	}, [initName]);
 	const [error, setError] = useState(null);
 	const saveToServer = async () => {
@@ -110,10 +121,9 @@ const SaveFromVarLocally = ({
 			)}
 		</Popup>
 	);
-};
+}
 SaveFromVarLocally.propTypes = {
 	initName: PropTypes.string,
 	scheme: PropTypes.shape({ id: PropTypes.number }),
 	formData: PropTypes.array,
 };
-export default SaveFromVarLocally;

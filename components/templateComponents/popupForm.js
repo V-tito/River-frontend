@@ -5,34 +5,31 @@ import Popup from 'reactjs-popup';
 import styles from './modal.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
+import FlexMenuButton from './buttons/flexMenuButton';
+import HeaderWithCloseButton from './buttons/headerWithCloseButton';
 import './popup.css';
 
-const PopupForm = ({ buttonLabel, buttonTitle, label = null, children }) => {
+const PopupForm = ({
+	buttonLabel,
+	buttonTitle,
+	label = null,
+	children,
+	onOpen,
+}) => {
 	return (
 		<Popup
 			trigger={
-				<button
-					title={buttonTitle}
-					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
-				>
-					{buttonLabel}
-				</button>
+				<FlexMenuButton buttonTitle={buttonTitle} buttonLabel={buttonLabel} />
 			}
 			closeOnDocumentClick={false}
+			onOpen={onOpen}
 		>
 			{close => (
 				<div className={styles.container}>
-					<div className={buttonStyles.delGrid}>
-						<p className={headerStyles.modalHeader}>
-							{label ? label : buttonTitle}
-						</p>
-						<button
-							onClick={() => close()}
-							className={`${buttonStyles.button} ${buttonStyles.closeButton}`}
-						>
-							&times;
-						</button>
-					</div>
+					<HeaderWithCloseButton
+						header={label ? label : buttonTitle}
+						closeAction={close}
+					/>
 					{children}
 				</div>
 			)}

@@ -12,10 +12,7 @@ import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
 import PropTypes from 'prop-types';
 import { useGlobal } from '@/app/GlobalState';
 import { parseString } from 'xml2js';
-const addFromFileForm = ({
-	table = null,
-	buttonLabel = 'Создать из файла',
-}) => {
+const addFromFileForm = ({ table = null, buttonLabel }) => {
 	const { defaultScheme } = useGlobal();
 	const [parseReport, setParseReport] = useState(null);
 	const [readerError, setReaderError] = useState();
@@ -166,6 +163,7 @@ const addFromFileForm = ({
 		<div>
 			<OpenLocalFileModal
 				uploadAction={(e, file) => uploadAction(e, file)}
+				displayedLabel={buttonLabel}
 				label={buttonLabel}
 				uploadError={readerError}
 				closeAfter={false}

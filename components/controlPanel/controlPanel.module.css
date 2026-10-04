@@ -1,10 +1,16 @@
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(56px,1fr));
-    grid-auto-rows:min-content;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(6em,1fr));
+    grid-auto-rows: min-content;
+    gap: 1em;
     align-items: stretch; 
+    justify-items: stretch;
     flex-grow: 1;
+    background-color: lightgray;
+    width: 100%;
+    height: 80vh;
+    border: 5px solid grey;
+    overflow-y: hidden;
   }
   .loader{
     display: flex;
@@ -13,13 +19,15 @@
   }
   .CPset{
     cursor: pointer;
-    width:64px;
-height: fit-content;font-size: small;
+    width:6em;
+font-size: small;
+display: grid;
   }
   .CPget{
-    width:64px;
-height: fit-content;font-size: small;
+    width:6em;
+font-size: small;
 place-self: center;
+display: grid;
   }
   .errs {
     margin:5px;
@@ -39,3 +47,21 @@ place-self: center;
   @media (prefers-color-scheme: dark) {
     .error{background-color: rgb(127, 3, 3);}
     }
+    .addMenu{
+    gap: 1rem;
+    border: 1px solid grey;
+    border-radius: 5%;
+    padding: 5% 20px;
+    margin: 0px 3%
+    }
+    .icon{width:6em;grid-row: 1;
+      grid-column: 1;
+      z-index: 1;}
+
+.closeButton {grid-row: 1;
+  grid-column: 1;
+  z-index: 2;
+  width: min-content;
+  height: min-content;
+  justify-self: right;}
+  .li{width:6em;}

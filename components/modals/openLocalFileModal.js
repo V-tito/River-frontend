@@ -11,6 +11,7 @@ import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 const OpenLocalFileModal = ({
 	uploadAction,
 	uploadError = null,
+	displayedLabel,
 	label = null,
 	closeAfter = true,
 	reloadOnClose = false,
@@ -25,10 +26,10 @@ const OpenLocalFileModal = ({
 		<Popup
 			trigger={
 				<button
-					title={label ? label : 'Открыть локальный скрипт'}
+					title={label ?? 'Открыть локальный скрипт'}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					{<Upload />}
+					{displayedLabel ?? <Upload />}
 				</button>
 			}
 			closeOnDocumentClick={false}

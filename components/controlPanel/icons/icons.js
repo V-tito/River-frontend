@@ -4,7 +4,7 @@ import lampOn from './lampOn.png';
 import lampOff from './lampOff.png';
 
 const icons = {
-	trigger: { on: triggerOn, off: triggerOff },
-	lamp: { on: lampOn, off: lampOff },
+	setter: { trigger: { on: triggerOn, off: triggerOff } },
+	getter: { lamp: { on: lampOn, off: lampOff } },
 };
 export default icons;

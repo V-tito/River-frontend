@@ -44,7 +44,7 @@ export function useTabManager(scheme: string) {
 			if (path) {
 				console.debug('fetching content in addTab');
 				const response = await fetch(
-					`/api/files?folder=${path.folder}&filename=${path.filename}`,
+					`/api/files/gen?folder=${path.folder}&filename=${path.filename}`,
 					{
 						method: 'GET',
 					}

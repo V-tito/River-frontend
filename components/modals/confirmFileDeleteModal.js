@@ -5,7 +5,8 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from './inlineModal';
 import './popup.css';
-
+import { netError } from '@/utils/api_wrap/netError';
+import { Trash } from '@deemlol/next-icons';
 import PropTypes from 'prop-types';
 const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 	const [error, setError] = useState(null);
@@ -19,7 +20,7 @@ const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Ошибка сети: ${response.status}`);
+				throw netError(response);
 			}
 			window.location.reload();
 		} catch (err) {
@@ -39,8 +40,9 @@ const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 							? buttonStyle
 							: `${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`
 					}
+					title="Удалить"
 				>
-					Удалить
+					<Trash />
 				</button>
 			}
 		>
