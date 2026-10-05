@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useGlobal } from '../../GlobalState';
 const RedirectStub = () => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const router = useRouter();
 	useEffect(() => {
-		router.push(`/admin/CP/${defaultScheme.name}`);
+		router.push(`/admin/CP/${currentWS.name}`);
 	});
 	//return (<div><p>{"Введите номер схемы"}</p><RedirectForm table="TestBoard"></RedirectForm></div>)
 };

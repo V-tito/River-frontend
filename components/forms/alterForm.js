@@ -23,7 +23,7 @@ const AlterForm = ({ table, object }) => {
 					parentGroup: object.parentGroup,
 					testBoard: object.testBoard.name,
 				};
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const { register, handleSubmit, reset, watch } = useForm({
 		defaultValues: defaults,
 	});
@@ -55,10 +55,10 @@ const AlterForm = ({ table, object }) => {
 			const fetchGroupsAndBoards = async () => {
 				try {
 					console.log(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}ы`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${currentWS.name}ы`
 					);
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${currentWS.name}`
 					);
 					const data = await response.json();
 					if (!response.ok) {
@@ -77,12 +77,12 @@ const AlterForm = ({ table, object }) => {
 		} else {
 			setLoading(false);
 		}
-	}, [table, defaultScheme]);
+	}, [table, currentWS]);
 
 	const onSubmit = async data => {
 		try {
 			console.debug('alter form data', data);
-			await patchHelper(data, table, defaultScheme);
+			await patchHelper(data, table, currentWS);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {

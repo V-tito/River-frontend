@@ -20,11 +20,11 @@ export const GlobalProvider = ({ children }) => {
 	});
 	const [pollingError, setPollingError] = useState(null);
 	const [schemeOn, setSchemeOn] = useState(null);
-	const [defaultScheme, setDefaultScheme] = useState(() => {
+	const [currentWS, setCurrentWS] = useState(() => {
 		if (typeof window !== 'undefined') {
 			//logger.info("Setting up default scheme")
 			try {
-				const storedScheme = localStorage.getItem('defaultScheme');
+				const storedScheme = localStorage.getItem('currentWS');
 				if (storedScheme) {
 					const parsedScheme = JSON.parse(storedScheme);
 					const exists = checkExistence('Scheme', parsedScheme.name);
@@ -39,10 +39,10 @@ export const GlobalProvider = ({ children }) => {
 	});
 
 	useEffect(() => {
-		if (defaultScheme !== null) {
-			localStorage.setItem('defaultScheme', JSON.stringify(defaultScheme));
+		if (currentWS !== null) {
+			localStorage.setItem('currentWS', JSON.stringify(currentWS));
 		}
-	}, [defaultScheme]);
+	}, [currentWS]);
 	useEffect(() => {
 		if (navProfile !== null) {
 			localStorage.setItem('navProfile', JSON.stringify(navProfile));
@@ -55,8 +55,8 @@ export const GlobalProvider = ({ children }) => {
 	return (
 		<GlobalContext.Provider
 			value={{
-				defaultScheme,
-				setDefaultScheme,
+				currentWS,
+				setCurrentWS,
 				pollingError,
 				setPollingError,
 				navProfile,

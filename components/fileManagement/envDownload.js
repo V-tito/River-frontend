@@ -1,11 +1,11 @@
 'use client';
 import DownloadButton from './downloadButton';
 import buttonStyles from '@/styles/buttonStyles.module.css';
-const EnvDownload = ({ defaultScheme }) => {
+const EnvDownload = ({ currentWS }) => {
 	return (
 		<DownloadButton
-			filepath={`?envСonfig=${defaultScheme}`}
-			filename={`env-config-${defaultScheme}.xml`}
+			filepath={`?envСonfig=${currentWS}`}
+			filename={`env-config-${currentWS}.xml`}
 			buttonLabel="Получить конфигурационный файл рабочего пространства"
 			className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 		></DownloadButton>

@@ -14,7 +14,7 @@ interface DynamicRecord {
 }
 
 const StateOfSignals = () => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
 	const [loading, setLoading] = useState(true);
@@ -23,14 +23,14 @@ const StateOfSignals = () => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.name}?sortedSignals=true`
+					`/api/getSignalTables/${currentWS.name}?sortedSignals=true`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const sulResponse = await fetch(
-					`/api/getSulSignalTables/${defaultScheme.name}`
+					`/api/getSulSignalTables/${currentWS.name}`
 				);
 				const sulConf = await sulResponse.json();
 				if (!response.ok) {
@@ -67,7 +67,7 @@ const StateOfSignals = () => {
 
 		//fetchAll()
 		fetchData();
-	}, [defaultScheme]);
+	}, [currentWS]);
 
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (error) return <p className={headerStyles.warning}>{error.message}</p>;

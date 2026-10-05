@@ -12,7 +12,7 @@ const NavigationBar = () => {
 	);
 	const [config, setConfig] = useState(defConfig);
 	const [currentPath, setCurrentPath] = useState(path);
-	const { defaultScheme, navProfile, setNavProfile } = useGlobal();
+	const { currentWS, navProfile, setNavProfile } = useGlobal();
 
 	useEffect(() => {
 		setCurrentPath(path);
@@ -54,7 +54,7 @@ const NavigationBar = () => {
 							<Link href={item.link}>{item.name}</Link>
 						</li>
 					))}
-					{defaultScheme == null
+					{currentWS == null
 						? ''
 						: config.schemeDependent.map(item => (
 								<div key={item.id}>

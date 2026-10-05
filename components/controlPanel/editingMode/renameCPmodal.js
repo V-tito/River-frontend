@@ -5,7 +5,7 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import InlineModal from '@/components/modals/inlineModal';
 import { netError } from '@/utils/api_wrap/netError';
-import { PenTool } from '@deemlol/next-icons';
+import { Edit3 } from '@deemlol/next-icons';
 function RenameCPmodal({ CPname, rename }) {
 	const { register, handleSubmit, resetDefaultValues, reset, watch } = useForm({
 		defaultValues: { name: CPname },
@@ -17,7 +17,7 @@ function RenameCPmodal({ CPname, rename }) {
 		reset();
 	}, [CPname]);
 	return (
-		<PopupForm buttonLabel={<PenTool />} buttonTitle="Переименовать">
+		<PopupForm buttonLabel={<Edit3 />} buttonTitle="Переименовать">
 			<form
 				onSubmit={handleSubmit(async data => {
 					try {

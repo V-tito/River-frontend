@@ -7,8 +7,8 @@ export const BarContext = createContext();
 
 import { useGlobal } from '@/app/GlobalState';
 const BarEditor = ({ setError, children }) => {
-	const { defaultScheme } = useGlobal();
-	const schemeName = defaultScheme.name;
+	const { currentWS } = useGlobal();
+	const schemeName = currentWS.name;
 	const [files, setFiles] = useState([]);
 	const [sigsByGroup, setSigs] = useState({});
 	const [inputsByBoard, setInputs] = useState({});

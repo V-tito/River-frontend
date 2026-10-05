@@ -9,7 +9,7 @@ import {
 	getSignalState,
 } from '@/utils/api_wrap/protocol';
 const IndicatorsTable = ({ data, board, sul = false, group = null }) => {
-	const { defaultScheme, setPollingError } = useGlobal();
+	const { currentWS, setPollingError } = useGlobal();
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -22,10 +22,10 @@ const IndicatorsTable = ({ data, board, sul = false, group = null }) => {
 			console.log('fetching', sig.id, 'start', last);
 			try {
 				if (board) {
-					if (sul) result = await getSulState(defaultScheme.name);
+					if (sul) result = await getSulState(currentWS.name);
 					else result = await getBoardState(sig.name);
 				} else {
-					result = await getSignalState(defaultScheme.name, group, sig.name);
+					result = await getSignalState(currentWS.name, group, sig.name);
 				}
 				console.log('fetching', sig.id, 'set api in', Date.now() - last);
 				last = Date.now();

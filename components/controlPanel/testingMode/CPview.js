@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 
 //func for validating current cp
 function CPview({ schemeName, className = '' }) {
-	const { defaultScheme, schemeOn, setSchemeOn } = useGlobal();
+	const { currentWS, schemeOn, setSchemeOn } = useGlobal();
 	const [currentCP, setCurrentCP] = useState(null);
 	const [currentContent, setCurrentContent] = useState([]);
 	const [errors, setErrors] = useState([]);

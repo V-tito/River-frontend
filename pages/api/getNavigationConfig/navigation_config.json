@@ -1,10 +1,10 @@
 {"admin":{
-    "common":[{"id":2,"name":"Установить схему","link":"/admin"}],
+    "common":[{"id":2,"name":"Установить рабочее пространство","link":"/admin"}],
     "schemeDependent":[
     {"id":1,"name":"СУЛ и тестовые платы","link":"/admin/TestBoard"},
     {"id":3,"name":"Группы сигналов","link":"/admin/GroupOfSignals"},
     {"id":4,"name":"Списки сигналов","link":"/admin/Signal"},
-    {"id":0,"name":"Список схем","link":"/admin/Scheme"},
+    {"id":0,"name":"Список рабочих пространств","link":"/admin/Scheme"},
     {"id":10,"name":"Панели управления","link":"/admin/CP"}
 ]}, 
 "shared":{
@@ -15,7 +15,7 @@
     
     ],
 "tester":{
-        "common":[{"id":7,"name":"Установить схему","link":"/tester"}],
+        "common":[{"id":7,"name":"Установить рабочее пространство","link":"/tester"}],
         "schemeDependent":[
         {"id":8,"name":"Редактор команд","link":"/tester/TestEditor"},
         {"id":9,"name":"Файлы тестов","link":"/tester/FileManager"}

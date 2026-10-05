@@ -1,5 +1,5 @@
 'use client';
-import SetDefaultScheme from '../../components/forms/setDefaultSchemeForm';
+import SetCurrentWS from '@/components/forms/setCurrentWSForm';
 import React, { Component } from 'react';
 import headerStyles from '@/styles/headerStyles.module.css';
 const Home = () => {
@@ -8,7 +8,7 @@ const Home = () => {
 			<h1 className={headerStyles.mainHeader}>
 				Программа тестирования СУЛ &quot;Река&quot;
 			</h1>
-			<SetDefaultScheme></SetDefaultScheme>
+			<SetCurrentWS></SetCurrentWS>
 		</div>
 	);
 };

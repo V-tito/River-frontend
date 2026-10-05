@@ -7,8 +7,8 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import { getList } from '@/utils/api_wrap/configAPI';
 
-const SetDefaultScheme = () => {
-	const { defaultScheme, setDefaultScheme } = useGlobal();
+const SetCurrentWS = () => {
+	const { currentWS, setCurrentWS } = useGlobal();
 	const [chosenScheme, setChosenScheme] = useState();
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ const SetDefaultScheme = () => {
 		setChosenScheme(data.find(record => record.id === Number(value)));
 	};
 	const handleSubmit = () => {
-		setDefaultScheme({
+		setCurrentWS({
 			id: chosenScheme.id,
 			name: chosenScheme.name,
 			comPort: chosenScheme.comPort,
@@ -49,9 +49,11 @@ const SetDefaultScheme = () => {
 				onSubmit={handleSubmit}
 				className={`${styles.form} ${styles.non_modal_form}`}
 			>
-				<header className={headerStyles.modalHeader}>Установить схему</header>
+				<header className={headerStyles.modalHeader}>
+					Установить рабочее пространство
+				</header>
 				<div>
-					<label>{'Выберите схему:'}</label>
+					<label>{'Выберите рабочее пространство:'}</label>
 					<select
 						className={inputStyles.select}
 						type="number"
@@ -77,11 +79,11 @@ const SetDefaultScheme = () => {
 				</div>
 			</form>
 			<p>
-				Текущая схема:{' '}
-				{defaultScheme == null ? 'не задана' : defaultScheme.name}
+				Текущее рабочее пространство:{' '}
+				{currentWS == null ? 'не задано' : currentWS.name}
 			</p>
 		</div>
 	);
 };
 
-export default SetDefaultScheme;
+export default SetCurrentWS;

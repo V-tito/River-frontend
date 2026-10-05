@@ -14,13 +14,13 @@ const SchemeUtils = dynamic(() => import('./navAndTrivial/schemeUtils'), {
 });
 const LeftSidebar = ({ children }) => {
 	const path = usePathname();
-	const { defaultScheme, pollingError } = useGlobal();
+	const { currentWS, pollingError } = useGlobal();
 	return (
 		<div className={styles.navigation_wrapper}>
 			<aside className={styles.sidebar}>
 				<NavigationBar></NavigationBar>
 				<SchemeUtils
-					defaultScheme={defaultScheme}
+					currentWS={currentWS}
 					admin={path.split('/')[1] == 'admin'}
 				/>
 				{(path.split('/')[1] == 'shared') |

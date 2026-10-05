@@ -22,7 +22,16 @@ function SortableElem({ index, setSpecs, item, data, groups, remove }) {
 		</li>
 	);
 }
-function EditCPgrid({ conf, setField, data, groups, remove }) {
+function Blank({ index }) {
+	const { ref } = useSortable({
+		id: crypto.randomUUID(),
+		index: index,
+		type: 'blank',
+		collisionPriority: 1,
+	});
+	return <li ref={ref} className="w-full h-full" />;
+}
+function EditCPgrid({ conf, setField, data, groups, remove, blankIndex }) {
 	//for rep with coordinates
 	/**let rows = [];
 	for (let i = 0; i < x; i++) {
@@ -41,25 +50,32 @@ function EditCPgrid({ conf, setField, data, groups, remove }) {
 		type: 'panel',
 		collisionPriority: 1,
 	});
+
 	console.debug('remove action', remove);
 	return (
 		<div ref={ref} className="flex w-full">
 			<ul className={styles.grid}>
-				{conf?.map((item, index) => (
-					<SortableElem
-						index={index}
-						setSpecs={(fieldName, val) => {
-							setField(index, fieldName, val);
-						}}
-						key={index}
-						item={item}
-						data={data}
-						groups={groups}
-						remove={() => {
-							remove(index);
-						}}
-					></SortableElem>
-				))}
+				{conf
+					?.map((item, index) => (
+						<SortableElem
+							index={index >= blankIndex ? index + 1 : index}
+							setSpecs={(fieldName, val) => {
+								setField(index, fieldName, val);
+							}}
+							key={index}
+							item={item}
+							data={data}
+							groups={groups}
+							remove={() => {
+								remove(index);
+							}}
+						></SortableElem>
+					))
+					.toSpliced(
+						blankIndex,
+						0,
+						<Blank index={blankIndex} key={conf.length + 1} />
+					)}
 			</ul>
 		</div>
 	);

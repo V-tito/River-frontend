@@ -4,7 +4,7 @@ import path from 'path';
 
 export default async function handler(req, res) {
 	try {
-		const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
+		const safeBasePath = path.join(process.cwd(), '../vault'); // Configured server path
 		const relativePath = req.query.folder ?? '';
 		const oldName = req.query.oldName ?? '';
 		const oldPath = `${safeBasePath}/${relativePath}/${oldName}`;

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { postHelper } from '@/utils/hooks/postPatchHelpers';
 
 const AddForm = ({ table, object = {} }) => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ const AddForm = ({ table, object = {} }) => {
 			const fetchGroupsAndBoards = async () => {
 				try {
 					const response = await fetch(
-						`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
+						`/api/getAddConfig/getListsOfGroupsAndBoards/${currentWS.name}`
 					);
 
 					const data = await response.json();
@@ -54,7 +54,7 @@ const AddForm = ({ table, object = {} }) => {
 		} else {
 			setLoading(false);
 		}
-	}, [table, defaultScheme]);
+	}, [table, currentWS]);
 
 	const defaults =
 		object != {}
@@ -79,7 +79,7 @@ const AddForm = ({ table, object = {} }) => {
 	const onSubmit = async data => {
 		setError(null);
 		try {
-			await postHelper(data, table, defaultScheme);
+			await postHelper(data, table, currentWS);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {

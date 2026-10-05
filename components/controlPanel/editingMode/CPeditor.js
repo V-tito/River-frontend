@@ -6,7 +6,7 @@ import ChooseCP from '../chooseCP';
 import RenameCPmodal from './renameCPmodal';
 import NewCPbutton from './newCPbutton';
 import SaveButton from './saveButton';
-import { Download } from '@deemlol/next-icons';
+import { Upload, Download } from '@deemlol/next-icons';
 import { useCPManager } from '../CPmanager/CPmanager';
 import DeleteButton from '@/components/fileManagement/delButton';
 import ConfirmSave from './confirmSave';
@@ -36,6 +36,11 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		alterEntryField,
 		saveCP,
 	} = useCPManager(schemeName);
+	const [blank, setBlank] = useState();
+	console.debug('blank', blank);
+	useEffect(() => {
+		setBlank(CPs[currentConfName]?.length);
+	}, [currentConfName, CPs]);
 	//fetch inputs and outputs
 	useEffect(() => {
 		const init = async () => {
@@ -90,7 +95,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 			<SaveFromVarLocally
 				formData={CPs[currentConfName]}
 				initName={currentConfName}
-				label={<Download />}
+				label={<Upload />}
 				title="Экспорт"
 			/>
 			<NewCPbutton add={addCP} />
@@ -101,19 +106,47 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				key={version}
 				onDragEnd={event => {
 					if (event.canceled) return;
-					const { source } = event.operation;
-					const { type, initialIndex, index, data } = source;
-					if (type != 'addmenu')
-						if (initialIndex !== index) {
+					const { source, target } = event.operation;
+					console.debug('source', source);
+					const { type, data } = source;
+					console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
+					if (type == 'addmenu') {
+						//event.preventDefault();
+						let i;
+						if (target) {
+							const { index } = target;
+							i = index;
+						} else {
+							i = CPs[currentConfName].length;
+						}
+						console.debug('type', type);
+						insertEntry(i, data);
+					} else {
+						const { initialIndex, index } = source;
+						if (initialIndex !== index)
 							updateCPContent(items => {
 								const newData = [...items];
 								const [removed] = newData.splice(initialIndex, 1);
+								console.debug('removed', removed);
 								return newData.toSpliced(index, 0, removed);
 							});
-							setVersion(prev => prev + 1);
-						} else {
-							insertEntry(index, data);
-						}
+						setVersion(prev => prev + 1);
+					}
+					setBlank(CPs[currentConfName].length);
+				}}
+				onDragOver={event => {
+					if (event.canceled) return;
+					const { source, target } = event.operation;
+					if (!target) return;
+					console.debug('source', source);
+					const { type, data } = source;
+					console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
+					if (type == 'addmenu') {
+						//event.preventDefault();
+						const { index } = target;
+						console.debug('type', type);
+						setBlank(index);
+					}
 				}}
 			>
 				<div className="flex flex-row">
@@ -123,6 +156,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 						data={data}
 						groups={groups}
 						remove={removeEntry}
+						blankIndex={blank}
 					/>
 					<AddElementMenu />
 				</div>

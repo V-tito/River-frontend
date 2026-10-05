@@ -3,10 +3,10 @@ import {
 	patchEntity,
 	checkExistence,
 } from '@/utils/api_wrap/configAPI';
-const fetchGroupsAndBoards = async defaultScheme => {
+const fetchGroupsAndBoards = async currentWS => {
 	try {
 		const response = await fetch(
-			`/api/getAddConfig/getListsOfGroupsAndBoards/${defaultScheme.name}`
+			`/api/getAddConfig/getListsOfGroupsAndBoards/${currentWS.name}`
 		);
 		const data = await response.json();
 		if (!response.ok) {
@@ -16,18 +16,18 @@ const fetchGroupsAndBoards = async defaultScheme => {
 	} catch (err) {}
 };
 
-async function preprocessData(data, table, defaultScheme) {
+async function preprocessData(data, table, currentWS) {
 	console.debug('dta in preprocess data', data);
 	let newFormData = { ...data };
-	const nameToId = await fetchGroupsAndBoards(defaultScheme);
+	const nameToId = await fetchGroupsAndBoards(currentWS);
 	if (
 		['GroupOfSignals', 'TestBoard', 'Sul'].includes(table) &&
 		!('signals' in data)
 	) {
 		newFormData = { ...newFormData, signals: [] };
 		newFormData['parentScheme'] = {
-			id: defaultScheme.id,
-			name: defaultScheme.name,
+			id: currentWS.id,
+			name: currentWS.name,
 		};
 	}
 	if ('parentGroup' in data) {
@@ -52,44 +52,44 @@ async function preprocessData(data, table, defaultScheme) {
 	return newFormData;
 }
 
-export async function postHelper(data, table, defaultScheme) {
+export async function postHelper(data, table, currentWS) {
 	console.debug('data in postHelper', data);
 	const newFormData =
-		table == 'Scheme' ? data : await preprocessData(data, table, defaultScheme);
+		table == 'Scheme' ? data : await preprocessData(data, table, currentWS);
 	await postEntity(table, newFormData);
 	return;
 }
-export async function patchHelper(data, table, defaultScheme) {
+export async function patchHelper(data, table, currentWS) {
 	const newFormData =
-		table == 'Scheme' ? data : await preprocessData(data, table, defaultScheme);
+		table == 'Scheme' ? data : await preprocessData(data, table, currentWS);
 	await patchEntity(table, newFormData);
 	return;
 }
 
-async function processFileEntry(entry, table, defaultScheme) {
+async function processFileEntry(entry, table, currentWS) {
 	console.debug('entry in processFileEntry', entry);
 	try {
 		const exists = await checkExistence(
 			table,
 			entry.name,
 			entry.parentGroup ? entry.parentGroup : null,
-			defaultScheme != null ? defaultScheme.name : null
+			currentWS != null ? currentWS.name : null
 		);
 		if (exists) {
-			await patchHelper(entry, table, defaultScheme);
+			await patchHelper(entry, table, currentWS);
 			return 'patch';
 		} else {
-			await postHelper(entry, table, defaultScheme);
+			await postHelper(entry, table, currentWS);
 			return 'post';
 		}
 	} catch (err) {
 		return `error ${err.status} ${err.message}`;
 	}
 }
-export async function multiplePostPatch(data, table, defaultScheme = null) {
+export async function multiplePostPatch(data, table, currentWS = null) {
 	console.debug('data in multiple post patch', data);
-	if (table != 'Scheme' && defaultScheme == null) {
-		throw new Error('Не указана схема');
+	if (table != 'Scheme' && currentWS == null) {
+		throw new Error('Не указано рабочее пространство');
 	}
 	var results = { posted: 0, patched: 0 };
 	let newData;
@@ -108,7 +108,7 @@ export async function multiplePostPatch(data, table, defaultScheme = null) {
 		if ((table == 'TestBoard') & ('comPort' in entry)) {
 			type = 'Sul';
 		}
-		return [...acc, processFileEntry(entry, type, defaultScheme)];
+		return [...acc, processFileEntry(entry, type, currentWS)];
 	}, []);
 	const responses = await Promise.all(promises);
 	responses.map((item, index) => {

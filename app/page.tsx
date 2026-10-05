@@ -1,5 +1,5 @@
-//import SetDefaultScheme from "../components/forms/setDefaultSchemeForm"
-//<SetDefaultScheme></SetDefaultScheme>
+//import SetCurrentWS from "../components/forms/setCurrentWSForm"
+//<SetCurrentWS></SetCurrentWS>
 
 import React from 'react';
 import ProfileSetup from '../components/forms/profileSetup';

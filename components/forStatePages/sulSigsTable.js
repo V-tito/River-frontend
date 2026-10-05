@@ -5,7 +5,7 @@ import { useGlobal } from '../../app/GlobalState';
 import PropTypes from 'prop-types';
 import { getSignalState } from '@/utils/api_wrap/protocol';
 const SulSigsTable = ({ data, group = null }) => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const [allStates, setAllStates] = useState({});
 	const [responseWaiting, setResponseWaiting] = useState(false);
 	const { setPollingError } = useGlobal();
@@ -19,7 +19,7 @@ const SulSigsTable = ({ data, group = null }) => {
 			try {
 				console.log('fetching', sig.name, 'set api in', Date.now() - last);
 
-				result = await getSignalState(defaultScheme.name, group, sig.name);
+				result = await getSignalState(currentWS.name, group, sig.name);
 				last = Date.now();
 				console.log('received ss:', result);
 				setPollingError('ok');

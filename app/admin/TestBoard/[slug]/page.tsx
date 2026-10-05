@@ -7,7 +7,7 @@ import { getList } from '@/utils/api_wrap/configAPI';
 import headerStyles from '@/styles/headerStyles.module.css';
 
 const BoardList = () => {
-	const { defaultScheme, pollingError, setPollingError } = useGlobal();
+	const { currentWS, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [sul, setSul] = useState();
@@ -16,7 +16,7 @@ const BoardList = () => {
 	if (params) {
 		slug = params.slug;
 	} else {
-		slug = defaultScheme.name;
+		slug = currentWS.name;
 	}
 
 	useEffect(() => {
@@ -36,7 +36,7 @@ const BoardList = () => {
 			}
 		};
 		fetchData();
-	}, [slug, params, defaultScheme]);
+	}, [slug, params, currentWS]);
 
 	if (loading) return <p>Загрузка...</p>;
 	if (pollingError) return <p>Ошибка: {pollingError.message}</p>;

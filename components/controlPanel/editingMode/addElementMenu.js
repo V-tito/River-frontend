@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/react';
+import { Feedback } from '@dnd-kit/dom';
 import styles from '../controlPanel.module.css';
 import icons from '../icons/icons';
 import buttonStyles from '@/styles/buttonStyles.module.css';
@@ -20,10 +21,16 @@ function AddElementMenu() {
 							console.debug('in map2, type_', type_);
 							const { ref } = useDraggable({
 								id: icon,
+								type: 'addmenu',
 								data: { icon: icon, type: type_ },
+								plugins: [
+									Feedback.configure({
+										feedback: 'clone',
+										dropAnimation: null,
+									}),
+								],
 							});
 							const src = icons[type_][icon].off;
-							console.debug('src', src);
 							return (
 								<Image
 									ref={ref}

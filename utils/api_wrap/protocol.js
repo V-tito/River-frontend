@@ -51,7 +51,7 @@ export async function getSulState(schemeName, abort) {
 	const result = await abortableFetch(
 		api,
 		abort,
-		'при связи с СУЛ схемы ',
+		'при связи с СУЛ рп ',
 		schemeName,
 		'GET'
 	);
@@ -148,7 +148,7 @@ export async function executePresets(scheme, abort) {
 }
 /**
  * setAll протокола
- * @param {string} scheme имя схемы
+ * @param {string} scheme имя рп
  * @param {string} board имя платы (пока только ТП)
  * @param {Record<number,number>} vals массив значений
  */
@@ -168,7 +168,7 @@ export async function setAll(scheme, board, vals, abort) {
 }
 /**
  * presetAll протокола
- * @param {string} schemeName имя схемы
+ * @param {string} schemeName имя рп
  * @param {string} board имя платы (пока только ТП)
  * @param {Record<number,number>} vals массив значений
  */

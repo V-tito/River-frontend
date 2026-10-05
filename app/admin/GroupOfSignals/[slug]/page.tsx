@@ -6,7 +6,7 @@ import { useGlobal } from '@/app/GlobalState';
 import { getList } from '@/utils/api_wrap/configAPI';
 import headerStyles from '@/styles/headerStyles.module.css';
 const GroupList = () => {
-	const { defaultScheme, pollingError, setPollingError } = useGlobal();
+	const { currentWS, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const params = useParams(); // Get URL parameters
@@ -14,7 +14,7 @@ const GroupList = () => {
 	if (params) {
 		slug = params.slug;
 	} else {
-		slug = defaultScheme.name;
+		slug = currentWS.name;
 	}
 	useEffect(() => {
 		const fetchData = async () => {
@@ -31,7 +31,7 @@ const GroupList = () => {
 			}
 		};
 		fetchData();
-	}, [slug, params, defaultScheme]);
+	}, [slug, params, currentWS]);
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	if (pollingError)
 		return (

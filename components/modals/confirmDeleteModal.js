@@ -8,7 +8,7 @@ import headerStyles from '@/styles/headerStyles.module.css';
 import { deleteEntity } from '@/utils/api_wrap/configAPI';
 import { useGlobal } from '../../app/GlobalState';
 const ConfirmDeleteModal = ({ state }) => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	console.log('confirm delete modal state', state);
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
@@ -20,7 +20,7 @@ const ConfirmDeleteModal = ({ state }) => {
 				state.type,
 				state.name,
 				state.group ? state.group : null,
-				defaultScheme.name
+				currentWS.name
 			);
 			window.location.reload();
 		} catch (err) {

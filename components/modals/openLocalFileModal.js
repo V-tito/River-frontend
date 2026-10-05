@@ -29,7 +29,7 @@ const OpenLocalFileModal = ({
 					title={label ?? 'Открыть локальный скрипт'}
 					className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 				>
-					{displayedLabel ?? <Upload />}
+					{displayedLabel ?? <Download />}
 				</button>
 			}
 			closeOnDocumentClick={false}

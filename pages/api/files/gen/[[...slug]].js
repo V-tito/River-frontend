@@ -65,7 +65,7 @@ const processEnvConfig = async envName => {
 };
 //return;
 export default async function handler(req, res) {
-	const safeBasePath = path.join(process.cwd(), 'vault'); // Configured server path
+	const safeBasePath = path.join(process.cwd(), '../vault'); // Configured server path
 	const relativePath = req.query.folder ?? '';
 	const filename = req.query.filename ?? '';
 	const fullPath = `${safeBasePath}/${relativePath}/${filename}`;

@@ -16,7 +16,7 @@ interface StateRecord {
 	[key: string]: boolean;
 }
 const SignalList = () => {
-	const { defaultScheme, pollingError, setPollingError } = useGlobal();
+	const { currentWS, pollingError, setPollingError } = useGlobal();
 	const [data, setData] = useState<DynamicRecord>({});
 	const [sulData, setSulData] = useState<DynamicRecord>({});
 	const [groups, setGroups] = useState<[MyDataType] | []>([]);
@@ -28,9 +28,7 @@ const SignalList = () => {
 		const fetchData = async () => {
 			setPollingError(null);
 			try {
-				const response = await fetch(
-					`/api/getSignalTables/${defaultScheme.name}`
-				);
+				const response = await fetch(`/api/getSignalTables/${currentWS.name}`);
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
@@ -56,7 +54,7 @@ const SignalList = () => {
 		const fetchSulData = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSulSignalTables/${defaultScheme.name}`
+					`/api/getSulSignalTables/${currentWS.name}`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
@@ -72,7 +70,7 @@ const SignalList = () => {
 		fetchData();
 		fetchSulData();
 		setLoading(false);
-	}, [defaultScheme]);
+	}, [currentWS]);
 
 	if (loading) return <p className={headerStyles.warning}>Загрузка...</p>;
 	return (

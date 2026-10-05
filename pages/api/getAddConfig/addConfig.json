@@ -73,12 +73,12 @@
     { "id": "description",  
         "label": "Описание:", 
         "type": "textarea", 
-        "placeholder": "Развернутое описание схемы",
+        "placeholder": "Описание рабочего пространства",
         "validation":{}
     }
     ],
 "forTheFuture":[{"id": "parentScheme", 
-"label": "Входит в схему:", 
+"label": "Входит в рабочее пространство:", 
 "type": "number", 
 "required": "Пожалуйста, заполните это поле" 
 }],

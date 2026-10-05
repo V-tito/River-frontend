@@ -1,4 +1,4 @@
-import SetDefaultScheme from '../../components/forms/setDefaultSchemeForm';
+import SetCurrentWS from '@/components/forms/setCurrentWSForm';
 import React from 'react';
 import headerStyles from '@/styles/headerStyles.module.css';
 const Home = () => {
@@ -7,7 +7,7 @@ const Home = () => {
 			<p className={headerStyles.mainHeader}>
 				Программа тестирования СУЛ &quot;Река&quot;
 			</p>
-			<SetDefaultScheme></SetDefaultScheme>
+			<SetCurrentWS></SetCurrentWS>
 		</div>
 	);
 };

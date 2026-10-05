@@ -5,8 +5,8 @@ import TestUI from '../../../components/testUI';
 import { useGlobal } from '../../GlobalState';
 
 const TesterPage = () => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	console.info('entered TestEditor page');
-	return <TestUI scheme={defaultScheme}></TestUI>;
+	return <TestUI scheme={currentWS}></TestUI>;
 };
 export default TesterPage;

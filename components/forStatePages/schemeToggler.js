@@ -5,14 +5,14 @@ import { useGlobal } from '@/app/GlobalState';
 import StateIndicator from './stateIndicator';
 
 const SchemeToggler = () => {
-	const { defaultScheme, schemeOn, setSchemeOn } = useGlobal();
+	const { currentWS, schemeOn, setSchemeOn } = useGlobal();
 	const controlStyle = `${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`;
 	return (
 		<div className={`${styles.schemeControls}`}>
 			<button
 				label={'Включить опрос'}
 				onClick={async e => {
-					await toggleScheme(defaultScheme.name);
+					await toggleScheme(currentWS.name);
 					setSchemeOn(true);
 				}}
 				className={controlStyle}
@@ -22,7 +22,7 @@ const SchemeToggler = () => {
 			<button
 				label={'Выключить опрос'}
 				onClick={async e => {
-					await toggleScheme(defaultScheme.name, false);
+					await toggleScheme(currentWS.name, false);
 					setSchemeOn(false);
 				}}
 				className={controlStyle}

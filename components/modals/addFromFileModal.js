@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { useGlobal } from '@/app/GlobalState';
 import { parseString } from 'xml2js';
 const addFromFileForm = ({ table = null, buttonLabel }) => {
-	const { defaultScheme } = useGlobal();
+	const { currentWS } = useGlobal();
 	const [parseReport, setParseReport] = useState(null);
 	const [readerError, setReaderError] = useState();
 	const dict = {
@@ -93,7 +93,7 @@ const addFromFileForm = ({ table = null, buttonLabel }) => {
 						report = await multiplePostPatch(
 							newContent.map(item => item.$),
 							table,
-							defaultScheme
+							currentWS
 						);
 					} else {
 						console.log('content', content);
@@ -196,7 +196,7 @@ const addFromFileForm = ({ table = null, buttonLabel }) => {
 						<SaveFromVarLocally
 							formData={parseReport}
 							initName="report.json"
-							scheme={defaultScheme.name}
+							scheme={currentWS.name}
 							label="Сохранить отчет"
 						></SaveFromVarLocally>
 					</div>
