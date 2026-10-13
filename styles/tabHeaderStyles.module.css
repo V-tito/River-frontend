@@ -17,6 +17,7 @@
     margin:0px;
     padding:0vh;
     max-width:35%;
+    min-width: min-content;
 }
 .tabName{
     overflow-x:auto;

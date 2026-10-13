@@ -99,6 +99,12 @@ function baseMode(schemeName: string, mode: string) {
 			};
 		});
 	};
+	/**
+	 * Инициализирует панели содержимым файлов из vault/[рабочее пространство]/CPs (проверяется, содержит ли файл валидный JSON
+	 * нужного формата ({[name]: CP}), не проверяется расширение).
+	 * @returns Record<string, CP>, сформированный из содержимого хранилища, который нужно затем передать в setCP,
+	 * при необходимости пропустив через функцию постобработки
+	 */
 	const getInitialCPs = async () => {
 		console.debug('entered init tabs');
 		let fileList;
@@ -496,6 +502,13 @@ export function validateEntry(entry: unknown): entry is CPentry {
 		typeof (entry as CPentry).default_ === 'number'
 	);
 }
+/**
+ * Менеджер панелей управления. Возвращает таблицу панелей (react State), react State с именем текущей панели
+ *  и набор функций для работы с панелями (отличается в разных режимах)
+ * @param schemeName - имя рабочего пространства
+ * @param mode - режим (editing или testing)
+ * @returns
+ */
 export function useCPManager(schemeName: string, mode: string) {
 	if (mode == 'editing') return editingMode(schemeName);
 	else return testingMode(schemeName);

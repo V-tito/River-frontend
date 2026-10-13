@@ -27,7 +27,10 @@ export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
 	const [isHovered, setIsHovered] = useState();
 	const [execBlock, setExecBlock] = useState(false);
-	const { setPollingError } = useGlobal();
+	const { setPollingError, schemeOn } = useGlobal();
+	useEffect(() => {
+		setExecBlock(!schemeOn);
+	}, [schemeOn]);
 	const {
 		currentTabId,
 		setCurrentTabId,
@@ -104,7 +107,7 @@ const Editor = ({ scheme }) => {
 	);
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<div className="flex flex-col">
+		<div className={styles.actualMain}>
 			<execAndMouseDisplayContext.Provider
 				value={{
 					isHovered,

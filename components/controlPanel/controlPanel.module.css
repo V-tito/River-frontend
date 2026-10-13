@@ -46,6 +46,9 @@ display: grid;
   @media (prefers-color-scheme: dark) {
     .error{background-color: rgb(127, 3, 3);}
     }
+    @media (prefers-color-scheme: dark) {
+      .grid{background-color: rgb(78, 78, 78);}
+      }
     .addMenu{
     gap: 1rem;
     border: 1px solid grey;

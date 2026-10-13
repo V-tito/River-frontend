@@ -55,7 +55,7 @@ const FileManager = ({
 			<SaveFromVarLocally
 				formData={currentTabId ? tabs[currentTabId].content : []}
 				initName={currentTabId ? tabs[currentTabId].name : ''}
-				label={<Download />}
+				label={<Upload />}
 				title="Экспорт скрипта"
 			/>
 			<FileChooser folder={scheme}></FileChooser>

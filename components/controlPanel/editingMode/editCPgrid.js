@@ -31,7 +31,15 @@ function Blank({ index }) {
 	});
 	return <li ref={ref} className="w-full h-full" />;
 }
-function EditCPgrid({ conf, setField, data, groups, remove, blankIndex }) {
+function EditCPgrid({
+	conf,
+	setField,
+	data,
+	groups,
+	remove,
+	blankIndex,
+	noConf,
+}) {
 	//for rep with coordinates
 	/**let rows = [];
 	for (let i = 0; i < x; i++) {
@@ -49,6 +57,7 @@ function EditCPgrid({ conf, setField, data, groups, remove, blankIndex }) {
 		id: crypto.randomUUID(),
 		type: 'panel',
 		collisionPriority: 1,
+		disabled: { noConf },
 	});
 
 	console.debug('remove action', remove);

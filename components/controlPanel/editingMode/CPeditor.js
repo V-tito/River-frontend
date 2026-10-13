@@ -100,6 +100,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				key={version}
 				onDragEnd={event => {
 					if (event.canceled) return;
+					if (!currentConfName) return;
 					const { source, target } = event.operation;
 					console.debug('source', source);
 					const { type, data } = source;
@@ -151,6 +152,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 						groups={groups}
 						remove={removeEntry}
 						blankIndex={blank}
+						noConf={!currentConfName}
 					/>
 					<AddElementMenu />
 				</div>
