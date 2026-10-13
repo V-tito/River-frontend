@@ -7,3 +7,10 @@ export interface MinimalSignal {
 	parentGroup: string;
 	name: string;
 }
+export function ValidateMinimalSignal(entry: unknown): entry is MinimalSignal {
+	return (
+		typeof entry === 'object' &&
+		typeof (entry as MinimalSignal).parentGroup === 'string' &&
+		typeof (entry as MinimalSignal).name === 'string'
+	);
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDraggable } from '@dnd-kit/react';
 import { Feedback } from '@dnd-kit/dom';
 import styles from '../controlPanel.module.css';
-import icons from '../icons/icons';
+import icons from '../icons';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';

@@ -1,69 +1,68 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CPset from './CPset';
 import CPget from './CPget';
+import CPload from './CPload';
 import styles from '../controlPanel.module.css';
 import { useGlobal } from '@/app/GlobalState';
-import { fetchAllStates } from '../../../utils/hooks/getStateHelpers';
+import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
 import { Loader } from '@deemlol/next-icons';
 
 function CPgrid({
 	elems = [],
+	currentGetterStates,
 	schemeName = '',
-	loadingConfig = true,
-	setErrors,
+	schemeOn,
 }) {
-	const { setPollingError } = useGlobal();
-	const signals = elems
-		.filter(elem => elem.type == 'getter')
-		.map(elem => elem.signal);
-	const [allStates, setAllStates] = useState({});
-	const [responseWaiting, setResponseWaiting] = useState(false);
-
+	const [setterInit, setsetterInit] = useState({});
+	const [loading, setLoading] = useState(true);
 	useEffect(() => {
-		console.debug('setting up fetch with sigs', signals);
-		fetchAllStates(
-			schemeName,
-			signals,
-			setPollingError,
-			responseWaiting,
-			setResponseWaiting,
-			setAllStates
-		);
-		const intervalId = setInterval(
-			fetchAllStates,
-			500,
-			schemeName,
-			signals,
-			setPollingError,
-			responseWaiting,
-			setResponseWaiting,
-			setAllStates
-		);
-		return () => clearInterval(intervalId);
+		console.debug('loading', loading);
+	}, [loading]);
+	useEffect(() => {
+		setLoading(true);
+		console.debug('recalculating setter init tables with elems', elems);
+		if (Array.isArray(elems)) {
+			if (elems.length > 0) {
+				console.debug('non-zero-length array of elems obtained');
+				const validSetters = elems
+					.filter((elem, index) => {
+						return elem.valid && elem.type == 'setter';
+					})
+					.map(elem => elem.signal);
+				console.debug('valid setters', validSetters);
+				setsetterInit(
+					validSetters.reduce((acc, sig) => {
+						return { ...acc, [sig.name]: false };
+					}, {})
+				);
+				setLoading(false);
+			} else {
+				setLoading(false);
+			}
+		} else {
+			setLoading(false);
+		}
 	}, [elems]);
+	if (loading) return <CPload />;
 	return (
 		<div className={styles.grid}>
-			{loadingConfig ? (
-				<div className={styles.loader}>
-					<Loader size={128} />
-				</div>
-			) : (
-				elems.map((elem, index) =>
-					elem.type == 'setter' ? (
-						<CPset
-							specs={elem}
-							schemeName={schemeName}
-							key={index}
-							setErrors={setErrors}
-						></CPset>
-					) : (
-						<CPget
-							specs={elem}
-							onTable={allStates}
-							key={index}
-							setErrors={setErrors}
-						></CPget>
-					)
+			{elems.map((elem, index) =>
+				elem.type == 'setter' ? (
+					<CPset
+						specs={elem}
+						schemeName={schemeName}
+						key={index}
+						haveInit={setterInit}
+						setHaveInit={setsetterInit}
+						schemeOn={schemeOn}
+					></CPset>
+				) : (
+					<CPget
+						specs={elem}
+						onTable={currentGetterStates}
+						schemeOn={schemeOn}
+						key={index}
+					></CPget>
 				)
 			)}
 		</div>

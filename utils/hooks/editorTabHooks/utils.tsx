@@ -1,8 +1,13 @@
-import { Result } from '../command/commandExecutionToolkit';
 import { Command } from '../command/command';
 export interface fpath {
 	folder: string;
 	filename: string;
+}
+export interface Result {
+	id: string | undefined;
+	actionType: string;
+	timestamp: string;
+	res: string | undefined;
 }
 export interface EditorTab {
 	id: string;

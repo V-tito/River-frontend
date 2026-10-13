@@ -18,31 +18,18 @@ export async function fetchAllSignalsInTheEnv(
 	sul = false
 ) {
 	const newGroups = await getList('GroupOfSignals', envName);
-	console.debug('got newGroups in fetchAllSignals', newGroups);
+	console.debug('got newGroups in fetchAllSignals');
 	if (Array.isArray(newGroups)) {
 		if (newGroups.length > 0) {
 			const promises = newGroups.map(async group => {
 				try {
-					console.debug('group in iteration in fetchallsigs', group);
 					const temp = await getList(
 						sul ? 'SulSignal' : 'Signal',
 						group.name,
 						envName
 					);
-					console.debug('got temp in fetchAllSignals', temp);
-
 					if (temp != undefined) {
 						if (!sorted) {
-							console.debug('added sigs for a new group (unsorted)', {
-								[String(group.name)]: temp.map(item => {
-									const entry = {
-										...item,
-										parentGroup: group.name,
-									};
-									if (sul) entry.bool = item.firstBit == item.lastBit;
-									return entry;
-								}),
-							});
 							return {
 								[String(group.name)]: temp.map(item => {
 									const entry = {
@@ -54,46 +41,29 @@ export async function fetchAllSignalsInTheEnv(
 								}),
 							};
 						} else {
-							console.debug('added sigs for a new group (sorted)', {
-								[String(group.name)]: formatSignalsByType(temp, group.name),
-							});
 							return {
 								[String(group.name)]: formatSignalsByType(temp, group.name),
 							};
 						}
 					} else {
-						console.debug('added sigs for a new group (sigs undef)', {
-							[String(group.name)]: [],
-						});
 						return { [String(group.name)]: [] };
 					}
 				} catch (err) {
 					console.debug('error making sigs by group', err);
 				}
 			});
-			console.debug('got promises in fetchallsigs', promises);
+			console.debug('got promises in fetchallsigs');
 			const resultsArray = await Promise.all(promises);
 			const resultsrecord = resultsArray.reduce((acc, res) => {
 				return { ...acc, ...res };
 			}, {});
-			console.debug(
-				'made results for by group',
-				resultsrecord,
-				'with sul',
-				sul
-			);
+			console.debug('made results for by group', 'with sul', sul);
 			if (!sorted) {
 				const newList = Object.values(resultsrecord).reduce((acc, temp) => {
 					return [...acc, ...temp];
 				}, []);
-				console.debug('returning', {
-					data: resultsrecord,
-					groups: newGroups,
-					list: newList,
-				});
 				return { data: resultsrecord, groups: newGroups, list: newList };
 			} else {
-				console.debug('returning', { data: resultsrecord, groups: newGroups });
 				return { data: resultsrecord, groups: newGroups };
 			}
 		} else {
@@ -125,7 +95,7 @@ export async function fetchOutputsOfAllBoards(envName, isSul = false) {
 			const sigs = sigArrays.reduce((acc, arr) => {
 				return [...acc, ...arr];
 			}, []);
-			console.debug('got sigs in inps by board', sigs);
+			console.debug('got sigs in inps by board');
 			const inputs = boards.reduce((acc, board) => {
 				const toAdd = sigs.filter(
 					item => item.testBoard.name == board.name && item.isOutput
@@ -135,7 +105,7 @@ export async function fetchOutputsOfAllBoards(envName, isSul = false) {
 					[board.name]: toAdd,
 				};
 			}, {});
-			console.debug('composed inputs', inputs);
+			console.debug('composed inputs');
 			//const sulsigs = temp.filter(item => item.parentSul.name == sul.name);
 			return { ...inputs };
 			//, [sul]: sulsigs };

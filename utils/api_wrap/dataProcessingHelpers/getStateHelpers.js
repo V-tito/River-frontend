@@ -67,15 +67,16 @@ async function fetchCurrentState(
 }
 export async function fetchAllStates(
 	schemeName,
+	isSchemeEnabled,
 	signals,
 	setPollingError,
 	responseWaiting,
 	setResponseWaiting,
-
 	setAllStates,
 	board = false
 ) {
-	if (!responseWaiting) {
+	console.debug('schemeEnabled', isSchemeEnabled);
+	if (!responseWaiting.current && isSchemeEnabled.current) {
 		try {
 			setResponseWaiting(true);
 			console.log('start mapping on data', signals);

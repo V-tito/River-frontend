@@ -6,22 +6,23 @@ import PropTypes from 'prop-types';
 
 import buttonStyles from '@/styles/buttonStyles.module.css';
 
-const FileBar = ({ folder, filename }) => {
+const FileBar = ({ envName, typ, filename }) => {
 	return (
 		<div className={styles.bar}>
 			<a
 				className={styles.name}
-				href={`/tester/TestEditor?folder=${folder}&filename=${filename}`}
+				href={`/tester/TestEditor?folder=${envName}/${typ}&filename=${filename}`}
 			>
 				{filename}
 			</a>
 			<DeleteButton
 				className={`${buttonStyles.button} ${buttonStyles.deleteButton}`}
-				filepath={`?folder=${folder}&filename=${filename}`}
+				filepath={`?folder=${envName}/${typ}&filename=${filename}`}
 			></DeleteButton>
 			<DownloadButton
 				className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
-				filepath={`?folder=${folder}&filename=${filename}`}
+				type={typ}
+				envName={envName}
 				filename={filename}
 			></DownloadButton>
 		</div>

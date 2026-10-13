@@ -6,7 +6,7 @@ import {
 	prototypes,
 } from './command';
 import { CommandBarHelpers } from './commandBarHelpers';
-import { sigtableEntry } from '../entryTypes';
+import { sigtableEntry } from '../../interfaces/entryTypes';
 function autoClean<T extends Command>(
 	command: T,
 	sigtable: Record<string, Record<string, Array<Record<string, any>>>>

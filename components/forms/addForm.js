@@ -7,7 +7,7 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import { useGlobal } from '../../app/GlobalState';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { postHelper } from '@/utils/hooks/postPatchHelpers';
+import { postHelper } from '@/utils/api_wrap/dataProcessingHelpers/postPatchHelpers';
 
 const AddForm = ({ table, object = {} }) => {
 	const { currentWS } = useGlobal();

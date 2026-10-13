@@ -1,4 +1,4 @@
-import { fetchAllSignalsInTheEnv } from '@/utils/hooks/getHelpers';
+import { fetchAllSignalsInTheEnv } from '@/utils/api_wrap/dataProcessingHelpers/getHelpers';
 export default function handler(req, res) {
 	let namesOnly = false;
 	if ('namesOnly' in req.query) {

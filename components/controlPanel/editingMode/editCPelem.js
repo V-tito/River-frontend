@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../controlPanel.module.css';
-import icons from '../icons/icons';
-import { setSignalState, getSignalState } from '@/utils/api_wrap/protocol.js';
-import triggerOn from '../icons/triggerOn.jpg';
-import triggerOff from '../icons/triggerOff.jpg';
+import icons from '../icons';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
@@ -30,13 +27,12 @@ function SetterWrap({ icon, setSpecs, specs }) {
  */
 function EditCPelem({ data, index, specs, setSpecs, remove }) {
 	useEffect(() => {
-		if (!('signal' in specs))
-			setSpecs('signal', { parentGroup: null, name: null });
+		if (!('signal' in specs)) setSpecs('signal', { parentGroup: '', name: '' });
 	}, [specs]);
 	const sigs =
 		specs.type == 'setter'
-			? data[specs.signal.parentGroup]?.outputs.map(item => item.name)
-			: data[specs.signal.parentGroup]?.inputs.map(item => item.name);
+			? data[specs.signal.parentGroup]?.outputs
+			: data[specs.signal.parentGroup]?.inputs;
 	const groups = Object.keys(data);
 	if (!('signal' in specs)) return <p>Загрузка</p>;
 	return (
@@ -62,12 +58,12 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 				className={inputStyles.select}
 				onChange={e => {
 					setSpecs('signal', prev => {
-						return { ...prev, parentGroup: e.target.value };
+						return { ...prev, parentGroup: e.target.value, name: '' };
 					});
 				}}
 				value={specs.signal.parentGroup}
 			>
-				<option value={null}>группа</option>
+				<option value={''}>группа</option>
 				{groups.map((group, index) => (
 					<option key={index} value={group}>
 						{group}
@@ -78,16 +74,22 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 				className={inputStyles.select}
 				onChange={e => {
 					setSpecs('signal', prev => {
-						return { ...prev, name: e.target.value };
+						const sig = sigs.filter(item => item.name == e.target.value)[0];
+						return {
+							...prev,
+							name: e.target.value,
+							turnedOnStatusName: sig?.turnedOnStatusName,
+							turnedOffStatusName: sig?.turnedOffStatusName,
+						};
 					});
 				}}
 				value={specs.signal.name}
 			>
-				<option value={null}>сигнал</option>
+				<option value={''}>сигнал</option>
 				{specs.signal.parentGroup
 					? sigs?.map((sig, index) => (
-							<option key={index} value={sig}>
-								{sig}
+							<option key={index} value={sig.name}>
+								{sig.name}
 							</option>
 						))
 					: ''}

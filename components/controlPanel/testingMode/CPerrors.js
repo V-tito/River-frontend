@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../controlPanel.module.css';
 function CPerrors({ errorList }) {
-	console.debug('errors', errorList);
+	console.debug('errorlist', errorList, Array.isArray(errorList));
 	return (
 		<div className={styles.errs}>
 			{errorList.map((err, index) => (

@@ -22,7 +22,7 @@ function RenameCPmodal({ CPname, rename }) {
 				onSubmit={handleSubmit(async data => {
 					try {
 						await rename(data.name);
-						window.location.reload();
+						//window.location.reload();
 					} catch (err) {
 						setError(err);
 					}

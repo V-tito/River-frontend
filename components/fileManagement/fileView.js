@@ -4,16 +4,19 @@ import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
 import UploadFileModal from './uploadFileModal';
 
-const FileView = ({ folder }) => {
+const FileView = ({ envName, typ }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files/gen?folder=${folder}`, {
-					method: 'GET',
-				});
+				const response = await fetch(
+					`/api/files/gen?folder=${envName}/${typ}`,
+					{
+						method: 'GET',
+					}
+				);
 				if (!response.ok) {
 					throw new Error(
 						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
@@ -38,7 +41,12 @@ const FileView = ({ folder }) => {
 		<div>
 			{Array.isArray(files)
 				? files.map(file => (
-						<FileBar key={file} folder={folder} filename={file}></FileBar>
+						<FileBar
+							key={file}
+							type={typ}
+							envName={envName}
+							filename={file}
+						></FileBar>
 					))
 				: ''}
 			<Modal state={error}>{error ? error.message : ''}</Modal>

@@ -1,7 +1,7 @@
 import {
 	fetchAllSignalsInTheEnv,
 	fetchOutputsOfAllBoards,
-} from '@/utils/hooks/getHelpers';
+} from '@/utils/api_wrap/dataProcessingHelpers/getHelpers';
 export default function handler(req, res) {
 	const slug = req.query.slug; //schemeName
 
@@ -11,11 +11,11 @@ export default function handler(req, res) {
 				slug,
 				true //sort signals into inputs and outputs
 			);
-			console.debug('got beGroup in getForTests', byGroup);
+			console.debug('got beGroup in getForTests');
 			const byBoard = await fetchOutputsOfAllBoards(slug, false); //false goes for if it's sul
-			console.debug('got byBoard in getForTests', byBoard);
+			console.debug('got byBoard in getForTests');
 			const result = { byGroup, byBoard };
-			console.debug('made result in sigs for tests', result);
+			console.debug('made result in sigs for tests');
 			res.status(200).json(result);
 		} catch (err) {
 			console.debug('error in sigs for tests', err);

@@ -9,12 +9,7 @@ import { checkExistence } from '@/utils/api_wrap/configAPI';
 import * as protocol from '@/utils/api_wrap/protocol';
 import { netError } from '@/utils/api_wrap/netError';
 import { CommandConstructionToolkit } from './commandConstructionToolkit';
-export interface Result {
-	id: string | undefined;
-	actionType: string;
-	timestamp: string;
-	res: string | undefined;
-}
+import { Result } from '../editorTabHooks/utils';
 function hasEmptyFields(command: Command) {
 	console.debug('command in hasEmptyFields', command);
 	let res = command.action == CommandAction.none;

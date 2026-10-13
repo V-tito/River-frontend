@@ -1,7 +1,7 @@
 import { CommandAction, Command } from '../command/command';
 import { CommandConstructionToolkit } from '../command/commandConstructionToolkit';
 import { EditorTab } from './utils';
-import { sigtableEntry } from '../entryTypes';
+import { sigtableEntry } from '../../interfaces/entryTypes';
 type T = React.Dispatch<React.SetStateAction<Record<string, EditorTab>>>;
 export function useCommandHooks(
 	setScript: (

@@ -1,128 +1,146 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {
+	useEffect,
+	useState,
+	useCallback,
+	useMemo,
+	useRef,
+} from 'react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import CPgrid from './CPgrid';
 import ChooseCP from '../chooseCP';
-import CPerrors from './CPerrors';
+import { usePersistentData } from '@/utils/hooks/usePersistentData';
+import { validateEntry } from '../../../utils/hooks/useCPmanager/useCPmanager';
+import { checkExistence } from '@/utils/api_wrap/configAPI';
 import { toggleScheme } from '@/utils/api_wrap/protocol';
 import { useGlobal } from '@/app/GlobalState';
-import { usePersistentData } from '@/utils/hooks/usePersistentData';
-import { useBeforeUnload } from 'react-use';
-import { useRouter } from 'next/navigation';
-
+import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
+import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
+import CPload from './CPload';
 //func for validating current cp
-function CPview({ schemeName, className = '' }) {
-	const { currentWS, schemeOn, setSchemeOn } = useGlobal();
-	const [currentCP, setCurrentCP] = useState(null);
-	const [currentContent, setCurrentContent] = useState([]);
-	const [errors, setErrors] = useState([]);
-	const [files, setFiles] = useState([]);
+function CPview({ schemeName, setResults, className = '' }) {
+	const { setPollingError, schemeOn } = useGlobal();
+	const { currentConfName, setCurrentConfName, CPs, initCPs } =
+		useCPManager(schemeName);
+	const [getterStates, setGetterStates] = useState({});
+
+	const responseWaiting = useRef(false);
+	const setResponseWaiting = val => {
+		responseWaiting.current = val;
+	};
+	const validGetters = useRef([]);
+	const intervalId = useRef();
 	const [loading, setLoading] = useState(true);
-
+	const onRef = useRef(schemeOn);
 	useEffect(() => {
-		const fetchFiles = async () => {
-			try {
-				const response = await fetch(
-					`/api/files/gen?folder=${schemeName}/CPs`,
-					{
-						method: 'GET',
-					}
-				);
-				if (!response.ok) {
-					throw new Error(
-						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
-					);
-				}
-				const result = await response.json();
-				const fileList = result.files;
-				console.debug('files in chooseCP', fileList);
-				setFiles(fileList);
-				setLoading(false);
-			} catch (err) {
-				setErrors(prev => prev.push(err));
-			}
-		};
-		if (schemeName !== undefined) {
-			fetchFiles();
-		}
-	}, []);
-
+		onRef.current = schemeOn;
+	});
 	useEffect(() => {
 		const init = async () => {
 			setLoading(true);
 			try {
-				console.debug(
-					'started polling content on api',
-					`/api/files/gen?folder=${schemeName}/CPs&filename=${currentCP}`
-				);
-				const response = await fetch(
-					`/api/files/gen?folder=${schemeName}/CPs&filename=${currentCP}`,
-					{
-						method: 'GET',
-					}
-				);
-				const contentFile = await response.json();
-				console.debug('polled content', contentFile);
-				if (contentFile.type != 'file') {
-					throw new Error(`${schemeName}/CPs/${currentCP} не является файлом`);
-				}
-				const content = JSON.parse(contentFile.content);
-				console.debug('parsedContent', content);
-				setCurrentContent(content);
+				await initCPs();
 			} catch (err) {
-				setErrors(prev => prev.push(err));
+				console.debug('some err initing testing cps');
 			}
-			setLoading(false);
 		};
-		if ((currentCP != null) & (currentCP != undefined)) init();
-	}, [currentCP]);
-	useEffect(() => {
-		console.debug('loading panel', loading);
-	}, [loading]);
-	const { saveData, loadData, clearData } = usePersistentData({
-		storageKey: 'current-control-panel',
-		storageType: 'session',
-	});
-	const saveCPToSessionStorage = cp => {
-		saveData({
-			currentCP: cp,
+		init();
+	}, []);
+	const setCPsGetterStates = (CPname, updater) => {
+		console.debug('setCPGS');
+		setGetterStates(prev => {
+			return {
+				...prev,
+				[CPname]: updater instanceof Function ? updater(prev[CPname]) : updater,
+			};
 		});
 	};
 	useEffect(() => {
-		loadCPFromSessionStorage();
-	}, []);
-
-	const loadCPFromSessionStorage = useCallback(() => {
-		const data = loadData();
-		if (data) {
-			const { currentCP } = data;
-			setCurrentCP(currentCP);
-		}
+		if (!loading) setLoading(true);
+		console.debug('cps withing reduce', CPs);
+		const newGS = Object.keys(CPs).reduce((acc, key) => {
+			return {
+				...acc,
+				[key]: CPs[key].content.reduce((acc, item) => {
+					return item.valid && item.type == 'getter'
+						? { ...acc, [item.signal.name]: { on: -1, valid: false } }
+						: acc;
+				}, {}),
+			};
+		}, {});
+		console.debug('new GS', newGS);
+		setGetterStates(newGS);
+		setLoading(false);
+	}, [CPs]);
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		window.addEventListener('pagehide', () => {
+			clearInterval(intervalId);
+		});
 	}, []);
 	useEffect(() => {
-		const timeoutId = setTimeout(() => {
-			saveCPToSessionStorage(currentCP);
-		}, 500); // Debounce 500ms
-
-		return () => clearTimeout(timeoutId);
-	}, [saveCPToSessionStorage, currentCP]);
+		if (!loading)
+			if (currentConfName) {
+				setLoading(true);
+				validGetters.current = CPs[currentConfName].content
+					.filter((elem, index) => {
+						return elem.valid && elem.type == 'getter';
+					})
+					.map(elem => elem.signal);
+				if (intervalId.current) clearInterval(intervalId);
+				const setCurrentGetters = updater =>
+					setCPsGetterStates(currentConfName, updater);
+				const firstFetch = async () => {
+					console.debug('first fetch');
+					await fetchAllStates(
+						schemeName,
+						onRef,
+						validGetters.current,
+						setPollingError,
+						responseWaiting,
+						setResponseWaiting,
+						setCurrentGetters
+					);
+					console.debug('loading false');
+					setLoading(false);
+				};
+				firstFetch();
+				intervalId.current = setInterval(
+					fetchAllStates,
+					1000,
+					schemeName,
+					onRef,
+					validGetters.current,
+					setPollingError,
+					responseWaiting,
+					setResponseWaiting,
+					setCurrentGetters
+				);
+			}
+	}, [currentConfName, CPs]);
+	useEffect(() => {
+		console.debug('gs', getterStates);
+	}, [getterStates]);
 	return (
 		<div className={className}>
 			<label className={headerStyles.modalHeader}>Панель управления</label>
 			<ChooseCP
 				schemeName={schemeName}
-				currentCP={currentCP}
-				onChange={e => setCurrentCP(e.target.value)}
-				cps={files}
+				currentConfName={currentConfName}
+				onChange={e => setCurrentConfName(e.target.value)}
+				cps={Object.keys(CPs)}
 			></ChooseCP>
-			<CPgrid
-				elems={currentContent}
-				schemeName={schemeName}
-				loadingConfig={loading}
-				setErrors={setErrors}
-			></CPgrid>
-			<CPerrors errorList={errors} />
+			{loading ? (
+				<CPload />
+			) : (
+				<CPgrid
+					elems={CPs[currentConfName]?.content ?? []}
+					currentGetterStates={getterStates[currentConfName]}
+					schemeName={schemeName}
+					schemeOn={schemeOn}
+				></CPgrid>
+			)}
 		</div>
 	);
 }

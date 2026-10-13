@@ -1,10 +1,6 @@
-import {
-	CommandExecutionToolkit,
-	Result,
-} from '../command/commandExecutionToolkit';
-import { EditorTab, addErrorId } from './utils';
+import { CommandExecutionToolkit } from '../command/commandExecutionToolkit';
+import { EditorTab, addErrorId, Result } from './utils';
 import { Command, commandTypeCheckers } from '../command/command';
-
 import { useRef, Ref, RefObject } from 'react';
 
 export function useExecutionHook(

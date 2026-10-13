@@ -7,7 +7,7 @@ import RenameCPmodal from './renameCPmodal';
 import NewCPbutton from './newCPbutton';
 import SaveButton from './saveButton';
 import { Upload, Download } from '@deemlol/next-icons';
-import { useCPManager } from '../CPmanager/CPmanager';
+import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
 import DeleteButton from '@/components/fileManagement/delButton';
 import ConfirmSave from './confirmSave';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
@@ -26,20 +26,21 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		setCurrentConfName,
 		CPs,
 		addCP,
-		saveCPToSessionStorage,
+		getNewName,
+		saveCurrentToSessionStorage,
 		deleteCP,
 		updateCPContent,
 		initCPs,
-		renameCurrentCP,
+		renameCP,
 		insertEntry,
 		removeEntry,
 		alterEntryField,
 		saveCP,
-	} = useCPManager(schemeName);
+	} = useCPManager(schemeName, 'editing');
 	const [blank, setBlank] = useState();
 	console.debug('blank', blank);
 	useEffect(() => {
-		setBlank(CPs[currentConfName]?.length);
+		setBlank(CPs[currentConfName]?.content?.length);
 	}, [currentConfName, CPs]);
 	//fetch inputs and outputs
 	useEffect(() => {
@@ -71,14 +72,6 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		fetchSignals();
 	}, [schemeName]);
 
-	useEffect(() => {
-		const timeoutId = setTimeout(() => {
-			saveCPToSessionStorage();
-		}, 500); // Debounce 500ms
-
-		return () => clearTimeout(timeoutId);
-	}, [saveCPToSessionStorage]);
-
 	if (loading) return <p>Загрузка</p>;
 	return (
 		<div>
@@ -90,7 +83,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				}}
 				cps={Object.keys(CPs)}
 			></ChooseCP>
-			<RenameCPmodal CPname={currentConfName} rename={renameCurrentCP} />
+			<RenameCPmodal CPname={currentConfName} rename={renameCP} />
 			<SaveButton saveConf={saveCP} />
 			<SaveFromVarLocally
 				formData={CPs[currentConfName]}
@@ -98,10 +91,11 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				label={<Upload />}
 				title="Экспорт"
 			/>
-			<NewCPbutton add={addCP} />
+			<NewCPbutton add={addCP} getname={getNewName} />
 			<DeleteButton
 				filepath={`?folder=${schemeName}/CPs/&filename=${currentConfName}`}
 			/>
+
 			<DragDropProvider
 				key={version}
 				onDragEnd={event => {
@@ -132,7 +126,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 							});
 						setVersion(prev => prev + 1);
 					}
-					setBlank(CPs[currentConfName].length);
+					setBlank(CPs[currentConfName].content.length);
 				}}
 				onDragOver={event => {
 					if (event.canceled) return;
@@ -151,7 +145,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 			>
 				<div className="flex flex-row">
 					<EditCPgrid
-						conf={CPs[currentConfName]}
+						conf={CPs[currentConfName]?.content}
 						setField={alterEntryField}
 						data={data}
 						groups={groups}
