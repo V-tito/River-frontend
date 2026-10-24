@@ -15,8 +15,8 @@ function CPget({ specs, onTable, schemeOn }) {
 	console.debug('getter', specs, 'isValid', valid);
 	if (valid) {
 		console.debug('name', name, 'onTable', onTable);
-		on = onTable[name].on;
-		error = onTable[name].valid;
+		on = onTable[name]?.on;
+		error = onTable[name]?.valid;
 	}
 	const icon_ = icons.getter[icon];
 	return (

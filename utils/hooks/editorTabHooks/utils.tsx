@@ -3,20 +3,13 @@ export interface fpath {
 	folder: string;
 	filename: string;
 }
-export interface Result {
-	id: string | undefined;
-	actionType: string;
-	timestamp: string;
-	res: string | undefined;
-}
 export interface EditorTab {
 	id: string;
 	name: string;
 	path: null | fpath;
 	content: Array<Command>;
-	result: Array<Result>;
 	errorIDs: Array<number>;
-	commandInExecution: number;
+	commandInExecution: number | string;
 	isBeingExecuted: boolean;
 }
 export function addErrorId(

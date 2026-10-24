@@ -2,8 +2,15 @@
 import DataCards from './views/cards/dataCards';
 import PropTypes from 'prop-types';
 import React from 'react';
-const DataView = ({ data, kind, label }) => {
-	return <DataCards data={data} type={kind} label={label}></DataCards>;
+const DataView = ({ data, kind, label, prototype = {} }) => {
+	return (
+		<DataCards
+			data={data}
+			type={kind}
+			label={label}
+			prototype={prototype}
+		></DataCards>
+	);
 };
 
 DataView.propTypes = {

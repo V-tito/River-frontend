@@ -25,7 +25,11 @@ function ExecCurrentButtons({
 						//	'on hitting the exec button, toggled on scheme with response',
 						//</div>	toggleres
 						//);
-						await executeTabScript(currentTabId, tabs[currentTabId].content);
+						await executeTabScript(
+							currentTabId,
+							tabs[currentTabId].name,
+							tabs[currentTabId].content
+						);
 						//console.debug('on hitting the exec button, toggling off scheme');
 						//await toggleScheme(schemeName, false);
 						//console.debug('on hitting the exec button, toggled off scheme');

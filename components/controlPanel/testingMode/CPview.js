@@ -10,16 +10,12 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import CPgrid from './CPgrid';
 import ChooseCP from '../chooseCP';
-import { usePersistentData } from '@/utils/hooks/usePersistentData';
-import { validateEntry } from '../../../utils/hooks/useCPmanager/useCPmanager';
-import { checkExistence } from '@/utils/api_wrap/configAPI';
-import { toggleScheme } from '@/utils/api_wrap/protocol';
 import { useGlobal } from '@/app/GlobalState';
 import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
 import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
 import CPload from './CPload';
 //func for validating current cp
-function CPview({ schemeName, setResults, className = '' }) {
+function CPview({ schemeName, writeLog, className = '' }) {
 	const { setPollingError, schemeOn } = useGlobal();
 	const { currentConfName, setCurrentConfName, CPs, initCPs } =
 		useCPManager(schemeName);
@@ -122,6 +118,7 @@ function CPview({ schemeName, setResults, className = '' }) {
 	useEffect(() => {
 		console.debug('gs', getterStates);
 	}, [getterStates]);
+	const CPlogger = (msg, typ) => writeLog(msg, typ, 'panel', currentConfName);
 	return (
 		<div className={className}>
 			<label className={headerStyles.modalHeader}>Панель управления</label>
@@ -139,6 +136,7 @@ function CPview({ schemeName, setResults, className = '' }) {
 					currentGetterStates={getterStates[currentConfName]}
 					schemeName={schemeName}
 					schemeOn={schemeOn}
+					writeLog={CPlogger}
 				></CPgrid>
 			)}
 		</div>

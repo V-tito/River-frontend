@@ -5,7 +5,7 @@
   .checker{
     background-color: lightgreen;
   }
-  .include{
+  .wrapper{
     background-color: rgb(253, 126, 232);
   }
   .active{
@@ -46,7 +46,7 @@
     .checker{
       background-color: #007328;
     }
-    .include{
+    .wrapper{
       background-color: rgb(204, 46, 183);
     }
     .summary{ background-color:#144b27;}

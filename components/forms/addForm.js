@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { postHelper } from '@/utils/api_wrap/dataProcessingHelpers/postPatchHelpers';
 
 const AddForm = ({ table, object = {} }) => {
+	console.debug('prototype in add form', object);
 	const { currentWS } = useGlobal();
 	const [config, setConfig] = useState([]);
 	const [error, setError] = useState(null);
@@ -55,21 +56,25 @@ const AddForm = ({ table, object = {} }) => {
 			setLoading(false);
 		}
 	}, [table, currentWS]);
-
-	const defaults =
-		object != {}
-			? table == 'Signal'
-				? {
-						...object,
-						parentGroup: object.parentGroup ? object.parentGroup : null,
-						testBoard: object.testBoard ? object.testBoard.name : null,
-					}
-				: object
-			: table == 'TestBoard'
-				? { maxInputs: 32, maxOutputs: 24, protocolVersion: 1 }
-				: {};
+	let defObj = object;
+	if (table == 'Signal' || table == 'SulSignal') {
+		const protogroup = object?.parentGroup?.name;
+		const protoboard = object?.testBoard?.name;
+		const protosul = object?.parentSul?.name;
+		if (protogroup) defObj.parentGroup = protogroup;
+		if (protoboard) defObj.testBoard = protoboard;
+		else if (protosul) defObj.parentSul = protosul;
+	}
+	if (table == 'TestBoard') {
+		defObj.maxInputs = defObj.maxInputs ?? 32;
+		defObj.maxOutputs = defObj.maxOutputs ?? 24;
+		defObj.protocolVersion = defObj.protocolVersion ?? 1;
+	}
+	console.debug('defObj', defObj);
+	const defaults = defObj;
 	if ('id' in defaults) delete defaults.id;
-	const { register, handleSubmit, reset, watch } = useForm({
+	console.debug('defaults in addform', defaults);
+	const { register, handleSubmit, reset, resetDefaultValues, watch } = useForm({
 		defaultValues: defaults,
 	});
 	const watchers = config.reduce((acc, field) => {
@@ -87,7 +92,31 @@ const AddForm = ({ table, object = {} }) => {
 			}
 		}
 	};
-
+	useEffect(() => {
+		if (object != {}) {
+			const defObj =
+				object != {}
+					? table == 'Signal'
+						? {
+								...object,
+								parentGroup: object.parentGroup
+									? object.parentGroup.name
+									: null,
+								testBoard: object.testBoard ? object.testBoard.name : null,
+							}
+						: table == 'SulSignal'
+							? {
+									...object,
+									parentGroup: object.parentGroup
+										? object.parentGroup.name
+										: null,
+									parentSul: object.parentSul ? object.parentSul.name : null,
+								}
+							: object
+					: null;
+			resetDefaultValues(defObj);
+		}
+	}, [object]);
 	if (loading) return <p>Загружается форма...</p>;
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -129,7 +158,7 @@ const AddForm = ({ table, object = {} }) => {
 							id={field.id}
 							{...register(field.id, field.validation)}
 						>
-							<option className={inputStyles.option} value={null}>
+							<option className={inputStyles.option} value={''}>
 								Выберите элемент...
 							</option>
 							{nameAliases[field.id].map(item => (

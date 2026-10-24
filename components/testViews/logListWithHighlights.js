@@ -3,29 +3,29 @@ import styles from './editor.module.css';
 import colorStyles from './commandStatusColors.module.css';
 import PropTypes from 'prop-types';
 import { execAndMouseDisplayContext } from './editor';
-const ResultsViewWithHighlight = ({ results }) => {
+const LogListWithHighlights = ({ results, formatter }) => {
 	const { isHovered, setIsHovered } = useContext(execAndMouseDisplayContext);
 	return (
 		<div className={styles.editor}>
 			{results.map((result, i) => (
 				<p
 					onMouseEnter={() => {
-						console.debug('in results, set IsHovered as', result.id);
-						setIsHovered(result.id);
+						console.debug('in results, set IsHovered as', result.commandID);
+						setIsHovered(result.commandID);
 					}}
 					onMouseLeave={() => setIsHovered(null)}
 					key={i}
-					className={`${colorStyles[result.actionType]} ${result.id != null && result.id != undefined && isHovered == result.id ? colorStyles.active : ''}`}
+					className={`${colorStyles[result.actionType]} ${result.commandID != null && result.commandID != undefined && isHovered == result.commandID ? colorStyles.active : ''}`}
 				>
-					{result.timestamp} : {result.res}
+					{formatter(result)}
 				</p>
 			))}
 		</div>
 	);
 };
-ResultsViewWithHighlight.propTypes = {
+LogListWithHighlights.propTypes = {
 	results: PropTypes.array,
 	isHovered: PropTypes.number,
 	setIsHovered: PropTypes.func,
 };
-export default ResultsViewWithHighlight;
+export default LogListWithHighlights;

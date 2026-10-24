@@ -4,62 +4,24 @@ import {
 	CommandAction,
 	commandTypeCheckers,
 } from '@/utils/hooks/command/command';
-import { CommandBarHelpers } from '../command/commandBarHelpers';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
 import * as protocol from '@/utils/api_wrap/protocol';
 import { netError } from '@/utils/api_wrap/netError';
 import { CommandConstructionToolkit } from './commandConstructionToolkit';
-import { Result } from '../editorTabHooks/utils';
-function hasEmptyFields(command: Command) {
-	console.debug('command in hasEmptyFields', command);
-	let res = command.action == CommandAction.none;
-	if (commandTypeCheckers.isSignalCommand(command))
-		res = res || command.group == '' || command.signal == '';
-	if (commandTypeCheckers.isInclude(command))
-		res = res || command.scriptPath == '';
-	if (commandTypeCheckers.isLoop(command))
-		res = res || command.loopContent.length == 0;
-	return res;
-}
-async function preprocess<T extends Command>(command: T, index: number) {
+
+async function preprocess<T extends Command>(command: T) {
 	if (
 		commandTypeCheckers.isWaitForSignal(command) ||
 		commandTypeCheckers.isWaitForTime(command)
 	) {
-		let res: string;
 		if (commandTypeCheckers.isWaitForSignal(command))
-			res = `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue != 0 ? 'активен' : 'неактивен'}`;
-		else res = 'Ожидание...';
-
-		const now = new Date();
-		return {
-			res: res,
-			timestamp: now.toLocaleTimeString(),
-			actionType: 'checker',
-			id: command.id,
-			fatal: false,
-		};
+			return `Ждем, пока сигнал ${command.signal} не станет ${command.expectedValue != 0 ? 'активен' : 'неактивен'}`;
+		else return 'Ожидание...';
 	} else if (commandTypeCheckers.isInclude(command)) {
-		const now = new Date();
-		return {
-			res: `Подгружаем скрипт ${command.scriptPath}`,
-			timestamp: now.toLocaleTimeString(),
-			actionType: 'include',
-			id: command.id,
-			fatal: false,
-		};
-	}
-	if (commandTypeCheckers.isLoop(command)) {
-		const now = new Date();
-		return {
-			res: `Начинаем цикл`,
-			timestamp: now.toLocaleTimeString(),
-			actionType: 'include',
-			id: command.id,
-			fatal: false,
-		};
-	}
-	return;
+		return `Подгружаем скрипт ${command.scriptPath}`;
+	} else if (commandTypeCheckers.isLoop(command)) {
+		return `Начинаем цикл`;
+	} else return;
 }
 
 const checkExpected = (command: Command, result: Record<string, any>) => {
@@ -153,7 +115,7 @@ async function execute<T extends Command>(
 	abort: AbortController
 ) {
 	console.debug('execute command ', command);
-	let message;
+	let message = '';
 	let response;
 	let checkError = false;
 	if (commandTypeCheckers.isSignalCommand(command)) {
@@ -335,24 +297,13 @@ async function execute<T extends Command>(
 			}
 		message = `Цикл завершен`;
 	}
-	const now = new Date();
 	return {
 		res: message,
-		timestamp: now.toLocaleTimeString(),
-		actionType: checkError
-			? 'checkError'
-			: CommandBarHelpers.isSetter(command)
-				? 'setter'
-				: commandTypeCheckers.isInclude(command) ||
-					  commandTypeCheckers.isLoop(command)
-					? 'include'
-					: 'checker',
-		id: command.id,
+		checkError,
 	};
 }
 
 export const CommandExecutionToolkit = {
 	preprocess,
 	execute,
-	hasEmptyFields,
 };

@@ -1,13 +1,27 @@
 import { CommandExecutionToolkit } from '../command/commandExecutionToolkit';
-import { EditorTab, addErrorId, Result } from './utils';
 import { Command, commandTypeCheckers } from '../command/command';
-import { useRef, Ref, RefObject } from 'react';
-
+import { useRef } from 'react';
+import { CommandBarHelpers } from '../command/commandBarHelpers';
+const commandActionToLogType = (command: Command) => {
+	return CommandBarHelpers.isSetter(command)
+		? 'setter'
+		: commandTypeCheckers.isInclude(command) ||
+			  commandTypeCheckers.isLoop(command)
+			? 'wrapper'
+			: 'checker';
+};
 export function useExecutionHook(
-	setTabs: React.Dispatch<React.SetStateAction<Record<string, EditorTab>>>,
-	currentTabId: string
+	setCurrentCommand: (tabId: string, commandId: string | number) => void,
+	toggleExecState: (tabId: string, isBeingExecuted: boolean) => void,
+	addErrID: (tabId: string, errId: string | number) => void,
+	appendResultToLog: (
+		msg: string,
+		actionType: string,
+		id: string,
+		testName: string
+	) => void
 ) {
-	const { preprocess, execute, hasEmptyFields } = CommandExecutionToolkit;
+	const { preprocess, execute } = CommandExecutionToolkit;
 	const abortControllers = useRef<Record<string, AbortController>>({});
 	function addAbortController(id: string) {
 		const res = new AbortController();
@@ -17,106 +31,46 @@ export function useExecutionHook(
 		};
 		return res;
 	}
-	function updateTabResults(id: string | undefined, result: Result) {
-		if (id == undefined) throw new Error('Не определен идентификатор вкладки');
-		setTabs(prev => {
-			if (prev[id] != undefined)
-				return {
-					...prev,
-					[id]: {
-						...prev[id],
-						result: [...prev[id].result, result],
-					} as EditorTab,
-				};
-			else throw new Error('Несуществующая вкладка');
-		});
-	}
-	function clearTabResults(id: string | undefined) {
-		if (id == undefined) throw new Error('Не определен идентификатор вкладки');
-		setTabs(prev => {
-			return {
-				...prev,
-				[id]: { ...prev[id], result: [] } as EditorTab,
-			};
-		});
-	}
-	function clearTabErrorIds(tabId: string) {
-		setTabs(prev => ({
-			...prev,
-			[tabId]: { ...prev[tabId], errorIDs: [] } as EditorTab,
-		}));
-	}
 
-	function setCurrentTabErrorIDs(
-		updater: (prev: Array<number>) => Array<number>
-	) {
-		setTabs(prev => {
-			if (prev[currentTabId] != undefined)
-				return {
-					...prev,
-					[currentTabId]: {
-						...prev[currentTabId],
-						errorIDs: updater(prev[currentTabId].errorIDs),
-					} as EditorTab,
-				};
-			else throw new Error('Несуществующая вкладка');
-		});
-	}
-	function setCurrentCommand(tabId: string, commandId: number) {
-		setTabs(prev => ({
-			...prev,
-			[tabId]: { ...prev[tabId], commandInExecution: commandId } as EditorTab,
-		}));
-	}
-	function makeErrorResult(id: string | undefined, msg: string) {
-		if (id == undefined) {
-			console.debug('called makeError with unknown id and msg', msg);
-			throw new Error('Не определен идентификатор команды');
-		}
-		const now = new Date().toLocaleTimeString();
-		return { id: id, actionType: 'error', timestamp: now, res: msg } as Result;
-	}
 	async function executeEntry(
 		tabId: string,
+		tabName: string,
 		entry: Command,
 		index: number,
 		abort: AbortController
 	) {
 		console.debug('started executing entry ', entry);
-		const prepres = await preprocess(entry, index);
-		if (prepres) updateTabResults(tabId, prepres);
+		const logtyp = commandActionToLogType(entry);
+		const updateLog = (typ: string, msg: string) =>
+			appendResultToLog(msg, typ, entry.id, tabName);
+		const prepres = await preprocess(entry);
+		if (prepres) {
+			updateLog(logtyp, prepres);
+		}
 		try {
 			const iteratorLambda = async (cont: Command, ind: number) => {
-				await executeEntry(tabId, cont, ind, abort);
+				await executeEntry(tabId, tabName, cont, ind, abort);
 			};
-			const res = await execute(entry, index, iteratorLambda, abort);
-			updateTabResults(tabId, res);
-			return res;
+			const { res, checkError } = await execute(
+				entry,
+				index,
+				iteratorLambda,
+				abort
+			);
+			updateLog(checkError ? 'checkError' : logtyp, res);
+			return { checkError };
 		} catch (err: any) {
 			console.debug('caught err while executing entry', err);
-			addErrorId(setTabs, tabId, index);
-			if (err instanceof Error) {
-				const err_ = makeErrorResult(entry.id, err.message);
-				updateTabResults(tabId, err_);
-				return err_;
-			}
-			//updateTabResults(tabId, makeErrorResult(entry.id, err.message));
-			else {
-				const err_ = makeErrorResult(entry.id, 'неизвестная ошибка');
-				updateTabResults(tabId, err_);
-				return err_;
-			}
-			//updateTabResults(
-			//	tabId,
-			//	makeErrorResult(entry.id, 'неизвестная ошибка')
-			//);
-
-			//return false;
+			const errmsg = err.message ?? 'неизвестная ошибка';
+			addErrID(tabId, index);
+			updateLog('error', errmsg);
+			return { error: true };
 		}
 	}
 
 	async function executeTabScript(
 		id: string | undefined,
+		name: string,
 		tabContent: Array<Command>
 		//abort: RefObject<Record<string, AbortController> | null> | null
 	) {
@@ -125,12 +79,7 @@ export function useExecutionHook(
 		console.info('start executing tab ', id, 'with contents ', tabContent);
 		await new Promise(res => setTimeout(res, 500));
 		console.log('waited 1.5 seconds');
-		clearTabResults(id);
-		clearTabErrorIds(id);
-		setTabs(prev => ({
-			...prev,
-			[id]: { ...prev[id], isBeingExecuted: true } as EditorTab,
-		}));
+		toggleExecState(id, true);
 
 		let fatal = false;
 		let aborted = false;
@@ -148,13 +97,18 @@ export function useExecutionHook(
 			const item = tabContent[executed];
 			setCurrentCommand(id, executed);
 			if (item != undefined) {
-				const res = await executeEntry(id, item, executed, abort);
-				//updateTabResults(id, res);
+				const { checkError, error } = await executeEntry(
+					id,
+					name,
+					item,
+					executed,
+					abort
+				);
 				if (
 					commandTypeCheckers.isCheck(item) ||
 					commandTypeCheckers.isWaitForSignal(item)
 				) {
-					if (res.actionType == 'checkError') {
+					if (checkError) {
 						checkErrors++;
 						if (item.fatal) {
 							fatal = true;
@@ -163,41 +117,20 @@ export function useExecutionHook(
 					} else {
 						checks++;
 					}
-				} else if (res.actionType == 'error') netErrors++;
+				} else if (error) netErrors++;
 				if (fatal) break;
 			}
 		}
 		if (!fatal && !aborted) setCurrentCommand(id, tabContent.length);
 		else if (!aborted) executed++;
-		setTabs(prev => ({
-			...prev,
-			[id]: { ...prev[id], isBeingExecuted: false } as EditorTab,
-		}));
-		const now = new Date().toLocaleTimeString();
+		toggleExecState(id, false);
 		const msg = `Выполнено команд: ${executed}.\n Успешных тестов: ${checks}.\n Ошибочных тестов: ${checkErrors}. \n Других инструкций: ${executed - checks - checkErrors}. \n ${netErrors > 0 ? `${netErrors} команд завершились с ошибкой из-за внутренних ошибок стенда или ошибок скрипта. \n` : ''} Выполнение ${aborted ? 'было прервано' : ` ${fatal ? 'завершилось из-за фатальной ошибки теста' : 'завершилось БЕЗ фатальных ошибок теста'}`}.`;
-		const summary = {
-			id: id,
-			actionType: checkErrors + netErrors > 0 ? 'error' : 'summary',
-			timestamp: now,
-			res: msg,
-		};
-		updateTabResults(id, summary as Result);
-	}
-	function entryHasEmptyFields(entry: EditorTab) {
-		console.debug('entry in entryHasEmptyFields', entry);
-		entry.content.reduce((acc, command) => {
-			console.debug(
-				'command in tab being processed in etry has empty fields',
-				command
-			);
-			return acc || hasEmptyFields(command);
-		}, false);
+		const summaryTyp = checkErrors + netErrors > 0 ? 'error' : 'summary';
+		appendResultToLog(msg, summaryTyp, id, name);
 	}
 
 	return {
-		setCurrentTabErrorIDs,
 		executeTabScript,
-		entryHasEmptyFields,
 		abortControllers,
 	};
 }

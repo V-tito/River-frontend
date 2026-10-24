@@ -36,7 +36,6 @@ export function useTabManager(scheme: string) {
 				name: name,
 				path: path,
 				content: [],
-				result: [],
 				errorIDs: [],
 				commandInExecution: -1,
 				isBeingExecuted: false,
@@ -242,6 +241,57 @@ export function useTabManager(scheme: string) {
 		},
 		[tabs, currentTabId]
 	);
+	const setCurrentCommand = useCallback(
+		(tabId: string, commandId: string | number) => {
+			if (!tabId) return;
+			setTabs(prev => {
+				const tab = prev[tabId];
+				if (tab == undefined) throw new Error('Несуществующая вкладка');
+				return {
+					...prev,
+					[tabId]: {
+						...prev[tabId],
+						commandInExecution: commandId,
+					} as EditorTab,
+				};
+			});
+		},
+		[tabs]
+	);
+	const toggleBeingExec = useCallback(
+		(tabId: string, isExec: boolean) => {
+			if (!tabId) return;
+			setTabs(prev => {
+				const tab = prev[tabId];
+				if (tab == undefined) throw new Error('Несуществующая вкладка');
+				return {
+					...prev,
+					[tabId]: {
+						...prev[tabId],
+						isBeingExecuted: isExec,
+					} as EditorTab,
+				};
+			});
+		},
+		[tabs]
+	);
+	function setTabErrorIDs(
+		tabId: string,
+		updater: (prev: Array<number>) => Array<number>
+	) {
+		if (!tabId) return;
+		setTabs(prev => {
+			if (prev[tabId] != undefined)
+				return {
+					...prev,
+					[tabId]: {
+						...prev[tabId],
+						errorIDs: updater(prev[tabId].errorIDs),
+					} as EditorTab,
+				};
+			else throw new Error('Несуществующая вкладка');
+		});
+	}
 	return {
 		currentTabId,
 		setCurrentTabId,
@@ -256,5 +306,8 @@ export function useTabManager(scheme: string) {
 		initTabs,
 		resetTabContent,
 		updateTabContent,
+		setCurrentCommand,
+		toggleBeingExec,
+		setTabErrorIDs,
 	};
 }

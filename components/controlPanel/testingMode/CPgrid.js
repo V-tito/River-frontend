@@ -12,6 +12,7 @@ function CPgrid({
 	currentGetterStates,
 	schemeName = '',
 	schemeOn,
+	writeLog,
 }) {
 	const [setterInit, setsetterInit] = useState({});
 	const [loading, setLoading] = useState(true);
@@ -43,7 +44,7 @@ function CPgrid({
 			setLoading(false);
 		}
 	}, [elems]);
-	if (loading) return <CPload />;
+	if (loading || !currentGetterStates) return <CPload />;
 	return (
 		<div className={styles.grid}>
 			{elems.map((elem, index) =>
@@ -55,6 +56,7 @@ function CPgrid({
 						haveInit={setterInit}
 						setHaveInit={setsetterInit}
 						schemeOn={schemeOn}
+						writeLog={writeLog}
 					></CPset>
 				) : (
 					<CPget
@@ -62,6 +64,7 @@ function CPgrid({
 						onTable={currentGetterStates}
 						schemeOn={schemeOn}
 						key={index}
+						writeLog={writeLog}
 					></CPget>
 				)
 			)}

@@ -10,7 +10,6 @@ export const errorIDsContext = createContext();
 export const SchemeContext = createContext();
 const EditorTabs = ({
 	tabs,
-	setTabs,
 	currentTabId,
 	updateTabContent,
 	setCurrentTabErrorIDs,
@@ -19,19 +18,7 @@ const EditorTabs = ({
 }) => {
 	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
-	const setScript = updater =>
-		setTabs(prev => {
-			return {
-				...prev,
-				[currentTabId]: {
-					...prev[currentTabId],
-					content:
-						typeof updater == 'function'
-							? updater(prev[currentTabId].content)
-							: updater,
-				},
-			};
-		});
+	const setScript = updater => updateTabContent(updater, currentTabId);
 	return (
 		<div className={styles.showBorderless}>
 			<header className={headerStyles.modalHeader}>Редактор команд: </header>

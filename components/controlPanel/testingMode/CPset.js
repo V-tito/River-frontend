@@ -9,12 +9,34 @@ import Image from 'next/image';
  * generates CP set selement for panel in test mode only (for the time being)
  * @param {Record<string,Record<string,string>|string>} param0 has two required fields. First one, specs, is a record with fields "group","signal", "icon" and "default_", corresponding to group name, signal name, icon type ("trigger"/"lamp") and default value the signal must be set to when the panel is loaded. the second field, schemeName, defines backend environment
  */
-function CPset({ specs, schemeName, haveInit, setHaveInit, schemeOn }) {
+function CPset({
+	specs,
+	schemeName,
+	haveInit,
+	setHaveInit,
+	schemeOn,
+	writeLog,
+}) {
 	const { signal, icon, default_, valid } = specs;
 	const { parentGroup, name, turnedOnStatusName, turnedOffStatusName } = signal;
 	const [on, setOn] = useState(-1);
 	const [disabled, setDisabled] = useState(true);
 	const icon_ = icons.setter[icon];
+	const logSet = val =>
+		writeLog(
+			'Панель управления: значение сигнала ' +
+				name +
+				' установлено на ' +
+				Number(val),
+			'setter'
+		);
+	const logErr = err => {
+		writeLog(
+			'Панель управления: ' + err.message ?? 'неизвестная ошибка',
+			'error'
+		);
+	};
+
 	useEffect(() => {
 		const setDef = async () => {
 			console.debug('schemeOn in setter', schemeOn, 'default_', default_);
@@ -24,10 +46,11 @@ function CPset({ specs, schemeName, haveInit, setHaveInit, schemeOn }) {
 						await setSignalState(schemeName, parentGroup, name, default_);
 						console.debug('have set state in cp');
 						console.debug('setting on');
+						logSet(default_);
 						setOn(default_);
 					} catch (err) {
 						console.debug('caught error', err);
-						const now = new Date().toLocaleTimeString();
+						logErr(err);
 					}
 				}
 			setHaveInit(prev => {
@@ -49,11 +72,12 @@ function CPset({ specs, schemeName, haveInit, setHaveInit, schemeOn }) {
 			onClick={async e => {
 				try {
 					await setSignalState(schemeName, parentGroup, name, !on);
+					logSet(!on);
 					setOn(!on);
 					console.debug('sent set state');
 				} catch (err) {
 					console.debug('caught error');
-					const now = new Date().toLocaleTimeString();
+					logErr(err);
 				}
 			}}
 			disabled={disabled}

@@ -104,6 +104,7 @@ const SignalList = () => {
 											data={data[group.name]}
 											kind="Signal"
 											label={`сигналы группы ${group.name}`}
+											prototype={{ parentGroup: { name: group.name } }}
 										></DataView>
 									) : pollingError ? (
 										<p className={headerStyles.warning}>
@@ -143,6 +144,7 @@ const SignalList = () => {
 											data={sulData[group.name]}
 											kind="SulSignal"
 											label={`сигналы СУЛ группы ${group.name}`}
+											prototype={{ parentGroup: { name: group.name } }}
 										></DataView>
 									) : pollingError ? (
 										<p className={headerStyles.warning}>

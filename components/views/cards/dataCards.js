@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './cards.module.css';
 import PropTypes from 'prop-types';
 
-const DataCards = ({ type, data, label }) => {
+const DataCards = ({ type, data, label, prototype = {} }) => {
 	const [config, setConfig] = useState({ features: [], types: [] });
 	const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ const DataCards = ({ type, data, label }) => {
 						)
 					: null}
 				{(type == 'Sul') & (data.length > 0) ? null : (
-					<AddCard type={type}></AddCard>
+					<AddCard type={type} prototype={prototype}></AddCard>
 				)}
 			</div>
 		</div>

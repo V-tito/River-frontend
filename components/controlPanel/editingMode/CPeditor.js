@@ -60,7 +60,36 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
-				setData(conf.data);
+				const sulResponse = await fetch(
+					`/api/getSulSignalTables/${schemeName}?sortedSignals=true`
+				);
+				const sulConf = await sulResponse.json();
+				if (!sulResponse.ok) {
+					throw new Error(`Ошибка сети ${sulResponse.status}`);
+				}
+				console.debug('conf', conf, 'sulconf', sulConf, 'groups', conf.groups);
+				const dataWithSulInputs = conf.groups.reduce((acc, group) => {
+					const groupContent = {
+						inputs: [
+							...conf.data[group.name].inputs,
+							...sulConf.data[group.name].inputs,
+						],
+						outputs: conf.data[group.name].outputs,
+					};
+					console.debug(
+						'group content',
+						groupContent,
+						'for group',
+						group,
+						'while acc is',
+						acc
+					);
+					return {
+						...acc,
+						[group.name]: groupContent,
+					};
+				}, {});
+				setData(dataWithSulInputs);
 				setGroups(conf.groups);
 			} catch (err) {
 				if (err instanceof Error) {
@@ -77,7 +106,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		<div>
 			<ChooseCP
 				schemeName={schemeName}
-				currentCP={currentConfName}
+				currentConfName={currentConfName}
 				onChange={e => {
 					setCurrentConfName(e.target.value);
 				}}

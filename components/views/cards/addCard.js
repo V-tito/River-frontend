@@ -9,7 +9,7 @@ import buttonStyles from '@/styles/buttonStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import AddFromFileModal from '@/components/modals/addFromFileModal';
 import AddModal from '@/components/modals/addModal';
-const AddCard = ({ type }) => {
+const AddCard = ({ type, prototype }) => {
 	return (
 		<Popup
 			trigger={
@@ -35,7 +35,7 @@ const AddCard = ({ type }) => {
 					</div>
 
 					<div className={buttonStyles.buttons}>
-						<AddModal table={type}></AddModal>
+						<AddModal table={type} prototype={prototype}></AddModal>
 						<AddFromFileModal table={type}></AddFromFileModal>
 					</div>
 				</div>

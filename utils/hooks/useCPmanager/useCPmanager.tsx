@@ -180,9 +180,8 @@ function testingMode(schemeName: string) {
 		setCurrentConfName,
 		CPs,
 		setCPs,
-		saveCurrentToSessionStorage,
+		loadCurrentFromSessionStorage,
 		getInitialCPs,
-		updateCPContent,
 		init,
 		setInit,
 	} = baseMode(schemeName, 'tester');
@@ -217,6 +216,7 @@ function testingMode(schemeName: string) {
 			} finally {
 				console.debug('settingCPs', newCPs);
 				setCPs(newCPs);
+				loadCurrentFromSessionStorage();
 				setInit(true);
 			}
 		}

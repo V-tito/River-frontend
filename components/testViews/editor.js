@@ -1,27 +1,21 @@
 //lib tools
-import React, {
-	useState,
-	useEffect,
-	createContext,
-	useCallback,
-	useRef,
-} from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useBeforeUnload } from 'react-use';
-
+import React, { useState, useEffect, createContext, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 //styles
 import styles from './editor.module.css';
 //components
 import CPview from '@/components/controlPanel/testingMode/CPview';
 import FileManager from './fileManagerForEditor';
 import EditorTabs from './editorTabs';
-import ResultTabs from './resultTabs';
+import LogView from './logView';
 import TabHeaders from './tabHeaders';
 import ExecCurrentButtons from './execCurrentButtons';
 //hooks
 import { useGlobal } from '@/app/GlobalState';
 import { useTabManager } from '@/utils/hooks/editorTabHooks/useTabManager';
 import { useExecutionHook } from '@/utils/hooks/editorTabHooks/useExecutionHook';
+import { addErrorId } from '@/utils/hooks/editorTabHooks/utils';
+import { useTesterLog } from '@/utils/hooks/useTesterLog';
 
 export const execAndMouseDisplayContext = createContext();
 const Editor = ({ scheme }) => {
@@ -43,14 +37,22 @@ const Editor = ({ scheme }) => {
 		initTabs,
 		resetTabContent,
 		updateTabContent,
+		setCurrentCommand,
+		toggleBeingExec,
+		setTabErrorIDs,
 	} = useTabManager(scheme.name);
 	console.info('mounted Editor component');
-	const {
-		setCurrentTabErrorIDs,
-		executeTabScript,
-		entryHasEmptyFields,
-		abortControllers,
-	} = useExecutionHook(setTabs, currentTabId);
+	const errads = (tabId, errorId) => addErrorId(setTabs, tabId, errorId);
+	const { log, appendResultToLog, stringifyResult } = useTesterLog();
+	const { executeTabScript, abortControllers } = useExecutionHook(
+		setCurrentCommand,
+		toggleBeingExec,
+		errads,
+		appendResultToLog
+	);
+	const setCurrentTabErrorIDs = updater =>
+		setTabErrorIDs(currentTabId, updater);
+
 	const [loading, setLoading] = useState(true);
 	const params = useSearchParams();
 	const folder = params.get('folder');
@@ -116,8 +118,12 @@ const Editor = ({ scheme }) => {
 				}}
 			>
 				<div className={styles.main}>
-					<CPview schemeName={scheme.name} className={styles.show}></CPview>
-					<div className="flex flex-col">
+					<CPview
+						schemeName={scheme.name}
+						className={styles.show}
+						writeLog={appendResultToLog}
+					></CPview>
+					<div className={styles.tabs}>
 						<TabHeaders
 							execBlock={execBlock}
 							setExecBlock={setExecBlock}
@@ -132,7 +138,6 @@ const Editor = ({ scheme }) => {
 						<div className={styles.show}>
 							<EditorTabs
 								tabs={tabs}
-								setTabs={setTabs}
 								currentTabId={currentTabId}
 								updateTabContent={updateTabContent}
 								setCurrentTabErrorIDs={setCurrentTabErrorIDs}
@@ -161,10 +166,11 @@ const Editor = ({ scheme }) => {
 						</div>
 					</div>
 				</div>
-				<ResultTabs
+				<LogView
 					className={styles.results}
-					results={currentTabId ? tabs[currentTabId].result : []}
-				></ResultTabs>
+					results={log ?? []}
+					formatter={stringifyResult}
+				></LogView>
 			</execAndMouseDisplayContext.Provider>
 		</div>
 	);

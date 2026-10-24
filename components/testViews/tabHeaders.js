@@ -29,7 +29,12 @@ function TabHeaders({
 					//await toggleScheme(schemeName);
 					//console.debug('on hitting the ExecAll button, toggled on scheme');
 					const all = Object.keys(tabs).map(
-						async tabID => await executeTabScript(tabID, tabs[tabID].content)
+						async tabID =>
+							await executeTabScript(
+								tabID,
+								tabs[tabID].name,
+								tabs[tabID].content
+							)
 					);
 					await Promise.all(all);
 					//console.debug('on hitting the ExecAll button, toggling off scheme');
