@@ -12,6 +12,7 @@
     "@deemlol/next-icons": "^0.2.7",
     "@dnd-kit/helpers": "^0.5.0",
     "@dnd-kit/react": "^0.5.0",
+    "@files-ui/react": "^2.1.0",
     "formidable": "^3.5.4",
     "fs-extra": "^11.3.6",
     "next": "^16.2.12",
@@ -38,6 +39,7 @@
   },
   "allowScripts": {
     "sharp@0.34.5": true,
-    "es5-ext@0.10.64": true
+    "es5-ext@0.10.64": true,
+    "@dynamicss/dynamicss@2.2.8": true
   }
 }

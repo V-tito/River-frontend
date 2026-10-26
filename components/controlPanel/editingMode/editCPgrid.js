@@ -39,6 +39,7 @@ function EditCPgrid({
 	remove,
 	blankIndex,
 	noConf,
+	style,
 }) {
 	//for rep with coordinates
 	/**let rows = [];
@@ -63,7 +64,7 @@ function EditCPgrid({
 	console.debug('remove action', remove);
 	return (
 		<div ref={ref} className="flex w-full">
-			<ul className={styles.grid}>
+			<ul className={styles.grid} style={style}>
 				{conf
 					?.map((item, index) => (
 						<SortableElem

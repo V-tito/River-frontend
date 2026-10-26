@@ -3,9 +3,6 @@ import CPset from './CPset';
 import CPget from './CPget';
 import CPload from './CPload';
 import styles from '../controlPanel.module.css';
-import { useGlobal } from '@/app/GlobalState';
-import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
-import { Loader } from '@deemlol/next-icons';
 
 function CPgrid({
 	elems = [],
@@ -13,6 +10,7 @@ function CPgrid({
 	schemeName = '',
 	schemeOn,
 	writeLog,
+	style,
 }) {
 	const [setterInit, setsetterInit] = useState({});
 	const [loading, setLoading] = useState(true);
@@ -46,7 +44,7 @@ function CPgrid({
 	}, [elems]);
 	if (loading || !currentGetterStates) return <CPload />;
 	return (
-		<div className={styles.grid}>
+		<div className={styles.grid} style={style}>
 			{elems.map((elem, index) =>
 				elem.type == 'setter' ? (
 					<CPset

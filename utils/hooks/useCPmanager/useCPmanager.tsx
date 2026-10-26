@@ -6,18 +6,28 @@ import {
 import { usePersistentData } from '@/utils/hooks/usePersistentData';
 import { netError } from '@/utils/api_wrap/netError';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
-
+interface Coordinates {
+	x: string;
+	y: string;
+}
+interface CPstyle {
+	width: string;
+	height: string;
+	background: string;
+}
 interface CPentry {
 	signal: MinimalSignal;
 	icon: string;
 	type: string;
 	id: string;
 	default_: number;
+	position: Coordinates;
 }
 interface CP {
 	name: string;
 	content: Array<CPentry>;
 	isSaved: boolean;
+	style: CPstyle | undefined;
 }
 interface blobp {
 	name: string;
@@ -41,12 +51,17 @@ const convertEntry = (entry: entryGen) => {
 		if (key in defaults) res[key] = defaults[key as keyof typeof defaults];
 	return res as unknown as CPentry;
 };
-const makeCPfromContents = (name: string, contents: Array<entryGen> = []) => {
+const makeCPfromContents = (
+	name: string,
+	contents: Array<entryGen> = [],
+	style: CPstyle | undefined = undefined
+) => {
 	console.debug('entered makecp');
 	const newCP = {
 		name: name,
 		content: contents?.map(convertEntry) as Array<CPentry>,
 		isSaved: true,
+		style: style,
 	};
 	return newCP;
 };
@@ -150,7 +165,14 @@ function baseMode(schemeName: string, mode: string) {
 			const newCps = files.reduce((acc, item) => {
 				if (item.length > 0) {
 					const [file, content] = item;
-					return { ...acc, [file]: makeCPfromContents(file, content) };
+					return {
+						...acc,
+						[file]: makeCPfromContents(
+							file,
+							content.content ?? content,
+							content.style
+						),
+					};
 				} else {
 					return acc;
 				}
@@ -160,6 +182,23 @@ function baseMode(schemeName: string, mode: string) {
 		} else {
 			return {} as Record<string, CP>;
 		}
+	};
+	const updateCPStyle = (
+		attr: string,
+		value: string,
+		CPname: string | undefined = currentConfName
+	) => {
+		if (!CPname) return;
+		setCPs(prev => {
+			if (!prev[CPname]) return prev;
+			return {
+				...prev,
+				[CPname]: {
+					...prev[CPname],
+					style: { ...prev[CPname].style, [attr]: value } as CPstyle,
+				},
+			};
+		});
 	};
 	return {
 		currentConfName,
@@ -172,6 +211,7 @@ function baseMode(schemeName: string, mode: string) {
 		updateCPContent,
 		init,
 		setInit,
+		updateCPStyle,
 	};
 }
 function testingMode(schemeName: string) {
@@ -184,6 +224,7 @@ function testingMode(schemeName: string) {
 		getInitialCPs,
 		init,
 		setInit,
+		updateCPStyle,
 	} = baseMode(schemeName, 'tester');
 	const initCPs = async () => {
 		if (!init) {
@@ -221,7 +262,7 @@ function testingMode(schemeName: string) {
 			}
 		}
 	};
-	return { currentConfName, setCurrentConfName, CPs, initCPs };
+	return { currentConfName, setCurrentConfName, CPs, initCPs, updateCPStyle };
 }
 function editingMode(schemeName: string) {
 	const {
@@ -235,6 +276,7 @@ function editingMode(schemeName: string) {
 		updateCPContent,
 		init,
 		setInit,
+		updateCPStyle,
 	} = baseMode(schemeName, 'editor');
 	const savingRef = useRef(false);
 	const currentBlobs = useRef([] as Array<blobp>);
@@ -322,9 +364,17 @@ function editingMode(schemeName: string) {
 		setCurrentConfName(newCP.name);
 	};
 	const makeCPBlob = (confName: string) => {
-		const blob = new Blob([JSON.stringify(CPs[confName]?.content)], {
-			type: 'text/json',
-		});
+		const blob = new Blob(
+			[
+				JSON.stringify({
+					content: CPs[confName]?.content,
+					style: CPs[confName]?.style,
+				}),
+			],
+			{
+				type: 'text/json',
+			}
+		);
 		return blob;
 	};
 	const saveFile = async (name: string, blob: Blob) => {
@@ -380,7 +430,7 @@ function editingMode(schemeName: string) {
 
 			return {
 				...res,
-				[newName]: contents ?? { name: newName, content: [], isSaved: false },
+				[newName]: contents ?? makeCPfromContents(newName),
 			};
 		});
 		setCurrentConfName(newName);
@@ -442,8 +492,8 @@ function editingMode(schemeName: string) {
 			| string
 			| number
 			| ((
-					prev: string | number | MinimalSignal
-			  ) => string | number | MinimalSignal),
+					prev: string | number | MinimalSignal | Coordinates
+			  ) => string | number | MinimalSignal | Coordinates),
 		confname: string | undefined = currentConfName
 	) => {
 		console.debug('entered alter entry field');
@@ -488,6 +538,7 @@ function editingMode(schemeName: string) {
 		removeEntry,
 		alterEntryField,
 		saveCP,
+		updateCPStyle,
 	};
 }
 export function validateEntry(entry: unknown): entry is CPentry {
