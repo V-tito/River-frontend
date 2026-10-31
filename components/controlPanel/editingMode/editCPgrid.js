@@ -3,9 +3,11 @@ import { useDraggable, useDroppable } from '@dnd-kit/react';
 import EditCPelem from './editCPelem';
 import styles from '../controlPanel.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
+import { closestCenter } from '@dnd-kit/collision';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
+import { Feedback } from '@dnd-kit/dom';
 
 function SortableElem({ index, setSpecs, item, data, groups, remove }) {
 	const { ref } = useSortable({ id: item.id, index: index, group: 'panel' });
@@ -22,71 +24,61 @@ function SortableElem({ index, setSpecs, item, data, groups, remove }) {
 		</li>
 	);
 }
-function Blank({ index }) {
-	const { ref } = useSortable({
-		id: crypto.randomUUID(),
-		index: index,
-		type: 'blank',
-		collisionPriority: 1,
+function DraggableElem({ index, setSpecs, item, data, groups, remove }) {
+	const { ref, isDragging } = useDraggable({
+		id: item.id,
+		data: { index: index, group: 'panel' },
+		plugins: [
+			Feedback.configure({
+				feedback: 'move',
+				dropAnimation: null,
+			}),
+		],
 	});
-	return <li ref={ref} className="w-full h-full" />;
+	return (
+		<div
+			style={{
+				position: 'relative',
+				top: isDragging ? undefined : item?.position?.y,
+				left: isDragging ? undefined : item?.position?.x,
+			}}
+			ref={ref}
+		>
+			<EditCPelem
+				index={index}
+				specs={item}
+				setSpecs={setSpecs}
+				groups={groups}
+				data={data}
+				remove={remove}
+			/>
+		</div>
+	);
 }
-function EditCPgrid({
-	conf,
-	setField,
-	data,
-	groups,
-	remove,
-	blankIndex,
-	noConf,
-	style,
-}) {
-	//for rep with coordinates
-	/**let rows = [];
-	for (let i = 0; i < x; i++) {
-		let items = [];
-		for (let j = 0; j < y; j++) {
-			const drop = useDroppable({ id: i + '-' + j });
-			const item = <div ref={drop.ref} />;
-			items.push(item);
-		}
-		const row = <div className={styles.row}>{items}</div>;
-		rows.push(row);
-	}**/
 
+function EditCPgrid({ conf, setField, data, groups, remove, noConf, style }) {
 	const { isDropTarget, ref } = useDroppable({
 		id: crypto.randomUUID(),
-		type: 'panel',
-		collisionPriority: 1,
-		disabled: { noConf },
+		disabled: noConf,
+		collisionDetector: closestCenter,
 	});
-
-	console.debug('remove action', remove);
 	return (
-		<div ref={ref} className="flex w-full">
-			<ul className={styles.grid} style={style}>
-				{conf
-					?.map((item, index) => (
-						<SortableElem
-							index={index >= blankIndex ? index + 1 : index}
-							setSpecs={(fieldName, val) => {
-								setField(index, fieldName, val);
-							}}
-							key={index}
-							item={item}
-							data={data}
-							groups={groups}
-							remove={() => {
-								remove(index);
-							}}
-						></SortableElem>
-					))
-					.toSpliced(
-						blankIndex,
-						0,
-						<Blank index={blankIndex} key={conf.length + 1} />
-					)}
-			</ul>
+		<div ref={ref} className={styles.grid} style={style}>
+			{conf?.map((item, index) => (
+				<DraggableElem
+					index={index}
+					setSpecs={(fieldName, val) => {
+						setField(index, fieldName, val);
+					}}
+					key={index}
+					item={item}
+					data={data}
+					groups={groups}
+					remove={() => {
+						remove(index);
+					}}
+				></DraggableElem>
+			))}
 		</div>
 	);
 }

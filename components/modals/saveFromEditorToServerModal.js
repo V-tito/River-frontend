@@ -7,6 +7,7 @@ import headerStyles from '@/styles/headerStyles.module.css';
 import Modal from './inlineModal';
 import PropTypes from 'prop-types';
 import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
+import { postTest } from '@/utils/api_wrap/fileAPI';
 const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 	const [filename, setFilename] = useState(
 		initName
@@ -24,17 +25,7 @@ const SaveFromEditorToServerModal = ({ formData, initName = null, scheme }) => {
 			const blob = new Blob([JSON.stringify(formData)], {
 				type: 'text/json',
 			});
-			const dataToSend = new FormData();
-			dataToSend.append('file', blob, filename);
-			const response = await fetch(`/api/files/gen?folder=${scheme}`, {
-				method: 'POST',
-				body: dataToSend,
-			});
-			if (!response.ok) {
-				throw new Error(
-					`Ошибка сети: ${response.status}. ${response.message ? response.message : ''}.`
-				);
-			}
+			await postTest(scheme, filename, blob);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {

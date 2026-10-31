@@ -2,16 +2,30 @@ import React, { useEffect, useState } from 'react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
-import UploadFileModal from '@/components/fileManagement/uploadFileModal';
+import OpenLocalFileModal from '../modals/openLocalFileModal';
+import { postCP } from '@/utils/api_wrap/fileAPI';
 export default function ChooseCP({
 	schemeName,
 	currentConfName,
 	onChange,
 	cps,
 }) {
+	const [uploadError, setUploadError] = useState(null);
+	const handleFileUpload = async (e, file) => {
+		e.preventDefault();
+		try {
+			await postCP(schemeName, file.name, file);
+		} catch (err) {
+			setUploadError(err);
+		}
+	};
 	return (
 		<div className="flex flex-row">
-			<UploadFileModal folder={`${schemeName}/CPs`} />
+			<OpenLocalFileModal
+				uploadAction={handleFileUpload}
+				uploadError={uploadError}
+				label="Добавить панель управления"
+			/>
 			<select
 				className={inputStyles.select}
 				onChange={onChange}

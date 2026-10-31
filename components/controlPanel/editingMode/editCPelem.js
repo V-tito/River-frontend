@@ -25,35 +25,9 @@ function SetterWrap({ icon, setSpecs, specs }) {
  * generates CP set selement for panel in test mode only (for the time being)
  * @param {*} param0 has two required fields. First one, specs, is a record with fields "group","signal", "icon" and "default_", corresponding to group name, signal name, icon type ("trigger"/"lamp") and default value the signal must be set to when the panel is loaded. the second field, schemeName, defines backend environment
  */
-function EditCPelem({ data, index, specs, setSpecs, remove }) {
-	useEffect(() => {
-		if (!('signal' in specs)) setSpecs('signal', { parentGroup: '', name: '' });
-	}, [specs]);
-	const sigs =
-		specs.type == 'setter'
-			? data[specs.signal.parentGroup]?.outputs
-			: data[specs.signal.parentGroup]?.inputs;
-	const groups = Object.keys(data);
-	if (!('signal' in specs)) return <p>Загрузка</p>;
+function Menu({ groups, sigs, setSpecs, specs }) {
 	return (
-		<div className={styles.CPset}>
-			<CloseButton
-				closeAction={remove}
-				className={styles.closeButton}
-			></CloseButton>
-			{specs.type == 'setter' ? (
-				<SetterWrap
-					icon={icons.setter[specs.icon]}
-					specs={specs}
-					setSpecs={setSpecs}
-				/>
-			) : (
-				<Image
-					src={icons.getter[specs.icon].off}
-					className={styles.icon}
-					alt="lamp's off"
-				></Image>
-			)}
+		<div>
 			<select
 				className={inputStyles.select}
 				onChange={e => {
@@ -94,6 +68,46 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 						))
 					: ''}
 			</select>
+		</div>
+	);
+}
+function EditCPelem({ data, index, specs, setSpecs, remove }) {
+	const [menuVisibility, setMenuVisibility] = useState(false);
+	useEffect(() => {
+		if (!('signal' in specs)) setSpecs('signal', { parentGroup: '', name: '' });
+	}, [specs]);
+	const sigs =
+		specs.type == 'setter'
+			? data[specs.signal.parentGroup]?.outputs
+			: data[specs.signal.parentGroup]?.inputs;
+	const groups = Object.keys(data);
+	if (!('signal' in specs)) return <p>Загрузка</p>;
+	return (
+		<div
+			className={styles.CPset}
+			onMouseOver={() => setMenuVisibility(true)}
+			onMouseOut={() => setMenuVisibility(false)}
+		>
+			<CloseButton
+				closeAction={remove}
+				className={styles.closeButton}
+			></CloseButton>
+			{specs.type == 'setter' ? (
+				<SetterWrap
+					icon={icons.setter[specs.icon]}
+					specs={specs}
+					setSpecs={setSpecs}
+				/>
+			) : (
+				<Image
+					src={icons.getter[specs.icon].off}
+					className={styles.icon}
+					alt="lamp's off"
+				></Image>
+			)}
+			{menuVisibility && (
+				<Menu groups={groups} sigs={sigs} setSpecs={setSpecs} specs={specs} />
+			)}
 		</div>
 	);
 }

@@ -3,7 +3,12 @@ import { usePersistentData } from '@/utils/hooks/usePersistentData';
 import { Command } from '../command/command';
 import { CommandConstructionToolkit } from '../command/commandConstructionToolkit';
 import { EditorTab, addErrorId, fpath } from './utils';
-
+import {
+	getTest,
+	postTest,
+	renameFile,
+	deleteFile,
+} from '@/utils/api_wrap/fileAPI';
 export function useTabManager(scheme: string) {
 	const [currentTabId, setCurrentTabId] = useState<string | null>(null);
 	const [tabs, setTabs] = useState<Record<string, EditorTab>>({});
@@ -13,11 +18,8 @@ export function useTabManager(scheme: string) {
 	});
 
 	const addTab = useCallback(
-		async (path: null | fpath = null) => {
-			console.debug('filepath in addTab', path);
-			const name = path
-				? path.filename || 'untitled' + Date.now()
-				: 'untitled' + Date.now();
+		async (filename: string | null = null) => {
+			const name = filename || 'untitled' + Date.now();
 			console.debug('name in addTab', name);
 			console.debug('tab vals in addTab', tabs);
 			const existingTabs = Object.values(tabs).filter(item => {
@@ -34,32 +36,22 @@ export function useTabManager(scheme: string) {
 			const tab: EditorTab = {
 				id: crypto.randomUUID(),
 				name: name,
-				path: path,
 				content: [],
 				errorIDs: [],
 				commandInExecution: -1,
 				isBeingExecuted: false,
 			};
-			if (path) {
+			if (filename) {
 				console.debug('fetching content in addTab');
-				const response = await fetch(
-					`/api/files/gen?folder=${path.folder}&filename=${path.filename}`,
-					{
-						method: 'GET',
-					}
-				);
-				console.debug('response in addTab', response);
-				const contentFile = await response.json();
-				console.debug('contentFile in addTab', contentFile);
-				if (contentFile.type != 'file') {
-					throw new Error(`${path.folder}/${path.filename} не является файлом`);
-				}
-				const content = JSON.parse(contentFile.content);
-				tab.content = Array.isArray(content)
-					? content.map(item =>
-							CommandConstructionToolkit.makeNew(scheme, item)
-						)
-					: ([] as Array<Command>);
+				try {
+					const content = getTest(scheme, filename);
+
+					tab.content = Array.isArray(content)
+						? content.map(item =>
+								CommandConstructionToolkit.makeNew(scheme, item)
+							)
+						: ([] as Array<Command>);
+				} catch (err) {}
 			}
 			console.debug('made tab in addTab', tab);
 			setTabs(prev => {
@@ -127,13 +119,13 @@ export function useTabManager(scheme: string) {
 	}, [clearData]);
 
 	const initTabs = useCallback(
-		async (filepath: Array<fpath> | fpath | null) => {
+		async (files: Array<string> | string | null) => {
 			console.debug('entered init tabs');
 			const fileErrors = [] as Array<string>;
 			const data = loadData();
 			if (data) {
 				const { tabs_, current } = data;
-				if (!filepath && Object.keys(tabs_).length == 0) {
+				if (!files && Object.keys(tabs_).length == 0) {
 					const newId = await addTab();
 					setCurrentTabId(newId);
 				} else {
@@ -141,24 +133,24 @@ export function useTabManager(scheme: string) {
 						setTabs(tabs_);
 						setCurrentTabId(current);
 					}
-					if (filepath) {
-						if (Array.isArray(filepath)) {
+					if (files) {
+						if (Array.isArray(files)) {
 							console.debug('fpath is array');
 							await Promise.all(
-								filepath.map(async path => {
+								files.map(async file => {
 									try {
 										const existingTabs = Object.values(tabs_).filter(item => {
 											return typeof item == 'object' && item != undefined
 												? 'name' in item
-													? item.name == path.filename
+													? item.name == file
 													: false
 												: false;
 										});
 										if (existingTabs[0] != undefined) return;
-										await addTab(path);
+										await addTab(file);
 									} catch (err) {
 										fileErrors.push(
-											`${err instanceof Error ? err.message : 'ошибка'} при открытии ${path.folder}/${path.filename}`
+											`${err instanceof Error ? err.message : 'ошибка'} при открытии ${file}`
 										);
 									}
 								})
@@ -168,15 +160,15 @@ export function useTabManager(scheme: string) {
 								const existingTabs = Object.values(tabs_).filter(item => {
 									return typeof item == 'object' && item != undefined
 										? 'name' in item
-											? item.name == filepath.filename
+											? item.name == files
 											: false
 										: false;
 								});
 								if (existingTabs[0] != undefined) return;
-								await addTab(filepath);
+								await addTab(files);
 							} catch (err) {
 								fileErrors.push(
-									`${err instanceof Error ? err.message : 'ошибка'} при открытии ${filepath.folder}/${filepath.filename}`
+									`${err instanceof Error ? err.message : 'ошибка'} при открытии ${files}`
 								);
 							}
 					}
@@ -184,10 +176,10 @@ export function useTabManager(scheme: string) {
 				//clearSessionStorage();
 				return fileErrors;
 			}
-			if (filepath) {
-				if (Array.isArray(filepath)) {
-					await Promise.all(filepath.map(path => addTab(path)));
-				} else await addTab(filepath);
+			if (files) {
+				if (Array.isArray(files)) {
+					await Promise.all(files.map(path => addTab(path)));
+				} else await addTab(files);
 			} else {
 				const newId = await addTab();
 				setCurrentTabId(newId);

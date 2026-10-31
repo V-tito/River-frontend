@@ -7,7 +7,7 @@ export default function FlexMenuButton({ buttonTitle, buttonLabel, onClick }) {
 			className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 			onClick={onClick}
 		>
-			{buttonLabel}
+			{buttonLabel ?? buttonTitle}
 		</button>
 	);
 }

@@ -1,7 +1,7 @@
 'use client';
 import PropTypes from 'prop-types';
 import styles from '../editor.module.css'; // Updated import path
-
+import { getTestList } from '@/utils/api_wrap/fileAPI';
 import React, { createContext, useEffect, useState, useContext } from 'react';
 export const BarContext = createContext();
 
@@ -56,16 +56,7 @@ const BarEditor = ({ setError, children }) => {
 		};
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files/gen?folder=${schemeName}`, {
-					method: 'GET',
-				});
-				if (!response.ok) {
-					throw new Error(
-						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
-					);
-				}
-				const result = await response.json();
-				const fileList = result.files;
+				const fileList = getTestList(schemeName);
 				setFiles(fileList);
 				return;
 			} catch (err) {

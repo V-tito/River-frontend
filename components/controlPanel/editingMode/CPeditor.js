@@ -1,15 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
+'use client';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useGlobal } from '@/app/GlobalState';
+import { Feedback } from '@dnd-kit/dom';
 import EditCPgrid from './editCPgrid';
 import AddElementMenu from './addElementMenu';
 import ChooseCP from '../chooseCP';
 import RenameCPmodal from './renameCPmodal';
 import NewCPbutton from './newCPbutton';
 import SaveButton from './saveButton';
+import SetCPSize from './setCPSize';
+import SetCPBackground from './setCPBackground';
 import { Upload, Download } from '@deemlol/next-icons';
 import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
-import DeleteButton from '@/components/fileManagement/delButton';
-import ConfirmSave from './confirmSave';
+import ConfirmFileDeleteModal from '../modals/confirmFileDeleteModal';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
 import { DragDropProvider } from '@dnd-kit/react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
@@ -19,8 +22,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 	const [data, setData] = useState({});
 	const [groups, setGroups] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [version, setVersion] = useState(0);
-	const [confirmSaveOpen, setConfirmSaveOpen] = useState(false);
+	const panelRef = useRef();
 	const {
 		currentConfName,
 		setCurrentConfName,
@@ -36,12 +38,10 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		removeEntry,
 		alterEntryField,
 		saveCP,
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
 	} = useCPManager(schemeName, 'editing');
-	const [blank, setBlank] = useState();
-	console.debug('blank', blank);
-	useEffect(() => {
-		setBlank(CPs[currentConfName]?.content?.length);
-	}, [currentConfName, CPs]);
 	//fetch inputs and outputs
 	useEffect(() => {
 		const init = async () => {
@@ -121,71 +121,75 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				title="Экспорт"
 			/>
 			<NewCPbutton add={addCP} getname={getNewName} />
-			<DeleteButton
-				filepath={`?folder=${schemeName}/CPs/&filename=${currentConfName}`}
-			/>
+			<ConfirmFileDeleteModal envName={schemeName} fileCategory="CPs" />
+			<div className="flex flex-row">
+				<DragDropProvider
+					plugins={[Feedback.configure({ dropAnimation: null })]}
+					onDragEnd={event => {
+						if (event.canceled) return;
+						if (!currentConfName) return;
+						console.debug('event', event);
+						const { source, target, position, transform, shape } =
+							event.operation;
+						//if (!target) return;
 
-			<DragDropProvider
-				key={version}
-				onDragEnd={event => {
-					if (event.canceled) return;
-					if (!currentConfName) return;
-					const { source, target } = event.operation;
-					console.debug('source', source);
-					const { type, data } = source;
-					console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
-					if (type == 'addmenu') {
-						//event.preventDefault();
-						let i;
-						if (target) {
-							const { index } = target;
-							i = index;
+						const { type, data } = source;
+						console.debug('source data', data);
+						const pos = data.position
+							? {
+									x: data.position.x + transform.x,
+									y: data.position.y + transform.y,
+								}
+							: {
+									x: shape.current.left - (panelRef.current?.offsetLeft ?? 0),
+									y: shape.current.top - (panelRef.current?.offsetTop ?? 0),
+								};
+						console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
+						if (type == 'addmenu') {
+							//event.preventDefault();
+							let i = CPs[currentConfName].length;
+							console.debug('type', type);
+							insertEntry(i, { ...data, position: pos });
 						} else {
-							i = CPs[currentConfName].length;
+							console.debug('enter alter');
+							if (data.index != undefined) {
+								console.debug('enter alter 2');
+								alterEntryField(data.index, 'position', pos);
+							}
 						}
-						console.debug('type', type);
-						insertEntry(i, data);
-					} else {
-						const { initialIndex, index } = source;
-						if (initialIndex !== index)
-							updateCPContent(items => {
-								const newData = [...items];
-								const [removed] = newData.splice(initialIndex, 1);
-								console.debug('removed', removed);
-								return newData.toSpliced(index, 0, removed);
-							});
-						setVersion(prev => prev + 1);
-					}
-					setBlank(CPs[currentConfName].content.length);
-				}}
-				onDragOver={event => {
-					if (event.canceled) return;
-					const { source, target } = event.operation;
-					if (!target) return;
-					console.debug('source', source);
-					const { type, data } = source;
-					console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
-					if (type == 'addmenu') {
-						//event.preventDefault();
-						const { index } = target;
-						console.debug('type', type);
-						setBlank(index);
-					}
-				}}
-			>
-				<div className="flex flex-row">
-					<EditCPgrid
-						conf={CPs[currentConfName]?.content}
-						setField={alterEntryField}
-						data={data}
-						groups={groups}
-						remove={removeEntry}
-						blankIndex={blank}
-						noConf={!currentConfName}
-					/>
-					<AddElementMenu />
-				</div>
-			</DragDropProvider>
+					}}
+					onDragOver={({ operation }) => {
+						const { source, target } = operation;
+						console.log(`${source.id} is over ${target?.id}`);
+					}}
+				>
+					<div className="flex flex-col w-full" ref={panelRef}>
+						<EditCPgrid
+							conf={CPs[currentConfName]?.content}
+							style={CPs[currentConfName]?.style}
+							setField={alterEntryField}
+							data={data}
+							groups={groups}
+							remove={removeEntry}
+							noConf={!currentConfName}
+						/>
+					</div>
+					<div className="flex flex-col">
+						<AddElementMenu />
+						<SetCPSize
+							x={CPs[currentConfName]?.style?.width}
+							y={CPs[currentConfName]?.style?.height}
+							setX={updateCPWidth}
+							setY={updateCPHeight}
+						/>
+						<SetCPBackground
+							currentBack={CPs[currentConfName]?.style?.background}
+							setBack={updateCPBackground}
+							envName={schemeName}
+						/>
+					</div>
+				</DragDropProvider>
+			</div>
 		</div>
 	);
 }

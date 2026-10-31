@@ -1,6 +1,0 @@
-.fileGrid{
-    width:100%;
-    display: grid;
-    grid-template-columns: max-content;
-    align-items: stretch;
-}

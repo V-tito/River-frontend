@@ -1,42 +1,73 @@
-import { useState } from 'react';
-import { netError } from '@utils/api_wrap/netError';
+import { useState, useEffect } from 'react';
+import { netError } from '@/utils/api_wrap/netError';
 import { Loader } from '@deemlol/next-icons';
-import { FileMosaic } from '@files-ui/react';
-export default function SetCPBackground(currentBack, setBack, envName) {
+import { FileMosaic, FileInputButton } from '@files-ui/react';
+import styles from '../controlPanel.module.css';
+import PopupForm from '../../templateComponents/popupForm';
+import {
+	postImage,
+	getBackground,
+	getBackgroundsList,
+} from '@/utils/api_wrap/fileAPI';
+import InlineModal from '@/components/modals/inlineModal';
+export default function SetCPBackground({ currentBack, setBack, envName }) {
 	const [availablaBacks, setAvailable] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 	useEffect(() => {
 		const getBacks = async () => {
-			const response = await fetch(`/api/files/CPbackgrounds?env=${envName}`, {
-				method: 'GET',
-			});
-			if (!response.ok) throw netError(response);
-			const urlist = await response.json();
-			setAvailable(urlist);
+			try {
+				const urlist = await getBackgroundsList(envName);
+				setAvailable(urlist);
+			} catch (err) {
+				setError(err);
+			}
 			setLoading(false);
 		};
 		getBacks();
 	}, []);
-	const uploadNewBack = newBack => {};
-	if (loading) return <Loader />;
+	const handleUpload = async e => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		setLoading(true);
+		try {
+			await postImage(envName, file.name, file);
+		} catch (err) {
+			setError(err);
+		}
+		setLoading(false);
+	};
 	return (
-		<div style={{ display: 'flex', flexDirection: 'column' }}>
-			<div style={{ border: '2px solid grey', padding: '10px' }}>
-				<label>Текущее изображение</label>
-				<FileMosaic imageUrl={currentBack} />
-			</div>
-			<div style={{ display: 'flex', flexDirection: 'row' }}>
-				{availablaBacks.map((index, url) => (
-					<FileMosaic
-						key={index}
-						imageUrl={url}
-						preview
-						smartImgFit={'orientation'}
-						onClick={() => setBack(url)}
-						style={{ cursor: 'pointer' }}
+		<PopupForm buttonTitle="Установить фон">
+			{loading ? (
+				<Loader />
+			) : (
+				<div style={{ display: 'flex', flexDirection: 'column' }}>
+					<div style={{ display: 'flex', flexDirection: 'row' }}>
+						{availablaBacks.map((index, url) => (
+							<FileMosaic
+								key={index}
+								imageUrl={url}
+								preview
+								smartImgFit={'orientation'}
+								onClick={() => setBack(url)}
+								style={{ cursor: 'pointer' }}
+							/>
+						))}
+					</div>
+					<div style={{ border: '2px solid grey', padding: '10px' }}>
+						<label>Текущее изображение</label>
+						<FileMosaic imageUrl={currentBack} />
+					</div>
+					<input
+						title="Загрузить"
+						type="file"
+						accept="image/*"
+						onChange={handleUpload}
 					/>
-				))}
-			</div>
-		</div>
+					<InlineModal state={error}>{error.message}</InlineModal>
+				</div>
+			)}
+		</PopupForm>
 	);
 }

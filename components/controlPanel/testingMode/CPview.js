@@ -133,6 +133,7 @@ function CPview({ schemeName, writeLog, className = '' }) {
 			) : (
 				<CPgrid
 					elems={CPs[currentConfName]?.content ?? []}
+					style={CPs[currentConfName]?.style}
 					currentGetterStates={getterStates[currentConfName]}
 					schemeName={schemeName}
 					schemeOn={schemeOn}

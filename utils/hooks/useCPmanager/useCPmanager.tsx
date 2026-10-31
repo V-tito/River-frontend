@@ -6,6 +6,13 @@ import {
 import { usePersistentData } from '@/utils/hooks/usePersistentData';
 import { netError } from '@/utils/api_wrap/netError';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
+import {
+	getCP,
+	postCP,
+	renameFile,
+	deleteFile,
+	getCPlist,
+} from '@/utils/api_wrap/fileAPI';
 interface Coordinates {
 	x: string;
 	y: string;
@@ -66,7 +73,7 @@ const makeCPfromContents = (
 	return newCP;
 };
 //todo docs
-function baseMode(schemeName: string, mode: string) {
+function baseMode(envName: string, mode: string) {
 	const [currentConfName, setCurrentConfName] = useState<string | undefined>();
 	const [CPs, setCPs] = useState<Record<string, CP>>({});
 	const [init, setInit] = useState(false);
@@ -124,14 +131,7 @@ function baseMode(schemeName: string, mode: string) {
 		console.debug('entered init tabs');
 		let fileList;
 		try {
-			const response = await fetch(`/api/files/gen?folder=${schemeName}/CPs`, {
-				method: 'GET',
-			});
-			if (!response.ok) {
-				throw netError(response, 'при получении списка файлов');
-			}
-			const result = await response.json();
-			fileList = result.files;
+			fileList = await getCPlist(envName);
 		} catch (err) {
 			console.debug('err getting file list', err);
 		}
@@ -140,21 +140,7 @@ function baseMode(schemeName: string, mode: string) {
 			console.debug('flist is array');
 			const fileProms = fileList.map(async (file, index) => {
 				try {
-					const response = await fetch(
-						`/api/files/gen?folder=${schemeName}/CPs&filename=${file}`,
-						{
-							method: 'GET',
-						}
-					);
-					if (!response.ok) {
-						throw netError(response, 'при чтении файла');
-					}
-					const contentFile = await response.json();
-					console.debug('contentFile in addTab', contentFile);
-					if (contentFile.type != 'file') {
-						throw new Error(`${file} не является файлом`);
-					}
-					const content = JSON.parse(contentFile.content);
+					const content = await getCP(envName, file);
 					return [file, content];
 				} catch (err) {
 					return [];
@@ -169,8 +155,8 @@ function baseMode(schemeName: string, mode: string) {
 						...acc,
 						[file]: makeCPfromContents(
 							file,
-							content.content ?? content,
-							content.style
+							content?.content ?? content,
+							content?.style
 						),
 					};
 				} else {
@@ -200,6 +186,27 @@ function baseMode(schemeName: string, mode: string) {
 			};
 		});
 	};
+	const updateCPWidth = (
+		value: string | number,
+		CPName: string | undefined = currentConfName
+	) => {
+		const val = typeof value == 'number' ? String(value) + 'px' : value;
+		updateCPStyle('width', val, CPName);
+	};
+	const updateCPHeight = (
+		value: string | number,
+		CPName: string | undefined = currentConfName
+	) => {
+		const val = typeof value == 'number' ? String(value) + 'px' : value;
+		updateCPStyle('height', val, CPName);
+	};
+	const updateCPBackground = (
+		url: string,
+		CPName: string | undefined = currentConfName
+	) => {
+		const val = 'url("' + url + ')';
+		updateCPStyle('background', val, CPName);
+	};
 	return {
 		currentConfName,
 		setCurrentConfName,
@@ -212,9 +219,12 @@ function baseMode(schemeName: string, mode: string) {
 		init,
 		setInit,
 		updateCPStyle,
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
 	};
 }
-function testingMode(schemeName: string) {
+function testingMode(envName: string) {
 	const {
 		currentConfName,
 		setCurrentConfName,
@@ -225,7 +235,10 @@ function testingMode(schemeName: string) {
 		init,
 		setInit,
 		updateCPStyle,
-	} = baseMode(schemeName, 'tester');
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
+	} = baseMode(envName, 'tester');
 	const initCPs = async () => {
 		if (!init) {
 			const newCPs = await getInitialCPs();
@@ -240,7 +253,7 @@ function testingMode(schemeName: string) {
 									'Signal',
 									elem.signal.name,
 									elem.signal.parentGroup,
-									schemeName
+									envName
 								);
 
 								return { ...elem, valid: valid };
@@ -262,9 +275,18 @@ function testingMode(schemeName: string) {
 			}
 		}
 	};
-	return { currentConfName, setCurrentConfName, CPs, initCPs, updateCPStyle };
+	return {
+		currentConfName,
+		setCurrentConfName,
+		CPs,
+		initCPs,
+		updateCPStyle,
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
+	};
 }
-function editingMode(schemeName: string) {
+function editingMode(envName: string) {
 	const {
 		currentConfName,
 		setCurrentConfName,
@@ -277,7 +299,10 @@ function editingMode(schemeName: string) {
 		init,
 		setInit,
 		updateCPStyle,
-	} = baseMode(schemeName, 'editor');
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
+	} = baseMode(envName, 'editor');
 	const savingRef = useRef(false);
 	const currentBlobs = useRef([] as Array<blobp>);
 	const newCount = useRef(0);
@@ -303,7 +328,7 @@ function editingMode(schemeName: string) {
 						if (!element.isSaved) {
 							console.debug('saving', element);
 							try {
-								await saveFile(element.name, element.blob).then(res => {
+								await postCP(envName, element.name, element.blob).then(res => {
 									if (res.ok) updateCPSavedState(true, element.name);
 								});
 							} catch (err) {
@@ -324,14 +349,9 @@ function editingMode(schemeName: string) {
 		window.addEventListener('pagehide', () => {
 			if (!savingRef.current) {
 				savingRef.current = true;
-				const dataToSend = new FormData();
+				//const dataToSend = new FormData();
 				for (const { name, blob, isSaved } of currentBlobs.current)
-					if (!isSaved) dataToSend.append('file', blob, name);
-				const response = fetch(`/api/files/gen?folder=${schemeName}/CPs`, {
-					method: 'POST',
-					body: dataToSend,
-					keepalive: true,
-				});
+					if (!isSaved) postCP(envName, name, blob);
 			}
 		});
 	}, []);
@@ -353,8 +373,12 @@ function editingMode(schemeName: string) {
 		return name;
 	}, [CPs]);
 
-	const addCP = (name: string | undefined, contents: Array<entryGen> = []) => {
-		const newCP = makeCPfromContents(name ?? getNewName(), contents);
+	const addCP = (
+		name: string | undefined,
+		contents: Array<entryGen> = [],
+		style: CPstyle | undefined = undefined
+	) => {
+		const newCP = makeCPfromContents(name ?? getNewName(), contents, style);
 		setCPs(prev => {
 			return {
 				...prev,
@@ -377,22 +401,12 @@ function editingMode(schemeName: string) {
 		);
 		return blob;
 	};
-	const saveFile = async (name: string, blob: Blob) => {
-		const dataToSend = new FormData();
-		dataToSend.append('file', blob, name);
-		const response = await fetch(`/api/files/gen?folder=${schemeName}/CPs`, {
-			method: 'POST',
-			body: dataToSend,
-			keepalive: true,
-		});
-		return response;
-	};
 
 	const saveCP = async (confName: string | undefined = currentConfName) => {
 		if (!confName) throw new Error('Несуществующая панель');
 		const blob = makeCPBlob(confName);
 		try {
-			await saveFile(confName, blob).then(res => {
+			await postCP(envName, confName, blob).then(res => {
 				if (!res.ok) throw netError(res);
 			});
 		} catch (err) {
@@ -408,14 +422,10 @@ function editingMode(schemeName: string) {
 			const { [name]: _, ...res } = prev;
 			return res;
 		});
-		const response = await fetch(
-			`/api/files/gen?folder=${schemeName}/CPs/&filename=${name}`,
-			{
-				method: 'DELETE',
-			}
-		);
-		if (!response.ok) {
-			throw netError(response);
+		try {
+			await deleteFile('CPs', envName, name);
+		} catch (err) {
+			console.debug('error deleting file');
 		}
 	};
 	const renameCP = async (
@@ -435,16 +445,7 @@ function editingMode(schemeName: string) {
 		});
 		setCurrentConfName(newName);
 		try {
-			const response = await fetch(
-				`/api/files/rename?folder=${schemeName}/CPs&oldName=${currentConfName}&newName=${newName}`,
-				{
-					method: 'POST',
-					keepalive: true,
-				}
-			);
-			if (!response.ok) {
-				throw netError(response);
-			}
+			await renameFile('CPs', envName, oldName, newName);
 		} catch (err) {
 			console.debug('err renaming', err);
 		}
@@ -457,12 +458,12 @@ function editingMode(schemeName: string) {
 		if (!confName) return;
 		console.debug('not null ccn');
 		setCPs(prev => {
-			const tab = prev[confName]?.content;
+			const tab = prev[confName];
 			if (tab == undefined) throw new Error('Несуществующая панель');
 			return {
 				...prev,
 				[confName]: {
-					...prev[confName],
+					...tab,
 					isSaved: updater,
 				} as CP,
 			};
@@ -516,6 +517,19 @@ function editingMode(schemeName: string) {
 						...entry,
 						signal: { ...entry.signal, [field as keyof MinimalSignal]: newval },
 					};
+				} else if (['x', 'y'].includes(field)) {
+					const newval =
+						typeof val == 'function'
+							? val(entry.position[field as keyof Coordinates])
+							: val;
+					console.debug('newval in alter entry field', newval);
+					entry = {
+						...entry,
+						position: {
+							...entry.position,
+							[field as keyof Coordinates]: newval,
+						},
+					};
 				}
 				console.debug('entry in alter entry field', entry);
 				updateCPContent(prev => prev.toSpliced(index, 1, entry), confname);
@@ -539,6 +553,9 @@ function editingMode(schemeName: string) {
 		alterEntryField,
 		saveCP,
 		updateCPStyle,
+		updateCPWidth,
+		updateCPHeight,
+		updateCPBackground,
 	};
 }
 export function validateEntry(entry: unknown): entry is CPentry {
@@ -556,11 +573,11 @@ export function validateEntry(entry: unknown): entry is CPentry {
 /**
  * Менеджер панелей управления. Возвращает таблицу панелей (react State), react State с именем текущей панели
  *  и набор функций для работы с панелями (отличается в разных режимах)
- * @param schemeName - имя рабочего пространства
+ * @param envName - имя рабочего пространства
  * @param mode - режим (editing или testing)
  * @returns
  */
-export function useCPManager(schemeName: string, mode: string) {
-	if (mode == 'editing') return editingMode(schemeName);
-	else return testingMode(schemeName);
+export function useCPManager(envName: string, mode: string) {
+	if (mode == 'editing') return editingMode(envName);
+	else return testingMode(envName);
 }

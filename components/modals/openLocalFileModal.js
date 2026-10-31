@@ -56,9 +56,11 @@ const OpenLocalFileModal = ({
 						onChange={e => handleFileChange(e)}
 					/>
 					<button
-						onClick={e => {
-							uploadAction(e, file);
-							if (!uploadError & closeAfter) close();
+						onClick={async e => {
+							await uploadAction(e, file);
+							if (!uploadError && closeAfter)
+								if (reloadOnClose) window.location.reload();
+								else close();
 						}}
 						className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}
 						disabled={!file}

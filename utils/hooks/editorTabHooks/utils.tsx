@@ -6,7 +6,6 @@ export interface fpath {
 export interface EditorTab {
 	id: string;
 	name: string;
-	path: null | fpath;
 	content: Array<Command>;
 	errorIDs: Array<number>;
 	commandInExecution: number | string;

@@ -8,20 +8,14 @@ import './popup.css';
 import { netError } from '@/utils/api_wrap/netError';
 import { Trash } from '@deemlol/next-icons';
 import PropTypes from 'prop-types';
-const ConfirmDeleteModal = ({ state, buttonStyle }) => {
+import { deleteFile } from '@/utils/api_wrap/fileAPI';
+const ConfirmDeleteModal = ({ envName, fileCategory, className }) => {
 	const [error, setError] = useState(null);
 	console.log('configured url', state);
 
 	const onConfirm = async () => {
 		try {
-			console.log('configured url from onconfirm', state);
-			const response = await fetch(state, {
-				method: 'DELETE', //headers: {'Content-Type': 'application/json',}
-			});
-
-			if (!response.ok) {
-				throw netError(response);
-			}
+			await deleteFile(fileCategory, envName);
 			window.location.reload();
 		} catch (err) {
 			if (err instanceof Error) {
@@ -36,8 +30,8 @@ const ConfirmDeleteModal = ({ state, buttonStyle }) => {
 			trigger={
 				<button
 					className={
-						buttonStyle
-							? buttonStyle
+						className
+							? className
 							: `${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`
 					}
 					title="Удалить"

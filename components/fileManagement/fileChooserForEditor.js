@@ -1,28 +1,24 @@
 import { React, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
+import FlexMenuButton from './buttons/flexMenuButton';
 import PopupForm from '../templateComponents/popupForm';
+import PopupControlled from '../templateComponents/popupControlled';
 import styles from './fileBar.module.css';
 import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
-const FileChooser = ({ folder }) => {
+import { getDirectoryStats } from '@/utils/api_wrap/fileAPI';
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
+import headerStyles from '@/styles/headerStyles.module.css';
+const FileChooser = ({ envName, category, openFile }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	//const url = new URL(`/api/files/gen?folder=${folder}`);
-	//url.searchParams.set('folder', folder);
+	const [open, setOpen] = useState(false);
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const response = await fetch(`/api/files/gen?folder=${folder}`, {
-					method: 'GET',
-				});
-				if (!response.ok) {
-					throw new Error(
-						`Ошибка сети ${response.status}: ${response.message ? response.message : ''}`
-					);
-				}
-				const result = await response.json();
-				const fileList = result.files;
+				const fileList = getDirectoryStats(category, envName);
 				setFiles(fileList);
 			} catch (err) {
 				setError(err);
@@ -36,22 +32,38 @@ const FileChooser = ({ folder }) => {
 	}, []);
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<PopupForm
-			buttonLabel={<FilePlus></FilePlus>}
-			buttonTitle="Открыть файл из хранилища рабочего пространства"
-		>
-			<p>Нажмите на название файла, чтобы открыть</p>
-			{Array.isArray(files)
-				? files.map((file, index) => (
-						<div key={index} className={styles.bar}>
-							<a href={`/tester/TestEditor?folder=${folder}&filename=${file}`}>
+		<>
+			<FlexMenuButton
+				buttonTitle={'Открыть файл из хранилища рабочего пространства'}
+				buttonLabel={<FilePlus></FilePlus>}
+			/>
+			<PopupControlled
+				open={open}
+				setOpen={setOpen}
+				label={'Открыть файл из хранилища рабочего пространства'}
+			>
+				<p>Нажмите на название файла, чтобы открыть</p>
+				{Array.isArray(files)
+					? files.map((file, index) => (
+							<button
+								key={index}
+								onClick={async () => {
+									try {
+										await openFile(file);
+										setOpen(false);
+									} catch (err) {
+										setError(err);
+									}
+								}}
+								className={headerStyles.fold}
+							>
 								{file}
-							</a>
-						</div>
-					))
-				: ''}
-			<Modal state={error}>{error ? error.message : ''}</Modal>
-		</PopupForm>
+							</button>
+						))
+					: ''}
+				<Modal state={error}>{error?.message ?? 'Ошибка: успешно!'}</Modal>
+			</PopupControlled>
+		</>
 	);
 };
 FileChooser.propTypes = {

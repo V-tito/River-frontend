@@ -8,7 +8,7 @@ import { checkExistence } from '@/utils/api_wrap/configAPI';
 import * as protocol from '@/utils/api_wrap/protocol';
 import { netError } from '@/utils/api_wrap/netError';
 import { CommandConstructionToolkit } from './commandConstructionToolkit';
-
+import { getTest } from '@/utils/api_wrap/fileAPI';
 async function preprocess<T extends Command>(command: T) {
 	if (
 		commandTypeCheckers.isWaitForSignal(command) ||
@@ -257,23 +257,8 @@ async function execute<T extends Command>(
 	}
 	if (commandTypeCheckers.isInclude(command)) {
 		console.debug('command recognized as include');
-		const response = await fetch(
-			`/api/files/gen?folder=${command.schemeName}&filename=${command.scriptPath}`,
-			{
-				method: 'GET',
-			}
-		);
-		if (!response.ok) {
-			throw netError(response);
-		}
-		const result = await response.json();
-		console.debug(
-			'got scriptContent',
-			result,
-			'parsed would be',
-			JSON.parse(result.content)
-		);
-		command.scriptContent = JSON.parse(result.content);
+		if (!command.scriptPath) throw new Error('Не указано имя скрипта');
+		command.scriptContent = getTest(command.schemeName, command.scriptPath);
 		for (let i = 0; i < command.scriptContent.length; i++) {
 			const content = CommandConstructionToolkit.makeNew(command.schemeName, {
 				...command.scriptContent[i],
