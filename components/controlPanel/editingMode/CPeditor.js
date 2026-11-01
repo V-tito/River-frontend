@@ -22,6 +22,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 	const [data, setData] = useState({});
 	const [groups, setGroups] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [version, setVersion] = useState(0);
 	const panelRef = useRef();
 	const {
 		currentConfName,
@@ -130,6 +131,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 			/>
 			<div className="flex flex-row">
 				<DragDropProvider
+					key={version}
 					plugins={[Feedback.configure({ dropAnimation: null })]}
 					onDragEnd={event => {
 						if (event.canceled) return;
@@ -186,8 +188,9 @@ export default function CPeditor({ schemeName, setPollingError }) {
 						if (type == 'addmenu') {
 							//event.preventDefault();
 							let i = CPs[currentConfName].length;
-							console.debug('type', type);
+							console.debug('i in drag event', i);
 							insertEntry(i, { ...data, position: pos });
+							setVersion(prev => prev + 1);
 						} else {
 							console.debug('enter alter');
 							if (data.index != undefined) {

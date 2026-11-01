@@ -11,6 +11,7 @@ import {
 	getBackgroundsList,
 } from '@/utils/api_wrap/fileAPI';
 import InlineModal from '@/components/modals/inlineModal';
+import FlexMenuButton from '@/components/templateComponents/buttons/flexMenuButton';
 export default function SetCPBackground({ currentBack, setBack, envName }) {
 	const [availableBacks, setAvailable] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -61,7 +62,8 @@ export default function SetCPBackground({ currentBack, setBack, envName }) {
 		getBacks();
 	}, []);
 	const handleUpload = async e => {
-		const file = e.target.files?.[0];
+		console.debug('submit', e.target.file);
+		const file = e.target.file.files?.[0];
 		if (!file) return;
 		setLoading(true);
 		console.debug('file to upload in backs manager', file);
@@ -119,12 +121,10 @@ export default function SetCPBackground({ currentBack, setBack, envName }) {
 							<p>Не установлено</p>
 						)}
 					</div>
-					<input
-						title="Загрузить"
-						type="file"
-						accept="image/*"
-						onChange={handleUpload}
-					/>
+					<form onSubmit={handleUpload}>
+						<input title="Загрузить" type="file" accept="image/*" id="file" />
+						<button type="submit">submit</button>
+					</form>
 					<InlineModal state={error}>{error?.message}</InlineModal>
 				</div>
 			)}

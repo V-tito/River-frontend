@@ -77,11 +77,11 @@ const makeCPfromContents = (
 	const minWidth =
 		convertedContents.reduce((maxX, elem) => {
 			return maxX > elem?.position?.x ? maxX : elem?.position?.x;
-		}, 0) + 78;
+		}, 0) + 88;
 	const minHeight =
 		convertedContents.reduce((maxY, elem) => {
 			return maxY > elem?.position?.y ? maxY : elem?.position?.y;
-		}, 0) + 151;
+		}, 0) + 161;
 	const height = style?.height
 		? String(style?.height).match(/\D/g) == null &&
 			Number(style?.height) > minHeight

@@ -44,6 +44,14 @@ function DraggableElem({
 			}),
 		],
 	});
+	console.debug(
+		'made draggable with ref',
+		ref,
+		'from item',
+		item,
+		'which is dragging?',
+		isDragging
+	);
 	const parentRect = parent.current
 		? parent.current?.getBoundingClientRect()
 		: null;

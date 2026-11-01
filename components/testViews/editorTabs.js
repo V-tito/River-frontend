@@ -14,7 +14,7 @@ const EditorTabs = ({
 	updateTabContent,
 	setCurrentTabErrorIDs,
 
-	schemeName,
+	envName,
 }) => {
 	console.info('mounted EditorTabs component');
 	const { setPollingError } = useGlobal();
@@ -27,7 +27,7 @@ const EditorTabs = ({
 					setErrorIDs: setCurrentTabErrorIDs,
 				}}
 			>
-				<SchemeContext.Provider value={schemeName}>
+				<SchemeContext.Provider value={envName}>
 					<SortableBarEditor
 						formData={currentTabId ? tabs[currentTabId].content : []}
 						setFormData={updateTabContent}
@@ -36,7 +36,7 @@ const EditorTabs = ({
 						blockEditing={
 							currentTabId ? tabs[currentTabId].isBeingExecuted : false
 						}
-						hooks={useCommandHooks(setScript, schemeName)}
+						hooks={useCommandHooks(setScript, envName)}
 					></SortableBarEditor>
 				</SchemeContext.Provider>
 			</errorIDsContext.Provider>

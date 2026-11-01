@@ -102,6 +102,7 @@ export async function postBlob(
 ) {
 	console.debug('entered post blob');
 	const dataToSend = new FormData();
+	console.debug('got content to send', content);
 	dataToSend.append('file', content, filename);
 	console.debug(
 		'sending request w data',
@@ -109,11 +110,22 @@ export async function postBlob(
 		'on api',
 		`/api/tester-files/${envName}/${type}/access`
 	);
-	const response = await fetch(`/api/tester-files/${envName}/${type}/access`, {
-		method: 'POST',
-		body: dataToSend,
-		keepalive: true,
-	});
+	let response;
+	if (content.size > 64 * 1024)
+		response = await fetch(`/api/tester-files/${envName}/${type}/access`, {
+			method: 'POST',
+			body: dataToSend,
+		}).catch(reason => {
+			console.debug('rejected', reason);
+			return reason;
+		});
+	else {
+		response = await fetch(`/api/tester-files/${envName}/${type}/access`, {
+			method: 'POST',
+			body: dataToSend,
+			keepalive: true,
+		});
+	}
 	console.debug('response', response);
 	if (!response.ok) throw netError(response);
 	return response;

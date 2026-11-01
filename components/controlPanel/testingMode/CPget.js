@@ -28,7 +28,7 @@ function CPget({ specs, onTable, schemeOn }) {
 				src={
 					disabled
 						? icon_.disabled
-						: (on == undefined) | error
+						: on == undefined || error
 							? icon_.error
 							: on > 0
 								? icon_.on
@@ -38,7 +38,7 @@ function CPget({ specs, onTable, schemeOn }) {
 				alt={
 					disabled
 						? 'Нет данных'
-						: (on == undefined) | error
+						: on == undefined || error
 							? 'Ошибка получения данных'
 							: on > 0
 								? (turnedOnStatusName ?? 'Вкл')
