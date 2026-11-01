@@ -1,6 +1,6 @@
 import React, { createContext, useEffect } from 'react';
 import styles from './editor.module.css';
-import headerStyles from '@/styles/headerStyles.module.css';
+
 import SortableBarEditor from './commandBars/sortableBarEditor';
 import { useCommandHooks } from '@/utils/hooks/editorTabHooks/useCommandHooks';
 import { useGlobal } from '@/app/GlobalState';
@@ -21,7 +21,6 @@ const EditorTabs = ({
 	const setScript = updater => updateTabContent(updater, currentTabId);
 	return (
 		<div className={styles.showBorderless}>
-			<header className={headerStyles.modalHeader}>Редактор команд: </header>
 			<errorIDsContext.Provider
 				value={{
 					errorIDs: currentTabId ? tabs[currentTabId].errorIDs : [],

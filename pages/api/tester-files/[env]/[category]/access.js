@@ -26,6 +26,7 @@ export default async function handler(req, res) {
 	const filename = req.query.filename ?? '';
 	const folder = `${safeBasePath}/${env}/${category}`;
 	const fullPath = `${safeBasePath}/${env}/${category}/${filename}`;
+	console.debug('configured path in files access', fullPath);
 	// Security: Prevent path traversal
 	if (!fullPath.startsWith(safeBasePath)) {
 		return res.status(403).json({ message: 'Нет доступа' });
@@ -82,20 +83,31 @@ export default async function handler(req, res) {
 		}
 	} else
 		try {
+			console.debug(
+				'files access: trying to readdir at base path in non-post request'
+			);
 			const envs = await fs.readdir(safeBasePath);
+			console.debug('envs', envs);
 			if (!envs.includes(env))
 				return res
 					.status(404)
 					.json({ message: 'Несуществующее рабочее пространство' });
 
 			if (req.method == 'GET') {
+				console.debug('in get, ensuring folder');
 				fs.ensureDir(folder);
+				console.debug('ensured folder');
 				const stats = await fs.stat(fullPath);
+				console.debug('in faccess get, got stats', stats);
 				if (stats.isDirectory()) {
-					const files = await fs
-						.readdir(fullPath, { withFileTypes: true })
-						.filter(entry => entry.isFile());
-					return res.status(200).json({ type: 'directory', files });
+					console.debug('in faccess get, stats is dir');
+					const files = await fs.readdir(fullPath, { withFileTypes: true });
+					console.debug('read files', files);
+					const filesFiltered = files.filter(entry => entry.isFile());
+					console.debug('filtered files', filesFiltered);
+					return res
+						.status(200)
+						.json({ type: 'directory', files: filesFiltered });
 				} else if (stats.isFile()) {
 					return res.status(200).json({ type: 'file' });
 				} else {

@@ -17,7 +17,7 @@ function CPset({
 	schemeOn,
 	writeLog,
 }) {
-	const { signal, icon, default_, valid } = specs;
+	const { signal, icon, default_, valid, position } = specs;
 	const { parentGroup, name, turnedOnStatusName, turnedOffStatusName } = signal;
 	const [on, setOn] = useState(-1);
 	const [disabled, setDisabled] = useState(true);
@@ -81,6 +81,7 @@ function CPset({
 				}
 			}}
 			disabled={disabled}
+			style={{ top: position?.y, left: position?.x, position: 'absolute' }}
 		>
 			<Image
 				src={

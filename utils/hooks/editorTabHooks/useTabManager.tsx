@@ -44,7 +44,7 @@ export function useTabManager(scheme: string) {
 			if (filename) {
 				console.debug('fetching content in addTab');
 				try {
-					const content = getTest(scheme, filename);
+					const content = await getTest(scheme, filename);
 
 					tab.content = Array.isArray(content)
 						? content.map(item =>

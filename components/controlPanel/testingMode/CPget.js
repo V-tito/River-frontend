@@ -7,7 +7,7 @@ import Image from 'next/image';
  */
 function CPget({ specs, onTable, schemeOn }) {
 	console.debug('mounted getter with specs', specs, 'onTable', onTable);
-	const { signal, icon, valid } = specs;
+	const { signal, icon, valid, position } = specs;
 	const { parentGroup, name, turnedOnStatusName, turnedOffStatusName } = signal;
 	let on = -1,
 		error = false;
@@ -20,7 +20,10 @@ function CPget({ specs, onTable, schemeOn }) {
 	}
 	const icon_ = icons.getter[icon];
 	return (
-		<div className={styles.CPget}>
+		<div
+			className={styles.CPget}
+			style={{ top: position?.y, left: position?.x, position: 'absolute' }}
+		>
 			<Image
 				src={
 					disabled

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, createContext, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 //styles
+import headerStyles from '@/styles/headerStyles.module.css';
 import styles from './editor.module.css';
 //components
 import CPview from '@/components/controlPanel/testingMode/CPview';
@@ -118,11 +119,7 @@ const Editor = ({ scheme }) => {
 				}}
 			>
 				<div className={styles.main}>
-					<CPview
-						schemeName={scheme.name}
-						className={styles.show}
-						writeLog={appendResultToLog}
-					></CPview>
+					<CPview envName={scheme.name} writeLog={appendResultToLog}></CPview>
 					<div className={styles.tabs}>
 						<TabHeaders
 							execBlock={execBlock}
@@ -135,18 +132,18 @@ const Editor = ({ scheme }) => {
 							deleteTab={deleteTab}
 							addTab={addTab}
 						/>
-						<div className={styles.show}>
+						<div className="flex flex-col h-full">
 							<EditorTabs
 								tabs={tabs}
 								currentTabId={currentTabId}
 								updateTabContent={updateTabContent}
 								setCurrentTabErrorIDs={setCurrentTabErrorIDs}
-								schemeName={scheme.name}
+								envName={scheme.name}
 							></EditorTabs>
 							<div className={styles.buttonGroups}>
 								<ExecCurrentButtons
 									executeTabScript={executeTabScript}
-									schemeName={scheme.name}
+									envName={scheme.name}
 									tabs={tabs}
 									currentTabId={currentTabId}
 									setPollingError={setPollingError}

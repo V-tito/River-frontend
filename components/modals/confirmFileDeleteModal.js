@@ -9,19 +9,23 @@ import { netError } from '@/utils/api_wrap/netError';
 import { Trash } from '@deemlol/next-icons';
 import PropTypes from 'prop-types';
 import { deleteFile } from '@/utils/api_wrap/fileAPI';
-const ConfirmDeleteModal = ({ envName, fileCategory, className }) => {
+const ConfirmDeleteModal = ({
+	envName,
+	fileCategory,
+	className,
+	fname,
+	deleteFunc = null,
+	afterDel = window.location.reload(),
+}) => {
 	const [error, setError] = useState(null);
-	console.log('configured url', state);
 
 	const onConfirm = async () => {
 		try {
-			await deleteFile(fileCategory, envName);
-			window.location.reload();
+			if (deleteFunc) await deleteFunc();
+			else await deleteFile(fileCategory, envName, fname);
 		} catch (err) {
-			if (err instanceof Error) {
-				setError(err);
-				console.log(`Error: ${err.message}`);
-			}
+			setError(err);
+			console.log(`Error: ${err.message}`);
 		}
 	};
 
@@ -46,10 +50,17 @@ const ConfirmDeleteModal = ({ envName, fileCategory, className }) => {
 						{' '}
 						Подтверждение действия{' '}
 					</div>
+
 					<p className={styles.message}>Удалить файл?</p>
 					<div className={buttonStyles.buttons}>
 						<button
-							onClick={onConfirm}
+							onClick={async () => {
+								await onConfirm();
+								if (error == null) {
+									close();
+									afterDel();
+								}
+							}}
 							className={`${buttonStyles.button} ${buttonStyles.menuButton}`}
 						>
 							Подтвердить
@@ -60,16 +71,12 @@ const ConfirmDeleteModal = ({ envName, fileCategory, className }) => {
 						>
 							Отменить
 						</button>
-						<Modal state={error}>{error ? error.message : ''}</Modal>
 					</div>
+					<Modal state={error}>{error ? error.message : ''}</Modal>
 				</div>
 			)}
 		</Popup>
 	);
-};
-ConfirmDeleteModal.propTypes = {
-	state: PropTypes.string.isRequired,
-	buttonStyle: PropTypes.string,
 };
 
 export default ConfirmDeleteModal;

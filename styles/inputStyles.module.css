@@ -38,7 +38,7 @@
     background: var(--inputbackground); 
     padding: 5px;
     font-size: smaller;
-    width:100%
+  flex-grow: 1;
  
   }
 
@@ -49,6 +49,7 @@
 
   }
   .radio {
+    appearance: none;
       -moz-appearance: none; 
       border:1px solid var(--defaultgrey);
       border-radius: 50%;

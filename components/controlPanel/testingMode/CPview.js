@@ -15,10 +15,10 @@ import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
 import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
 import CPload from './CPload';
 //func for validating current cp
-function CPview({ schemeName, writeLog, className = '' }) {
+function CPview({ envName, writeLog, className = '' }) {
 	const { setPollingError, schemeOn } = useGlobal();
 	const { currentConfName, setCurrentConfName, CPs, initCPs } =
-		useCPManager(schemeName);
+		useCPManager(envName);
 	const [getterStates, setGetterStates] = useState({});
 
 	const responseWaiting = useRef(false);
@@ -90,7 +90,7 @@ function CPview({ schemeName, writeLog, className = '' }) {
 				const firstFetch = async () => {
 					console.debug('first fetch');
 					await fetchAllStates(
-						schemeName,
+						envName,
 						onRef,
 						validGetters.current,
 						setPollingError,
@@ -105,7 +105,7 @@ function CPview({ schemeName, writeLog, className = '' }) {
 				intervalId.current = setInterval(
 					fetchAllStates,
 					1000,
-					schemeName,
+					envName,
 					onRef,
 					validGetters.current,
 					setPollingError,
@@ -120,10 +120,13 @@ function CPview({ schemeName, writeLog, className = '' }) {
 	}, [getterStates]);
 	const CPlogger = (msg, typ) => writeLog(msg, typ, 'panel', currentConfName);
 	return (
-		<div className={className}>
+		<div
+			className={className}
+			style={{ marginRight: '5px', display: 'flex', flexDirection: 'column' }}
+		>
 			<label className={headerStyles.modalHeader}>Панель управления</label>
 			<ChooseCP
-				schemeName={schemeName}
+				envName={envName}
 				currentConfName={currentConfName}
 				onChange={e => setCurrentConfName(e.target.value)}
 				cps={Object.keys(CPs)}
@@ -135,7 +138,7 @@ function CPview({ schemeName, writeLog, className = '' }) {
 					elems={CPs[currentConfName]?.content ?? []}
 					style={CPs[currentConfName]?.style}
 					currentGetterStates={getterStates[currentConfName]}
-					schemeName={schemeName}
+					envName={envName}
 					schemeOn={schemeOn}
 					writeLog={CPlogger}
 				></CPgrid>

@@ -58,7 +58,11 @@ const FileManager = ({
 				label={<Upload />}
 				title="Экспорт скрипта"
 			/>
-			<FileChooser folder={scheme}></FileChooser>
+			<FileChooser
+				envName={scheme}
+				category="tests"
+				openFile={addTab}
+			></FileChooser>
 		</div>
 	);
 };

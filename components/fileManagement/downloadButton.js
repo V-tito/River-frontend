@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import InlineModal from '@/components/modals/inlineModal';
-import { exportFile } from '@/utils/api_wrap/fileAPI';
+import { getJson } from '@/utils/api_wrap/fileAPI';
 
 import PropTypes from 'prop-types';
 const DownloadButton = ({
@@ -13,8 +13,8 @@ const DownloadButton = ({
 	const [error, setError] = useState(null);
 	const onDownload = async () => {
 		try {
-			const result = await exportFile(type, envName, filename);
-			const blob = new Blob([result.content], {
+			const result = await getJson(type, envName, filename);
+			const blob = new Blob([result], {
 				type: 'text/json',
 			});
 			// Create a download link

@@ -10,6 +10,7 @@ function RenameCPmodal({ CPname, rename }) {
 	const { register, handleSubmit, resetDefaultValues, reset, watch } = useForm({
 		defaultValues: { name: CPname },
 	});
+	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState();
 	useEffect(() => {
 		console.debug('reset def', CPname);
@@ -21,7 +22,9 @@ function RenameCPmodal({ CPname, rename }) {
 			<form
 				onSubmit={handleSubmit(async data => {
 					try {
+						setSuccess(false);
 						await rename(data.name);
+						setSuccess(true);
 						//window.location.reload();
 					} catch (err) {
 						setError(err);
@@ -44,6 +47,9 @@ function RenameCPmodal({ CPname, rename }) {
 				</button>
 			</form>
 			<InlineModal state={error}>{error?.message ?? ''}</InlineModal>
+			<InlineModal state={success} mode={'success'}>
+				{'Успешно'}
+			</InlineModal>
 		</PopupForm>
 	);
 }

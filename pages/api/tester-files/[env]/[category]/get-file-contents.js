@@ -31,6 +31,7 @@ export default async function handler(req, res) {
 			.status(400)
 			.send({ message: 'Указана неподдерживаемая категория файлов' });
 	const filename = req.query.filename ?? '';
+	console.debug('in get-contents endpoint, filename', filename);
 	const folder = `${safeBasePath}/${env}/${category}`;
 	const fullPath = `${safeBasePath}/${env}/${category}/${filename}`;
 	// Security: Prevent path traversal
@@ -52,7 +53,8 @@ export default async function handler(req, res) {
 			if (stats.isFile()) {
 				console.debug('found file which is file');
 				const content = await fs.readFile(fullPath);
-				const mime = detectBufferMime(content);
+
+				const mime = detectFilenameMime(filename);
 				console.debug('mime in get-contents', mime);
 				return res.status(200).setHeader('Content-Type', mime).send(content);
 			} else {

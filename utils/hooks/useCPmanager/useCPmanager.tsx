@@ -14,13 +14,13 @@ import {
 	getCPlist,
 } from '@/utils/api_wrap/fileAPI';
 interface Coordinates {
-	x: string;
-	y: string;
+	x: number;
+	y: number;
 }
 interface CPstyle {
-	width: string;
-	height: string;
-	background: string;
+	width: number;
+	height: number;
+	background: string | null;
 }
 interface CPentry {
 	signal: MinimalSignal;
@@ -42,6 +42,14 @@ interface blobp {
 	isSaved: boolean;
 }
 type entryGen = Record<string, string | number | Record<string, string>>;
+const CPentryKeys = new Set([
+	'id',
+	'signal',
+	'icon',
+	'type',
+	'default_',
+	'position',
+]);
 const convertEntry = (entry: entryGen) => {
 	const defaults = {
 		id: crypto.randomUUID(),
@@ -49,10 +57,11 @@ const convertEntry = (entry: entryGen) => {
 		icon: 'trigger',
 		type: 'setter',
 		default_: 0,
+		position: { x: '', y: '' },
 	};
-	const keys = new Set(['id', 'signal', 'icon', 'type', 'default_']);
+
 	const entryKeys = new Set(Object.keys(entry));
-	const forInit = keys.difference(entryKeys);
+	const forInit = CPentryKeys.difference(entryKeys);
 	let res = entry;
 	for (const key of forInit)
 		if (key in defaults) res[key] = defaults[key as keyof typeof defaults];
@@ -64,11 +73,46 @@ const makeCPfromContents = (
 	style: CPstyle | undefined = undefined
 ) => {
 	console.debug('entered makecp');
+	const convertedContents = contents?.map(convertEntry);
+	const minWidth =
+		convertedContents.reduce((maxX, elem) => {
+			return maxX > elem?.position?.x ? maxX : elem?.position?.x;
+		}, 0) + 78;
+	const minHeight =
+		convertedContents.reduce((maxY, elem) => {
+			return maxY > elem?.position?.y ? maxY : elem?.position?.y;
+		}, 0) + 151;
+	const height = style?.height
+		? String(style?.height).match(/\D/g) == null &&
+			Number(style?.height) > minHeight
+			? Number(style?.height)
+			: minHeight
+		: minHeight;
+	const width = style?.width
+		? String(style?.width).match(/\D/g) == null &&
+			Number(style?.width) > minWidth
+			? Number(style?.width)
+			: minWidth
+		: minWidth;
+	console.debug(
+		'init cp width',
+		String(style?.width).match(/\D/g)?.length == 0,
+		String(style?.width).match(/\D/g),
+		Number(style?.width),
+		style?.width
+	);
+	const newStyle = style
+		? {
+				...style,
+				height: height,
+				width: width,
+			}
+		: { width: minWidth, height: minHeight, background: null };
 	const newCP = {
 		name: name,
-		content: contents?.map(convertEntry) as Array<CPentry>,
-		isSaved: true,
-		style: style,
+		content: convertedContents as Array<CPentry>,
+		isSaved: false,
+		style: newStyle,
 	};
 	return newCP;
 };
@@ -140,8 +184,8 @@ function baseMode(envName: string, mode: string) {
 			console.debug('flist is array');
 			const fileProms = fileList.map(async (file, index) => {
 				try {
-					const content = await getCP(envName, file);
-					return [file, content];
+					const content = await getCP(envName, file.name);
+					return [file.name, content];
 				} catch (err) {
 					return [];
 				}
@@ -171,9 +215,17 @@ function baseMode(envName: string, mode: string) {
 	};
 	const updateCPStyle = (
 		attr: string,
-		value: string,
+		value: string | number,
 		CPname: string | undefined = currentConfName
 	) => {
+		console.debug(
+			'entered update cp style with attr',
+			attr,
+			'val',
+			value,
+			'cpname',
+			CPname
+		);
 		if (!CPname) return;
 		setCPs(prev => {
 			if (!prev[CPname]) return prev;
@@ -182,30 +234,28 @@ function baseMode(envName: string, mode: string) {
 				[CPname]: {
 					...prev[CPname],
 					style: { ...prev[CPname].style, [attr]: value } as CPstyle,
+					isSaved: false,
 				},
 			};
 		});
 	};
 	const updateCPWidth = (
-		value: string | number,
+		value: number,
 		CPName: string | undefined = currentConfName
 	) => {
-		const val = typeof value == 'number' ? String(value) + 'px' : value;
-		updateCPStyle('width', val, CPName);
+		updateCPStyle('width', value, CPName);
 	};
 	const updateCPHeight = (
-		value: string | number,
+		value: number,
 		CPName: string | undefined = currentConfName
 	) => {
-		const val = typeof value == 'number' ? String(value) + 'px' : value;
-		updateCPStyle('height', val, CPName);
+		updateCPStyle('height', value, CPName);
 	};
 	const updateCPBackground = (
 		url: string,
 		CPName: string | undefined = currentConfName
 	) => {
-		const val = 'url("' + url + ')';
-		updateCPStyle('background', val, CPName);
+		updateCPStyle('background', url, CPName);
 	};
 	return {
 		currentConfName,
@@ -417,16 +467,15 @@ function editingMode(envName: string) {
 	};
 	const deleteCP = async (name: string | undefined) => {
 		if (name == undefined) throw new Error('Несуществующая панель');
-		if (currentConfName == name) setCurrentConfName(undefined);
+
 		setCPs(prev => {
 			const { [name]: _, ...res } = prev;
 			return res;
 		});
-		try {
-			await deleteFile('CPs', envName, name);
-		} catch (err) {
-			console.debug('error deleting file');
-		}
+		currentBlobs.current = currentBlobs.current.filter(bl => bl.name != name);
+		if (currentConfName == name) setCurrentConfName(undefined);
+		saveCurrentToSessionStorage();
+		await deleteFile('CPs', envName, name);
 	};
 	const renameCP = async (
 		newName: string,
@@ -504,8 +553,10 @@ function editingMode(envName: string) {
 				console.debug('have cp in alter');
 				let entry = CPs[confname].content[index] ?? convertEntry({});
 				const entryval = entry[field as keyof CPentry];
-				if (field in entry) {
+				if (CPentryKeys.has(field)) {
+					console.debug('field is in keys');
 					const newval = typeof val == 'function' ? val(entryval) : val;
+					console.debug('newval in alter entry field', newval);
 					entry = { ...entry, [field as keyof CPentry]: newval };
 				} else if (['parentGroup', 'name'].includes(field)) {
 					const newval =

@@ -1,10 +1,10 @@
 import { React, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../modals/inlineModal';
-import FlexMenuButton from './buttons/flexMenuButton';
+import FlexMenuButton from '../templateComponents/buttons/flexMenuButton';
 import PopupForm from '../templateComponents/popupForm';
 import PopupControlled from '../templateComponents/popupControlled';
-import styles from './fileBar.module.css';
+
 import { Upload, Save, Download, FilePlus } from '@deemlol/next-icons';
 import { getDirectoryStats } from '@/utils/api_wrap/fileAPI';
 import buttonStyles from '@/styles/buttonStyles.module.css';
@@ -18,7 +18,8 @@ const FileChooser = ({ envName, category, openFile }) => {
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const fileList = getDirectoryStats(category, envName);
+				const fileList = await getDirectoryStats(category, envName);
+				console.debug('got files list in file browser', fileList);
 				setFiles(fileList);
 			} catch (err) {
 				setError(err);
@@ -26,7 +27,7 @@ const FileChooser = ({ envName, category, openFile }) => {
 				setLoading(false);
 			}
 		};
-		if (folder !== undefined) {
+		if (envName !== undefined && category !== undefined) {
 			fetchFiles();
 		}
 	}, []);
@@ -36,6 +37,7 @@ const FileChooser = ({ envName, category, openFile }) => {
 			<FlexMenuButton
 				buttonTitle={'Открыть файл из хранилища рабочего пространства'}
 				buttonLabel={<FilePlus></FilePlus>}
+				onClick={() => setOpen(true)}
 			/>
 			<PopupControlled
 				open={open}
@@ -49,7 +51,7 @@ const FileChooser = ({ envName, category, openFile }) => {
 								key={index}
 								onClick={async () => {
 									try {
-										await openFile(file);
+										await openFile(file.name);
 										setOpen(false);
 									} catch (err) {
 										setError(err);
@@ -57,7 +59,7 @@ const FileChooser = ({ envName, category, openFile }) => {
 								}}
 								className={headerStyles.fold}
 							>
-								{file}
+								{file.name}
 							</button>
 						))
 					: ''}

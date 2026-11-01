@@ -3,7 +3,7 @@ import styles from './modal.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 
 import PropTypes from 'prop-types';
-const InlineModal = ({ state, children }) => {
+const InlineModal = ({ state, mode = 'error', children }) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -16,7 +16,7 @@ const InlineModal = ({ state, children }) => {
 	if (!isVisible) return null;
 	console.log('imc', children);
 	return (
-		<div className={styles.containerInline}>
+		<div className={`${styles.containerInline} ${styles[mode]}`}>
 			{children}
 			<button
 				onClick={onClose}

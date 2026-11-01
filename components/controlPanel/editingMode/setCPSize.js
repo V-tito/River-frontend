@@ -1,6 +1,15 @@
+import { useEffect, useState } from 'react';
 import styles from '../controlPanel.module.css';
+import { useForm } from 'react-hook-form';
 
-export default function SetCPSize({ x, setX, y, setY }) {
+export default function SetCPSize({ x, setX, y, setY, cp }) {
+	const { reset, resetDefaultValues, register } = useForm({
+		defaultValues: { x: x, y: y },
+	});
+	useEffect(() => {
+		resetDefaultValues({ x: x, y: y });
+		reset();
+	}, [cp]);
 	console.debug('x', x, 'y', y);
 	return (
 		<div className={styles.setsize}>
@@ -8,16 +17,16 @@ export default function SetCPSize({ x, setX, y, setY }) {
 				Ширина
 				<input
 					type="number"
-					defaultValue={x}
-					onChange={e => setX(e.target.value + 'px')}
+					{...register('x')}
+					onChange={e => setX(e.target.value)}
 				/>
 			</label>
 			<label>
 				Высота
 				<input
 					type="number"
-					defaultValue={y}
-					onChange={e => setY(e.target.value + 'px')}
+					{...register('y')}
+					onChange={e => setY(e.target.value)}
 				/>
 			</label>
 		</div>

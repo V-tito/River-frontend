@@ -38,6 +38,12 @@ async function getFile(
  */
 export async function getBackground(envName: string, filename: string) {
 	const response = await getFile('CPbackgrounds', envName, filename);
+	console.debug('response in getbackground', response);
+	console.debug('response.headers in getbackground', response.headers);
+	console.debug(
+		'response.headers.get in getbackground',
+		response.headers.get('Content-Type')
+	);
 	if (!response.headers.get('Content-Type')?.includes('image')) {
 		console.debug(
 			'error: non-image response header in backgrounds',
@@ -66,17 +72,6 @@ export async function getJson(
 	filename: string
 ) {
 	const response = await getFile(type, envName, filename);
-	if (!response.headers.get('Content-Type')?.includes('image')) {
-		console.debug(
-			'error: non-image response header in backgrounds',
-			response.headers.get('Content-Type'),
-			'file requested:',
-			filename,
-			'env:',
-			envName
-		);
-		throw new Error('Полученный объект не является изображением');
-	}
 	const result = (await response.blob()).text();
 	const jsonContents = JSON.parse(await result);
 	return jsonContents;
@@ -105,13 +100,21 @@ export async function postBlob(
 	filename: string,
 	content: Blob
 ) {
+	console.debug('entered post blob');
 	const dataToSend = new FormData();
 	dataToSend.append('file', content, filename);
+	console.debug(
+		'sending request w data',
+		dataToSend,
+		'on api',
+		`/api/tester-files/${envName}/${type}/access`
+	);
 	const response = await fetch(`/api/tester-files/${envName}/${type}/access`, {
 		method: 'POST',
 		body: dataToSend,
 		keepalive: true,
 	});
+	console.debug('response', response);
 	if (!response.ok) throw netError(response);
 	return response;
 }
@@ -143,9 +146,9 @@ export async function postImage(
 export async function postTest(
 	envName: string,
 	filename: string,
-	content: Object | string
+	content: Blob
 ) {
-	return await postJson('tests', envName, filename, content);
+	return await postBlob('tests', envName, filename, content);
 }
 export async function postCP(envName: string, filename: string, content: Blob) {
 	return await postBlob('CPs', envName, filename, content);
@@ -173,7 +176,7 @@ export async function deleteFile(
 	filename: string
 ) {
 	const response = await fetch(
-		`/api/tester-files/${envName}/${type}?filename=${filename}`,
+		`/api/tester-files/${envName}/${type}/access?filename=${filename}`,
 		{
 			method: 'DELETE',
 		}
@@ -186,7 +189,7 @@ export async function getDirectoryStats(
 	type: testerFileCategories,
 	envName: string
 ) {
-	let url = `/api/tester-files/${envName}/${type}/get-file-contents`;
+	let url = `/api/tester-files/${envName}/${type}/access`;
 	const response = await fetch(url, {
 		method: 'GET',
 	});

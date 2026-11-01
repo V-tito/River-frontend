@@ -13,7 +13,13 @@
     text-align: center;
     width: 100%;
     padding-left: 2px;
+    
+  }
+  .error{
     border: 3px dotted var(--defaultdarkred)
+  }
+  .success{
+    border: 3px dotted var(--controlelementcolor)
   }
   .message{
     text-align: center;

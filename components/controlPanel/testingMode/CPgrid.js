@@ -3,15 +3,52 @@ import CPset from './CPset';
 import CPget from './CPget';
 import CPload from './CPload';
 import styles from '../controlPanel.module.css';
-
+import { getBackground } from '@/utils/api_wrap/fileAPI';
 function CPgrid({
 	elems = [],
 	currentGetterStates,
-	schemeName = '',
+	envName = '',
 	schemeOn,
 	writeLog,
 	style,
 }) {
+	const [styl, setStyl] = useState({});
+	useEffect(() => {
+		const resetStyle = async () => {
+			if (style) {
+				let back;
+				if (style.background) {
+					back = await getBackground(envName, style.background);
+				}
+				const temp = {
+					width: style.width + 'px',
+					height: style.height + 'px',
+					backgroundImage: back ? 'url(' + back + ')' : null,
+					backgroundSize: style.width + 'px ' + style.height + 'px',
+				};
+				setStyl(temp);
+			} else setStyl({});
+		};
+		resetStyle();
+	}, []);
+	useEffect(() => {
+		const resetStyle = async () => {
+			if (style) {
+				let back;
+				if (style.background) {
+					back = await getBackground(envName, style.background);
+				}
+				const temp = {
+					width: style.width + 'px',
+					height: style.height + 'px',
+					backgroundImage: back ? 'url(' + back + ')' : null,
+					backgroundSize: style.width + 'px ' + style.height + 'px',
+				};
+				setStyl(temp);
+			} else setStyl({});
+		};
+		resetStyle();
+	}, [style]);
 	const [setterInit, setsetterInit] = useState({});
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
@@ -44,12 +81,12 @@ function CPgrid({
 	}, [elems]);
 	if (loading || !currentGetterStates) return <CPload />;
 	return (
-		<div className={styles.grid} style={style}>
+		<div className={styles.grid} style={{ ...styl, position: 'relative' }}>
 			{elems.map((elem, index) =>
 				elem.type == 'setter' ? (
 					<CPset
 						specs={elem}
-						schemeName={schemeName}
+						envName={envName}
 						key={index}
 						haveInit={setterInit}
 						setHaveInit={setsetterInit}

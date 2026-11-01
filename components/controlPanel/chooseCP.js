@@ -9,12 +9,14 @@ export default function ChooseCP({
 	currentConfName,
 	onChange,
 	cps,
+	initCPs,
 }) {
 	const [uploadError, setUploadError] = useState(null);
 	const handleFileUpload = async (e, file) => {
 		e.preventDefault();
 		try {
 			await postCP(schemeName, file.name, file);
+			await initCPs();
 		} catch (err) {
 			setUploadError(err);
 		}

@@ -1,7 +1,7 @@
 .grid {
     background-color: lightgray;
     border: 5px solid grey;
-    overflow-y: hidden;
+    overflow: scroll;
   }
   .loader{
     display: flex;
