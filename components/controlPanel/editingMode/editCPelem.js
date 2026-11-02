@@ -84,7 +84,7 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 	if (!('signal' in specs)) return <p>Загрузка</p>;
 	return (
 		<div
-			className={styles.CPset}
+			className={styles.CPelem}
 			onMouseOver={() => setMenuVisibility(true)}
 			onMouseOut={() => setMenuVisibility(false)}
 		>
@@ -102,7 +102,7 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 				<Image
 					src={icons.getter[specs.icon].off}
 					className={styles.icon}
-					alt="lamp's off"
+					alt="elem's off"
 				></Image>
 			)}
 			{menuVisibility && (

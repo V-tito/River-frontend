@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../controlPanel.module.css';
 import icons from '../icons';
-
-import { setSignalState, getSignalState } from '@/utils/api_wrap/protocol.js';
-import Image from 'next/image';
+import { setSignalState } from '@/utils/api_wrap/protocol.js';
+import StyledIcon from './styledIcon';
 
 /**
  * generates CP set selement for panel in test mode only (for the time being)
- * @param {Record<string,Record<string,string>|string>} param0 has two required fields. First one, specs, is a record with fields "group","signal", "icon" and "default_", corresponding to group name, signal name, icon type ("trigger"/"lamp") and default value the signal must be set to when the panel is loaded. the second field, envName, defines backend environment
+ *
  */
 function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 	const { signal, icon, default_, valid, position } = specs;
-	const { parentGroup, name, turnedOnStatusName, turnedOffStatusName } = signal;
+	const { parentGroup, name } = signal;
 	const [on, setOn] = useState(-1);
 	const [disabled, setDisabled] = useState(true);
 	const icon_ = icons.setter[icon];
@@ -51,17 +50,13 @@ function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 			});
 			setDisabled(false);
 		};
-		console.debug('setting defs', haveInit);
-		console.debug('haveInit', haveInit);
 		const init_ = haveInit[name];
-		console.debug('haveInit', haveInit);
 		if (valid) {
 			if (!init_ && schemeOn) setDef();
 		} else setDisabled(true);
 	}, [signal, schemeOn, haveInit]);
 	return (
 		<button
-			className={styles.CPset}
 			onClick={async e => {
 				try {
 					await setSignalState(envName, parentGroup, name, !on);
@@ -75,24 +70,15 @@ function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 				}
 			}}
 			disabled={disabled}
-			style={{ top: position?.y, left: position?.x, position: 'absolute' }}
 		>
-			<Image
-				src={
-					disabled
-						? icon_.disabled
-						: on === -1
-							? icon_.error
-							: on
-								? icon_.on
-								: icon_.off
-				}
-				className={styles.icon}
-				width={56}
-				height={56}
-				alt={on ? (turnedOnStatusName ?? '') : (turnedOffStatusName ?? '')}
+			<StyledIcon
+				icon_={icon_}
+				on={on}
+				error={error}
+				signal={signal}
+				position={position}
+				disabled={disabled}
 			/>
-			<span className={styles.label}>{name}</span>
 		</button>
 	);
 }

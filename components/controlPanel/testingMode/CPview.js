@@ -1,149 +1,146 @@
-import React, {
-	useEffect,
-	useState,
-	useCallback,
-	useMemo,
-	useRef,
-} from 'react';
-import buttonStyles from '@/styles/buttonStyles.module.css';
-import inputStyles from '@/styles/inputStyles.module.css';
+import React, { useEffect, useState, useRef } from 'react';
+import CPset from './CPset';
+import CPget from './CPget';
+
 import headerStyles from '@/styles/headerStyles.module.css';
-import CPgrid from './CPgrid';
 import ChooseCP from '../chooseCP';
 import { useGlobal } from '@/app/GlobalState';
 import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
-import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
 import CPload from './CPload';
-//func for validating current cp
-function CPview({ envName, writeLog, className = '' }) {
-	const { setPollingError, schemeOn } = useGlobal();
-	const { currentConfName, setCurrentConfName, CPs, initCPs } =
-		useCPManager(envName);
-	const [getterStates, setGetterStates] = useState({});
+import StyledGrid from '../styledGrid';
+import useGetterStatetable from '@/utils/hooks/useGetterStateTable';
+import UploadCPbutton from '../uploadCPbutton';
 
-	const responseWaiting = useRef(false);
-	const setResponseWaiting = val => {
-		responseWaiting.current = val;
+function useSetterInit(validSettersRef) {
+	const [setterInit, setsetterInit] = useState({});
+	const [setterIniting, setSetterIniting] = useState(true);
+	const reinit = () => {
+		setSetterIniting(true);
+		if (Array.isArray(validSettersRef.current))
+			setsetterInit(
+				validSettersRef.current.reduce((acc, sig) => {
+					return { ...acc, [sig.name]: false };
+				}, {})
+			);
+		setSetterIniting(false);
 	};
-	const validGetters = useRef([]);
-	const intervalId = useRef();
-	const [loading, setLoading] = useState(true);
-	const onRef = useRef(schemeOn);
-	useEffect(() => {
-		onRef.current = schemeOn;
-	});
-	useEffect(() => {
-		const init = async () => {
-			setLoading(true);
-			try {
-				await initCPs();
-			} catch (err) {
-				console.debug('some err initing testing cps');
-			}
-		};
-		init();
-	}, []);
-	const setCPsGetterStates = (CPname, updater) => {
-		console.debug('setCPGS');
-		setGetterStates(prev => {
-			return {
-				...prev,
-				[CPname]: updater instanceof Function ? updater(prev[CPname]) : updater,
-			};
-		});
-	};
-	useEffect(() => {
-		if (!loading) setLoading(true);
-		console.debug('cps withing reduce', CPs);
-		const newGS = Object.keys(CPs).reduce((acc, key) => {
-			return {
-				...acc,
-				[key]: CPs[key].content.reduce((acc, item) => {
-					return item.valid && item.type == 'getter'
-						? { ...acc, [item.signal.name]: { on: -1, valid: false } }
-						: acc;
-				}, {}),
-			};
-		}, {});
-		console.debug('new GS', newGS);
-		setGetterStates(newGS);
-		setLoading(false);
-	}, [CPs]);
-	useEffect(() => {
-		if (typeof window === 'undefined') return;
-		window.addEventListener('pagehide', () => {
-			clearInterval(intervalId);
-		});
-	}, []);
-	useEffect(() => {
-		if (!loading)
-			if (currentConfName) {
-				setLoading(true);
-				validGetters.current = CPs[currentConfName].content
-					.filter((elem, index) => {
-						return elem.valid && elem.type == 'getter';
-					})
-					.map(elem => elem.signal);
-				if (intervalId.current) clearInterval(intervalId);
-				const setCurrentGetters = updater =>
-					setCPsGetterStates(currentConfName, updater);
-				const firstFetch = async () => {
-					console.debug('first fetch');
-					await fetchAllStates(
-						envName,
-						onRef,
-						validGetters.current,
-						setPollingError,
-						responseWaiting,
-						setResponseWaiting,
-						setCurrentGetters
-					);
-					console.debug('loading false');
-					setLoading(false);
-				};
-				firstFetch();
-				intervalId.current = setInterval(
-					fetchAllStates,
-					1000,
-					envName,
-					onRef,
-					validGetters.current,
-					setPollingError,
-					responseWaiting,
-					setResponseWaiting,
-					setCurrentGetters
-				);
-			}
-	}, [currentConfName, CPs]);
-	useEffect(() => {
-		console.debug('gs', getterStates);
-	}, [getterStates]);
-	const CPlogger = (msg, typ) => writeLog(msg, typ, 'panel', currentConfName);
+	return { setterInit, setsetterInit, setterIniting, reinit };
+}
+const Wrapper = ({ className, children }) => {
 	return (
 		<div
 			className={className}
 			style={{ marginRight: '5px', display: 'flex', flexDirection: 'column' }}
 		>
 			<label className={headerStyles.modalHeader}>Панель управления</label>
-			<ChooseCP
-				envName={envName}
-				currentConfName={currentConfName}
-				onChange={e => setCurrentConfName(e.target.value)}
-				cps={Object.keys(CPs)}
-			></ChooseCP>
-			{loading ? (
-				<CPload />
-			) : (
-				<CPgrid
-					elems={CPs[currentConfName]?.content ?? []}
-					style={CPs[currentConfName]?.style}
-					currentGetterStates={getterStates[currentConfName]}
-					envName={envName}
-					schemeOn={schemeOn}
-					writeLog={CPlogger}
-				></CPgrid>
-			)}
+			{children}
 		</div>
+	);
+};
+function CPview({ envName, writeLog, className = '' }) {
+	const { setPollingError, schemeOn } = useGlobal();
+	const { currentConfName, setCurrentConfName, CPs, initCPs, getValidSignals } =
+		useCPManager(envName);
+	const validGetters = useRef([]);
+	const validSetters = useRef([]);
+	const [loading, setLoading] = useState(true);
+	const [initError, setInitError] = useState(null);
+	const onRef = useRef(schemeOn);
+	useEffect(() => {
+		onRef.current = schemeOn;
+	});
+	const { getterStates, loadingTable, resetPolling } = useGetterStatetable(
+		envName,
+		onRef,
+		validGetters,
+		setPollingError
+	);
+	const { setterInit, setsetterInit, setterIniting, reinit } =
+		useSetterInit(validSetters);
+	useEffect(() => {
+		const init = async () => {
+			setLoading(true);
+			try {
+				await initCPs();
+			} catch (err) {
+				setInitError(err);
+				console.debug('some err initing testing cps');
+			} finally {
+				setLoading(false);
+			}
+		};
+		init();
+	}, []);
+
+	useEffect(() => {
+		if (currentConfName) {
+			validGetters.current = getValidSignals('getter');
+			validSetters.current = getValidSignals('setter');
+			resetPolling();
+			reinit();
+		}
+	}, [currentConfName, CPs]);
+	const CPlogger = (msg, typ) => writeLog(msg, typ, 'panel', currentConfName);
+
+	if (loading)
+		return (
+			<Wrapper className={className}>
+				<CPload />
+			</Wrapper>
+		);
+	if (initError)
+		return (
+			<Wrapper className={className}>
+				Ошибка загрузки панелей управления:{' '}
+				{initError?.message ?? 'неизвестная ошибка'}
+			</Wrapper>
+		);
+	return (
+		<Wrapper className={className}>
+			<div className="flex flex-row">
+				<UploadCPbutton envName={envName} initCPs={initCPs} />
+				<ChooseCP
+					currentConfName={currentConfName}
+					onChange={e => setCurrentConfName(e.target.value)}
+					cps={Object.keys(CPs)}
+				></ChooseCP>
+			</div>
+			<StyledGrid
+				style={CPs?.[currentConfName]?.style}
+				currentGetterStates={getterStates[currentConfName]}
+				envName={envName}
+				schemeOn={schemeOn}
+				writeLog={CPlogger}
+			>
+				{loadingTable || setterIniting ? (
+					<CPload />
+				) : CPs?.[currentConfName]?.content ? (
+					CPs[currentConfName].content.map((elem, index) =>
+						elem.type == 'setter' ? (
+							<CPset
+								specs={elem}
+								envName={envName}
+								key={index}
+								haveInit={setterInit}
+								setHaveInit={setsetterInit}
+								schemeOn={schemeOn}
+								writeLog={writeLog}
+							></CPset>
+						) : (
+							<CPget
+								specs={elem}
+								onTable={currentGetterStates}
+								schemeOn={schemeOn}
+								key={index}
+								writeLog={writeLog}
+							></CPget>
+						)
+					)
+				) : (
+					''
+				)}
+			</StyledGrid>
+		</Wrapper>
 	);
 }
 export default CPview;

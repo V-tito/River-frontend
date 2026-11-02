@@ -1,11 +1,18 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import {
-	MinimalSignal,
-	ValidateMinimalSignal,
-} from '@/utils/interfaces/minimalSignal';
+import { MinimalSignal } from '@/utils/interfaces/minimalSignal';
 import { usePersistentData } from '@/utils/hooks/usePersistentData';
 import { netError } from '@/utils/api_wrap/netError';
 import { checkExistence } from '@/utils/api_wrap/configAPI';
+import {
+	entryGen,
+	CPentry,
+	CPentryKeys,
+	CPstyle,
+	CP,
+	isExtEntry,
+	blobp,
+	Coordinates,
+} from '@/utils/interfaces/CPtypes';
 import {
 	getCP,
 	postCP,
@@ -13,43 +20,7 @@ import {
 	deleteFile,
 	getCPlist,
 } from '@/utils/api_wrap/fileAPI';
-interface Coordinates {
-	x: number;
-	y: number;
-}
-interface CPstyle {
-	width: number;
-	height: number;
-	background: string | null;
-}
-interface CPentry {
-	signal: MinimalSignal;
-	icon: string;
-	type: string;
-	id: string;
-	default_: number;
-	position: Coordinates;
-}
-interface CP {
-	name: string;
-	content: Array<CPentry>;
-	isSaved: boolean;
-	style: CPstyle | undefined;
-}
-interface blobp {
-	name: string;
-	blob: Blob;
-	isSaved: boolean;
-}
-type entryGen = Record<string, string | number | Record<string, string>>;
-const CPentryKeys = new Set([
-	'id',
-	'signal',
-	'icon',
-	'type',
-	'default_',
-	'position',
-]);
+
 const convertEntry = (entry: entryGen) => {
 	const defaults = {
 		id: crypto.randomUUID(),
@@ -213,50 +184,7 @@ function baseMode(envName: string, mode: string) {
 			return {} as Record<string, CP>;
 		}
 	};
-	const updateCPStyle = (
-		attr: string,
-		value: string | number,
-		CPname: string | undefined = currentConfName
-	) => {
-		console.debug(
-			'entered update cp style with attr',
-			attr,
-			'val',
-			value,
-			'cpname',
-			CPname
-		);
-		if (!CPname) return;
-		setCPs(prev => {
-			if (!prev[CPname]) return prev;
-			return {
-				...prev,
-				[CPname]: {
-					...prev[CPname],
-					style: { ...prev[CPname].style, [attr]: value } as CPstyle,
-					isSaved: false,
-				},
-			};
-		});
-	};
-	const updateCPWidth = (
-		value: number,
-		CPName: string | undefined = currentConfName
-	) => {
-		updateCPStyle('width', value, CPName);
-	};
-	const updateCPHeight = (
-		value: number,
-		CPName: string | undefined = currentConfName
-	) => {
-		updateCPStyle('height', value, CPName);
-	};
-	const updateCPBackground = (
-		url: string,
-		CPName: string | undefined = currentConfName
-	) => {
-		updateCPStyle('background', url, CPName);
-	};
+
 	return {
 		currentConfName,
 		setCurrentConfName,
@@ -268,10 +196,6 @@ function baseMode(envName: string, mode: string) {
 		updateCPContent,
 		init,
 		setInit,
-		updateCPStyle,
-		updateCPWidth,
-		updateCPHeight,
-		updateCPBackground,
 	};
 }
 function testingMode(envName: string) {
@@ -284,10 +208,6 @@ function testingMode(envName: string) {
 		getInitialCPs,
 		init,
 		setInit,
-		updateCPStyle,
-		updateCPWidth,
-		updateCPHeight,
-		updateCPBackground,
 	} = baseMode(envName, 'tester');
 	const initCPs = async () => {
 		if (!init) {
@@ -325,15 +245,24 @@ function testingMode(envName: string) {
 			}
 		}
 	};
+	const getValidSignals = (
+		typ: 'setter' | 'getter',
+		confname: string | undefined = currentConfName
+	) => {
+		if (confname == undefined) return [];
+		if (!CPs[confname]) return [];
+		CPs[confname].content
+			.filter((elem, index) => {
+				if (isExtEntry(elem)) return elem.valid && elem.type == typ;
+			})
+			.map(elem => elem.signal);
+	};
 	return {
 		currentConfName,
 		setCurrentConfName,
 		CPs,
 		initCPs,
-		updateCPStyle,
-		updateCPWidth,
-		updateCPHeight,
-		updateCPBackground,
+		getValidSignals,
 	};
 }
 function editingMode(envName: string) {
@@ -348,10 +277,6 @@ function editingMode(envName: string) {
 		updateCPContent,
 		init,
 		setInit,
-		updateCPStyle,
-		updateCPWidth,
-		updateCPHeight,
-		updateCPBackground,
 	} = baseMode(envName, 'editor');
 	const savingRef = useRef(false);
 	const currentBlobs = useRef([] as Array<blobp>);
@@ -603,24 +528,9 @@ function editingMode(envName: string) {
 		removeEntry,
 		alterEntryField,
 		saveCP,
-		updateCPStyle,
-		updateCPWidth,
-		updateCPHeight,
-		updateCPBackground,
 	};
 }
-export function validateEntry(entry: unknown): entry is CPentry {
-	console.debug('validating CPentry', entry);
-	return (
-		typeof entry === 'object' &&
-		entry !== null &&
-		ValidateMinimalSignal((entry as CPentry).signal) &&
-		typeof (entry as CPentry).id === 'string' &&
-		typeof (entry as CPentry).icon === 'string' &&
-		typeof (entry as CPentry).type === 'string' &&
-		typeof (entry as CPentry).default_ === 'number'
-	);
-}
+
 /**
  * Менеджер панелей управления. Возвращает таблицу панелей (react State), react State с именем текущей панели
  *  и набор функций для работы с панелями (отличается в разных режимах)

@@ -1,6 +1,5 @@
-import styles from '../controlPanel.module.css';
 import icons from '../icons';
-import Image from 'next/image';
+import StyledIcon from './styledIcon';
 /**
  * generates CP get selement for panel in test mode only (for the time being)
  * @param {*} param0 has two fields. the first is specs, a record with fields "signal" and "icon", corresponding to signal (minimal signal interface, see:hooks) and icon type ("trigger"/"lamp"). The second is on, a state variable (or a field in a state variable) keeping the state of corresponding signal, fetched from backend (data gathering lifted up for performance)
@@ -8,45 +7,26 @@ import Image from 'next/image';
 function CPget({ specs, onTable, schemeOn }) {
 	console.debug('mounted getter with specs', specs, 'onTable', onTable);
 	const { signal, icon, valid, position } = specs;
-	const { parentGroup, name, turnedOnStatusName, turnedOffStatusName } = signal;
+	const { name } = signal;
 	let on = -1,
 		error = false;
 	const disabled = !valid || !schemeOn;
 	console.debug('getter', specs, 'isValid', valid);
 	if (valid) {
 		console.debug('name', name, 'onTable', onTable);
-		on = onTable[name]?.on;
-		error = onTable[name]?.valid;
+		on = onTable?.[name]?.on;
+		error = onTable?.[name]?.valid;
 	}
 	const icon_ = icons.getter[icon];
 	return (
-		<div
-			className={styles.CPget}
-			style={{ top: position?.y, left: position?.x, position: 'absolute' }}
-		>
-			<Image
-				src={
-					disabled
-						? icon_.disabled
-						: on == undefined || error || on == -1
-							? icon_.error
-							: on > 0
-								? icon_.on
-								: icon_.off
-				}
-				className={styles.icon}
-				alt={
-					disabled
-						? 'Нет данных'
-						: on == undefined || error || on == -1
-							? 'Ошибка получения данных'
-							: on > 0
-								? (turnedOnStatusName ?? 'Вкл')
-								: (turnedOffStatusName ?? 'Выкл')
-				}
-			></Image>
-			<span className={styles.label}>{name}</span>
-		</div>
+		<StyledIcon
+			icon_={icon_}
+			on={on}
+			error={error}
+			signal={signal}
+			position={position}
+			disabled={disabled}
+		/>
 	);
 }
 

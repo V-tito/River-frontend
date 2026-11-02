@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useGlobal } from '@/app/GlobalState';
 import { Feedback } from '@dnd-kit/dom';
 import EditCPgrid from './editCPgrid';
 import AddElementMenu from './addElementMenu';
@@ -18,7 +17,86 @@ import { DragDropProvider } from '@dnd-kit/react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
-export default function CPeditor({ schemeName, setPollingError }) {
+import EditCPelem from './editCPelem';
+import StyledGrid from '../styledGrid';
+function SortableElem({ index, setSpecs, item, data, groups, remove }) {
+	const { ref } = useSortable({ id: item.id, index: index, group: 'panel' });
+	return (
+		<li ref={ref} className={styles.li}>
+			<EditCPelem
+				index={index}
+				specs={item}
+				setSpecs={setSpecs}
+				groups={groups}
+				data={data}
+				remove={remove}
+			/>
+		</li>
+	);
+}
+function DraggableElem({
+	index,
+	setSpecs,
+	item,
+	data,
+	groups,
+	remove,
+	parent,
+}) {
+	const { ref, isDragging } = useDraggable({
+		id: item.id,
+		data: { index: index, group: 'panel' },
+		plugins: [
+			Feedback.configure({
+				feedback: 'move',
+				dropAnimation: null,
+			}),
+		],
+	});
+	console.debug(
+		'made draggable with ref',
+		ref,
+		'from item',
+		item,
+		'which is dragging?',
+		isDragging
+	);
+	const parentRect = parent.current
+		? parent.current?.getBoundingClientRect()
+		: null;
+	console.debug('parent in draggable elem', parent);
+	console.debug('parent bounds in draggable elem', parentRect);
+	let x = item?.position?.x,
+		y = item?.position?.y;
+	console.debug('in draggable elem, x', x, 'y', y);
+	if (parentRect) {
+		const { left, right, top, bottom, width, height } = parentRect;
+		console.debug(y && height, y < height, top < y, y < bottom);
+		console.debug(x && width, left < x && x < right, left < x, x < right);
+		y = y && height ? (y < height ? (y > 0 ? y : 0) : height) : '';
+		x = x && width ? (x < width ? (x > 0 ? x : 0) : '') : '';
+	}
+	return (
+		<div
+			style={{
+				position: 'absolute',
+				top: isDragging ? undefined : y,
+				left: isDragging ? undefined : x,
+			}}
+			ref={ref}
+		>
+			<EditCPelem
+				index={index}
+				specs={item}
+				setSpecs={setSpecs}
+				groups={groups}
+				data={data}
+				remove={remove}
+			/>
+		</div>
+	);
+}
+export default function CPeditor({ envName, setPollingError }) {
 	const [data, setData] = useState({});
 	const [groups, setGroups] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -30,9 +108,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		CPs,
 		addCP,
 		getNewName,
-		saveCurrentToSessionStorage,
 		deleteCP,
-		updateCPContent,
 		initCPs,
 		renameCP,
 		insertEntry,
@@ -42,7 +118,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		updateCPWidth,
 		updateCPHeight,
 		updateCPBackground,
-	} = useCPManager(schemeName, 'editing');
+	} = useCPManager(envName, 'editing');
 	//fetch inputs and outputs
 	useEffect(() => {
 		const init = async () => {
@@ -55,20 +131,19 @@ export default function CPeditor({ schemeName, setPollingError }) {
 		const fetchSignals = async () => {
 			try {
 				const response = await fetch(
-					`/api/getSignalTables/${schemeName}?sortedSignals=true`
+					`/api/getSignalTables/${envName}?sortedSignals=true`
 				);
 				const conf = await response.json();
 				if (!response.ok) {
 					throw new Error(`Ошибка сети ${response.status}`);
 				}
 				const sulResponse = await fetch(
-					`/api/getSulSignalTables/${schemeName}?sortedSignals=true`
+					`/api/getSulSignalTables/${envName}?sortedSignals=true`
 				);
 				const sulConf = await sulResponse.json();
 				if (!sulResponse.ok) {
 					throw new Error(`Ошибка сети ${sulResponse.status}`);
 				}
-				console.debug('conf', conf, 'sulconf', sulConf, 'groups', conf.groups);
 				const dataWithSulInputs = conf.groups.reduce((acc, group) => {
 					const groupContent = {
 						inputs: [
@@ -77,14 +152,6 @@ export default function CPeditor({ schemeName, setPollingError }) {
 						],
 						outputs: conf.data[group.name].outputs,
 					};
-					console.debug(
-						'group content',
-						groupContent,
-						'for group',
-						group,
-						'while acc is',
-						acc
-					);
 					return {
 						...acc,
 						[group.name]: groupContent,
@@ -100,13 +167,13 @@ export default function CPeditor({ schemeName, setPollingError }) {
 			setLoading(false);
 		};
 		fetchSignals();
-	}, [schemeName]);
+	}, [envName]);
 
 	if (loading) return <p>Загрузка</p>;
 	return (
 		<div>
 			<ChooseCP
-				schemeName={schemeName}
+				envName={envName}
 				currentConfName={currentConfName}
 				onChange={e => {
 					setCurrentConfName(e.target.value);
@@ -124,7 +191,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 			/>
 			<NewCPbutton add={addCP} getname={getNewName} />
 			<ConfirmFileDeleteModal
-				envName={schemeName}
+				envName={envName}
 				fileCategory="CPs"
 				deleteFunc={() => deleteCP(currentConfName)}
 				afterDel={initCPs}
@@ -206,17 +273,28 @@ export default function CPeditor({ schemeName, setPollingError }) {
 				>
 					<div className="flex flex-col w-full">
 						<div ref={panelRef} className="flex flex-col w-min">
-							<EditCPgrid
-								conf={CPs[currentConfName]?.content}
+							<StyledGrid
 								style={CPs[currentConfName]?.style}
-								setField={alterEntryField}
-								data={data}
-								groups={groups}
-								remove={removeEntry}
 								noConf={!currentConfName}
-								parent={panelRef}
-								envName={schemeName}
-							/>
+								envName={envName}
+							>
+								{conf?.map((item, index) => (
+									<DraggableElem
+										index={index}
+										setSpecs={(fieldName, val) => {
+											alterEntryField(index, fieldName, val);
+										}}
+										key={index}
+										item={item}
+										data={data}
+										groups={groups}
+										remove={() => {
+											removeEntry(index);
+										}}
+										parent={panelRef}
+									></DraggableElem>
+								))}
+							</StyledGrid>
 						</div>
 					</div>
 					<div
@@ -234,7 +312,7 @@ export default function CPeditor({ schemeName, setPollingError }) {
 						<SetCPBackground
 							currentBack={CPs[currentConfName]?.style?.background}
 							setBack={updateCPBackground}
-							envName={schemeName}
+							envName={envName}
 						/>
 					</div>
 				</DragDropProvider>
