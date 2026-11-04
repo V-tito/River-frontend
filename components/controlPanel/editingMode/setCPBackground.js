@@ -126,7 +126,7 @@ export default function SetCPBackground({ currentBack, setBack, envName }) {
 					</div>
 					<form onSubmit={handleUpload} className={formStyles.form}>
 						<label className={formStyles.label}>Добавить изображение фона</label>
-						<input title="Загрузить" type="file" accept="image/*" id="file" className={inputStyles.fileInput}/>
+						<input title="Загрузить" type="file" accept="image/*" id="file" className={inputStyles.fileInput} style={{width:'90% !important'}}/>
 						<button type="submit" className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}>Загрузить</button>
 					</form>
 					<InlineModal state={error}>{error?.message}</InlineModal>

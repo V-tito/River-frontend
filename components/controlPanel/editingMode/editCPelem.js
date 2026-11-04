@@ -103,6 +103,8 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 					src={icons.getter[specs.icon].off}
 					className={styles.icon}
 					alt="lamp's off"
+					width={56}
+					height={56}
 				></Image>
 			)}
 			{menuVisibility && (
