@@ -92,7 +92,7 @@ function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 				height={56}
 				alt={on ? (turnedOnStatusName ?? '') : (turnedOffStatusName ?? '')}
 			/>
-			<span className={styles.label}>{name}</span>
+			<span className={styles.label}>{parentGroup}: {name}</span>
 		</button>
 	);
 }

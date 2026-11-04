@@ -45,7 +45,7 @@ function CPget({ specs, onTable, schemeOn }) {
 								: (turnedOffStatusName ?? 'Выкл')
 				}
 			></Image>
-			<span className={styles.label}>{name}</span>
+			<span className={styles.label}>{parentGroup}: {name}</span>
 		</div>
 	);
 }
