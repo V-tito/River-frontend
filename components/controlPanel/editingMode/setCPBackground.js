@@ -5,6 +5,9 @@ import { FileMosaic, FileInputButton } from '@files-ui/react';
 import Image from 'next/image';
 import styles from '../controlPanel.module.css';
 import PopupForm from '../../templateComponents/popupForm';
+import formStyles from '@/components/forms/form.module.css'
+import buttonStyles from '@/styles/buttonStyles.module.css';
+import inputStyles from '@/styles/inputStyles.module.css';
 import {
 	postImage,
 	getBackground,
@@ -121,9 +124,10 @@ export default function SetCPBackground({ currentBack, setBack, envName }) {
 							<p>Не установлено</p>
 						)}
 					</div>
-					<form onSubmit={handleUpload}>
-						<input title="Загрузить" type="file" accept="image/*" id="file" />
-						<button type="submit">submit</button>
+					<form onSubmit={handleUpload} className={formStyles.form}>
+						<label className={formStyles.label}>Добавить изображение фона</label>
+						<input title="Загрузить" type="file" accept="image/*" id="file" className={inputStyles.fileInput} style={{width:'90% !important'}}/>
+						<button type="submit" className={`${buttonStyles.button} ${buttonStyles.buttonFlex} ${buttonStyles.menuButton}`}>Загрузить</button>
 					</form>
 					<InlineModal state={error}>{error?.message}</InlineModal>
 				</div>

@@ -17,8 +17,10 @@
   }
   .fileInput{
     display: inline;
-    width: 75%;
-    justify-self: center;
+    min-width: 75%;
+    width:fit-content;
+    max-width: 95%;
+    place-self: center;
     word-wrap: break-word;
     padding: 4px;
     border: 5px solid var(--controlelementcolor);
@@ -31,7 +33,9 @@
   }
 .select {
     display:flex;
-    
+    min-width: 75%;
+    width:fit-content;
+    max-width: 95%;
     border: 1px solid var(--defaultgrey);
     border-radius: 5px;
     color:var(--foreground);

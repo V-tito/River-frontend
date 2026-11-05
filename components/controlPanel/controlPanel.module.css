@@ -55,7 +55,6 @@ display: grid;
   justify-self: right;}
   .li{width:6em;}
   .setsize{display: flex;flex-direction: column;margin:10px;padding: 10px;border:1px solid grey; border-radius: 5%;}
-  .label{
-    color:var(--controlelementfont);
-    background-color:var(--controlelementcolor);
-  }
+  .label{color:var(--foreground);
+  background-color: var(--background);
+border-radius: 5%;}
