@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 .prettierrc
 TODO.md
+buildStandalone.sh
+buildStandalone.txt
