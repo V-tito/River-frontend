@@ -6,21 +6,7 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
 import Image from 'next/image';
 import CloseButton from '@/components/templateComponents/buttons/closeButton';
-function SetterWrap({ icon, setSpecs, specs }) {
-	return (
-		<Image
-			src={specs.default_ ? icon.on : icon.off}
-			className={styles.icon}
-			alt="trigger"
-			onClick={e => {
-				setSpecs('default_', prev => {
-					console.debug('entered defset, !prev is', !prev, 'prev is', prev);
-					return Number(!prev);
-				});
-			}}
-		></Image>
-	);
-}
+
 /**
  * generates CP set selement for panel in test mode only (for the time being)
  * @param {*} param0 has two required fields. First one, specs, is a record with fields "group","signal", "icon" and "default_", corresponding to group name, signal name, icon type ("trigger"/"lamp") and default value the signal must be set to when the panel is loaded. the second field, schemeName, defines backend environment
@@ -71,7 +57,7 @@ function Menu({ groups, sigs, setSpecs, specs }) {
 		</div>
 	);
 }
-function EditCPelem({ data, index, specs, setSpecs, remove }) {
+function EditCPelem({ data, index, specs, setSpecs, style, remove }) {
 	const [menuVisibility, setMenuVisibility] = useState(false);
 	useEffect(() => {
 		if (!('signal' in specs)) setSpecs('signal', { parentGroup: '', name: '' });
@@ -92,21 +78,26 @@ function EditCPelem({ data, index, specs, setSpecs, remove }) {
 				closeAction={remove}
 				className={styles.closeButton}
 			></CloseButton>
-			{specs.type == 'setter' ? (
-				<SetterWrap
-					icon={icons.setter[specs.icon]}
-					specs={specs}
-					setSpecs={setSpecs}
-				/>
-			) : (
-				<Image
-					src={icons.getter[specs.icon].off}
-					className={styles.icon}
-					alt="elem's off"
-					width={56}
-					height={56}
-				></Image>
-			)}
+			<Image
+				src={
+					specs.default_
+						? icons[specs.type][style.icon].on
+						: icons[specs.type][style.icon].off
+				}
+				className={styles.icon}
+				alt="elem's off"
+				width={56}
+				height={56}
+				onClick={
+					specs.type == 'setter'
+						? e => {
+								setSpecs('default_', prev => {
+									return Number(!prev);
+								});
+							}
+						: e => {}
+				}
+			></Image>
 			{menuVisibility && (
 				<Menu groups={groups} sigs={sigs} setSpecs={setSpecs} specs={specs} />
 			)}

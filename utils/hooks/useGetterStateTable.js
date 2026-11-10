@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { fetchAllStates } from '../../../utils/api_wrap/dataProcessingHelpers/getStateHelpers';
+import { fetchAllStates } from '@/utils/api_wrap/dataProcessingHelpers/getStateHelpers';
 
 export default function useGetterStateTable(
 	envName,
@@ -21,13 +21,16 @@ export default function useGetterStateTable(
 	};
 	const intervalId = useRef();
 	const resetPolling = () => {
+		if (!Array.isArray(gettersListRef.current)) {
+			setGetterStates({});
+			if (intervalId.current) clearInterval(intervalId.current);
+			return;
+		}
 		setLoadingTable(true);
 		setGetterStates(
-			Array.isArray(gettersListRef.current)
-				? gettersListRef.current.reduce((acc, sig) => {
-						return { ...acc, [sig.name]: { on: -1, valid: false } };
-					}, {})
-				: {}
+			gettersListRef.current.reduce((acc, sig) => {
+				return { ...acc, [sig.name]: { on: -1, valid: false } };
+			}, {})
 		);
 		if (intervalId.current) clearInterval(intervalId.current);
 		const firstFetch = async () => {

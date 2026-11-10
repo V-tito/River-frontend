@@ -40,7 +40,13 @@ export default function StyledIcon({
 			/>
 			{visibleLabel && (
 				<span className={styles.label}>
-					{parentGroup}: {name}
+					{parentGroup && name ? (
+						<>
+							{parentGroup}: {name}
+						</>
+					) : (
+						'Сигнал не задан'
+					)}
 				</span>
 			)}
 		</div>

@@ -129,7 +129,7 @@ function CPview({ envName, writeLog, className = '' }) {
 						) : (
 							<CPget
 								specs={elem}
-								onTable={currentGetterStates}
+								onTable={getterStates[currentConfName]}
 								schemeOn={schemeOn}
 								key={index}
 								writeLog={writeLog}

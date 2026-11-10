@@ -20,7 +20,7 @@ const CP = () => {
 			<h1 className={headerStyles.sectionHeader}>
 				Редактировать панели управления:
 			</h1>
-			<CPeditor schemeName={slug} setPollingError={setPollingError}></CPeditor>
+			<CPeditor envName={slug} setPollingError={setPollingError}></CPeditor>
 		</div>
 	);
 };

@@ -13,7 +13,7 @@ import { Upload, Download } from '@deemlol/next-icons';
 import { useCPManager } from '../../../utils/hooks/useCPmanager/useCPmanager';
 import ConfirmFileDeleteModal from '@/components/modals/confirmFileDeleteModal';
 import SaveFromVarLocally from '@/components/modals/saveFromVarLocally';
-import { DragDropProvider } from '@dnd-kit/react';
+import { DragDropProvider, useDraggable } from '@dnd-kit/react';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 import headerStyles from '@/styles/headerStyles.module.css';
@@ -34,14 +34,7 @@ function SortableElem({ index, setSpecs, item, data, groups, remove }) {
 		</li>
 	);
 }
-function DraggableElem({
-	index,
-	setSpecs,
-	item,
-	data,
-	groups,
-	remove,
-}) {
+function DraggableElem({ index, setSpecs, item, data, groups, remove }) {
 	const { ref, isDragging } = useDraggable({
 		id: item.id,
 		data: { index: index, group: 'panel' },
@@ -56,8 +49,8 @@ function DraggableElem({
 		<div
 			style={{
 				position: 'absolute',
-				top: isDragging ? undefined : y,
-				left: isDragging ? undefined : x,
+				top: isDragging ? undefined : item?.style?.position?.y,
+				left: isDragging ? undefined : item?.style?.position?.x,
 			}}
 			ref={ref}
 		>
@@ -67,6 +60,7 @@ function DraggableElem({
 				setSpecs={setSpecs}
 				groups={groups}
 				data={data}
+				style={item.style}
 				remove={remove}
 			/>
 		</div>
@@ -94,6 +88,7 @@ export default function CPeditor({ envName, setPollingError }) {
 		updateCPHeight,
 		updateCPBackground,
 	} = useCPManager(envName, 'editing');
+	const containerRef = useRef();
 	//fetch inputs and outputs
 	useEffect(() => {
 		const init = async () => {
@@ -178,62 +173,64 @@ export default function CPeditor({ envName, setPollingError }) {
 					onDragEnd={event => {
 						if (event.canceled) return;
 						if (!currentConfName) return;
-						console.debug('event', event);
-						const { source, target, position, transform, shape } =
-							event.operation;
-						//if (!target) return;
-
+						const { source, transform, shape } = event.operation;
 						const { type, data } = source;
-						const pos = data.position
+						const refsize = containerRef?.current?.getBoundingClientRect();
+						console.debug('refsize', refsize);
+						const initPos = data?.style?.position;
+						const pos = initPos
 							? {
-									x: data.position.x + transform.x,
-									y: data.position.y + transform.y,
+									x: initPos.x + transform.x,
+									y: initPos.y + transform.y,
 								}
 							: {
-									x: shape.current.left - (refsize.left ?? 0),
-									y: shape.current.top - (refsize.top ?? 0),
+									x: shape.current.left - (refsize?.left ?? 0),
+									y: shape.current.top - (refsize?.top ?? 0),
 								};
 						if (type == 'addmenu') {
-							//event.preventDefault();
 							let i = CPs[currentConfName].length;
-							console.debug('i in drag event', i);
-							insertEntry(i, { ...data, style:{...data.style,position: pos }});//TODO insert entry returns entyr so that then i can alter its field
+							insertEntry(i, {
+								...data,
+								style: { ...data.style, position: pos },
+							}); //TODOvalidate style in insert entry
 							setVersion(prev => prev + 1);
 						} else {
-							console.debug('enter alter');
 							if (data.index != undefined) {
-								console.debug('enter alter 2');
 								alterEntryField(data.index, 'position', pos);
 							}
 						}
 					}}
 				>
-					<div className="flex flex-col w-full">
-							<StyledGrid
-								style={CPs[currentConfName]?.style}
-								noConf={!currentConfName}
-								envName={envName}
-							>
-								{conf?.map((item, index) => (
-									<DraggableElem
-										index={index}
-										setSpecs={(fieldName, val) => {
-											alterEntryField(index, fieldName, val);
-										}}
-										key={index}
-										item={item}
-										data={data}
-										groups={groups}
-										remove={() => {
-											removeEntry(index);
-										}}
-									></DraggableElem>
-								))}
-							</StyledGrid>
+					<div className="flex w-full" ref={containerRef}>
+						<StyledGrid
+							style={CPs[currentConfName]?.style}
+							noConf={!currentConfName}
+							envName={envName}
+						>
+							{CPs[currentConfName]?.content?.map((item, index) => (
+								<DraggableElem
+									index={index}
+									setSpecs={(fieldName, val) => {
+										alterEntryField(index, fieldName, val);
+									}}
+									key={index}
+									item={item}
+									data={data}
+									groups={groups}
+									remove={() => {
+										removeEntry(index);
+									}}
+								></DraggableElem>
+							))}
+						</StyledGrid>
 					</div>
 					<div
-						className="flex flex-col w-min"
-						style={{ justifyContent: 'right', justifySelf: 'right' }}
+						className="flex flex-col"
+						style={{
+							placeContent: 'right',
+							placeSelf: 'right',
+							width: 'min-content',
+						}}
 					>
 						<AddElementMenu />
 						<SetCPSize

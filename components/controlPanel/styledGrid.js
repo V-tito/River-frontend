@@ -1,19 +1,17 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import styles from '../controlPanel.module.css';
+import React, { useEffect, useState } from 'react';
+import styles from './controlPanel.module.css';
 import { getBackground } from '@/utils/api_wrap/fileAPI';
-function StyledGrid({ noConf, style, envName }) {
+function StyledGrid({ noConf, style, envName, children }) {
 	const [styl, setStyl] = useState({});
-	const getback = useMemo(
-		async backname => {
-			let back;
-			if (backname) {
-				back = await getBackground(envName, backname);
-			}
-			return back ? 'url(' + back + ')' : null;
-		},
-		[backname, envName]
-	);
-	const resetDimensions = useMemo((w, h) => {
+	const getback = async backname => {
+		let back;
+		if (backname) {
+			back = await getBackground(envName, backname);
+		}
+		return back ? 'url(' + back + ')' : null;
+	};
+
+	const resetDimensions = (w, h) => {
 		return w && h
 			? {
 					width: w + 'px',
@@ -21,22 +19,15 @@ function StyledGrid({ noConf, style, envName }) {
 					backgroundSize: w + 'px ' + h + 'px',
 				}
 			: null;
-	});
-	const resetStyle = useMemo(
-		async (width, height, background) => {
-			const backUrl = await getback(background);
-			const dims = resetDimensions(width, height);
-			const temp =
-				backUrl && dims
-					? {
-							...dims,
-							backgroundImage: backUrl,
-						}
-					: {};
-			setStyl(temp);
-		},
-		[width, height, background]
-	);
+	};
+	const resetStyle = async (width, height, background) => {
+		const backUrl = await getback(background);
+		const dims = resetDimensions(width, height);
+		let temp = dims ?? {};
+		if (backUrl) temp = { ...temp, backgroundImage: backUrl };
+		setStyl(temp);
+	};
+
 	useEffect(() => {
 		const { width, height, background } = style;
 		resetStyle(width, height, background);

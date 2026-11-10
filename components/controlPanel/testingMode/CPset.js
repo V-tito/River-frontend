@@ -74,7 +74,7 @@ function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 			<StyledIcon
 				icon_={icon_}
 				on={on}
-				error={error}
+				error={on == -1}
 				signal={signal}
 				position={position}
 				disabled={disabled}

@@ -8,9 +8,10 @@ import {
 	CPstyle,
 	CP,
 	blobp,
-	Coordinates,EntryStyle,
+	Coordinates,
+	EntryStyle,
 	validateEntryStyle,
-	validateCoordinates
+	validateCoordinates,
 } from '@/utils/interfaces/CPtypes';
 import { postCP, renameFile, deleteFile } from '@/utils/api_wrap/fileAPI';
 import { baseMode } from './baseMode';
@@ -212,16 +213,24 @@ export function editingMode(envName: string) {
 	) => {
 		if (confName) updateCPContent(prev => prev.toSpliced(index, 1), confName);
 	};
-	const {updateCPWidth,updateCPBackground,updateCPHeight,updateCPStyle,formatEntryStyle}=useCPStyleManager(currentConfName,setCPs,CPs)
+	const {
+		updateCPWidth,
+		updateCPBackground,
+		updateCPHeight,
+		updateCPStyle,
+		formatEntryStyle,
+	} = useCPStyleManager(currentConfName, setCPs, CPs);
 	const alterEntryField = (
 		index: number,
 		field: string,
 		val:
 			| string
-			| number| Coordinates|EntryStyle
+			| number
+			| Coordinates
+			| EntryStyle
 			| ((
-					prev: string | number | MinimalSignal | Coordinates|EntryStyle
-			  ) => string | number | MinimalSignal | Coordinates|EntryStyle),
+					prev: string | number | MinimalSignal | Coordinates | EntryStyle
+			  ) => string | number | MinimalSignal | Coordinates | EntryStyle),
 		confname: string | undefined = currentConfName
 	) => {
 		console.debug('entered alter entry field');
@@ -246,17 +255,19 @@ export function editingMode(envName: string) {
 						...entry,
 						signal: { ...entry.signal, [field as keyof MinimalSignal]: newval },
 					};
-				} else {const newval=formatEntryStyle(index,field,val,confname);if (newval)entry = {
-						...entry,
-						style: newval,
-					};}
+				} else {
+					const newval = formatEntryStyle(index, field, val, confname);
+					if (newval)
+						entry = {
+							...entry,
+							style: newval,
+						};
+				}
 				console.debug('entry in alter entry field', entry);
 				updateCPContent(prev => prev.toSpliced(index, 1, entry), confname);
 			}
 		}
 	};
-
-	
 
 	return {
 		currentConfName,
@@ -270,10 +281,13 @@ export function editingMode(envName: string) {
 		initCPs,
 		renameCP,
 		saveCP,
-		entriesManagement:insertEntry,
+		entriesManagement: insertEntry,
 		removeEntry,
 		alterEntryField,
-		
-		updateCPWidth,updateCPBackground,updateCPHeight,updateCPStyle
+
+		updateCPWidth,
+		updateCPBackground,
+		updateCPHeight,
+		updateCPStyle,
 	};
 }

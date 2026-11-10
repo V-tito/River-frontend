@@ -11,18 +11,18 @@ export interface CPstyle {
 	height: number;
 	background: string | null;
 }
-export interface EntryStyle{
-icon: string;
-position: Coordinates;
-	width:number;
-	height:number
+export interface EntryStyle {
+	icon: string;
+	position: Coordinates;
+	width: number;
+	height: number;
 }
 export interface CPentry {
 	signal: MinimalSignal;
 	type: string;
 	id: string;
 	default_: number;
-	style:EntryStyle
+	style: EntryStyle;
 }
 export interface ExtendedCPentry extends CPentry {
 	valid: boolean;
@@ -38,15 +38,18 @@ export interface blobp {
 	blob: Blob;
 	isSaved: boolean;
 }
-export type entryGen = Record<string, string | number | Record<string, string>>;
+export type entryGen = Record<
+	string,
+	string | number | Record<string, string | number | Record<string, number>>
+>;
 export const CPentryKeys = new Set([
 	'id',
 	'signal',
 	'type',
 	'default_',
-	'style'
+	'style',
 ]);
-export const EntryStyleKeys=new Set(['icon','position','width','height'])
+export const EntryStyleKeys = new Set(['icon', 'position', 'width', 'height']);
 export function isExtEntry(entry: CPentry): entry is ExtendedCPentry {
 	return 'valid' in entry;
 }
@@ -58,7 +61,8 @@ export function validateEntry(entry: unknown): entry is CPentry {
 		ValidateMinimalSignal((entry as CPentry).signal) &&
 		typeof (entry as CPentry).id === 'string' &&
 		typeof (entry as CPentry).type === 'string' &&
-		typeof (entry as CPentry).default_ === 'number'&& typeof (entry as CPentry)?.style?.icon==='string'
+		typeof (entry as CPentry).default_ === 'number' &&
+		typeof (entry as CPentry)?.style?.icon === 'string'
 	);
 }
 export function validateEntryStyle(entry: unknown): entry is EntryStyle {
@@ -68,9 +72,14 @@ export function validateEntryStyle(entry: unknown): entry is EntryStyle {
 		entry !== null &&
 		typeof (entry as EntryStyle).icon === 'string' &&
 		typeof (entry as EntryStyle).width === 'number' &&
-		typeof (entry as EntryStyle).height === 'number'&& validateCoordinates((entry as EntryStyle).position)
-	);}
-	export function validateCoordinates (entry:unknown):entry is Coordinates {
-		return (typeof (entry as Coordinates).x=='number')&&(typeof (entry as Coordinates).y=='number')
-	}
-	export const CoordKeys=new Set(['x','y'])
+		typeof (entry as EntryStyle).height === 'number' &&
+		validateCoordinates((entry as EntryStyle).position)
+	);
+}
+export function validateCoordinates(entry: unknown): entry is Coordinates {
+	return (
+		typeof (entry as Coordinates).x == 'number' &&
+		typeof (entry as Coordinates).y == 'number'
+	);
+}
+export const CoordKeys = new Set(['x', 'y']);
