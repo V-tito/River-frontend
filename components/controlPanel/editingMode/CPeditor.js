@@ -41,7 +41,6 @@ function DraggableElem({
 	data,
 	groups,
 	remove,
-	parent,
 }) {
 	const { ref, isDragging } = useDraggable({
 		id: item.id,
@@ -53,29 +52,6 @@ function DraggableElem({
 			}),
 		],
 	});
-	console.debug(
-		'made draggable with ref',
-		ref,
-		'from item',
-		item,
-		'which is dragging?',
-		isDragging
-	);
-	const parentRect = parent.current
-		? parent.current?.getBoundingClientRect()
-		: null;
-	console.debug('parent in draggable elem', parent);
-	console.debug('parent bounds in draggable elem', parentRect);
-	let x = item?.position?.x,
-		y = item?.position?.y;
-	console.debug('in draggable elem, x', x, 'y', y);
-	if (parentRect) {
-		const { left, right, top, bottom, width, height } = parentRect;
-		console.debug(y && height, y < height, top < y, y < bottom);
-		console.debug(x && width, left < x && x < right, left < x, x < right);
-		y = y && height ? (y < height ? (y > 0 ? y : 0) : height) : '';
-		x = x && width ? (x < width ? (x > 0 ? x : 0) : '') : '';
-	}
 	return (
 		<div
 			style={{
@@ -101,7 +77,6 @@ export default function CPeditor({ envName, setPollingError }) {
 	const [groups, setGroups] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [version, setVersion] = useState(0);
-	const panelRef = useRef();
 	const {
 		currentConfName,
 		setCurrentConfName,
@@ -209,14 +184,6 @@ export default function CPeditor({ envName, setPollingError }) {
 						//if (!target) return;
 
 						const { type, data } = source;
-						console.debug('source data', data);
-						const refsize = panelRef.current?.getBoundingClientRect();
-						console.debug(
-							'refsize',
-							refsize,
-							'shape.current.boundingRectangle',
-							shape.current.boundingRectangle
-						);
 						const pos = data.position
 							? {
 									x: data.position.x + transform.x,
@@ -226,37 +193,11 @@ export default function CPeditor({ envName, setPollingError }) {
 									x: shape.current.left - (refsize.left ?? 0),
 									y: shape.current.top - (refsize.top ?? 0),
 								};
-						if (refsize) {
-							if (
-								pos.x >
-								refsize.right -
-									refsize.left -
-									shape.current.boundingRectangle.width
-							)
-								pos.x =
-									refsize.right -
-									refsize.left -
-									shape.current.boundingRectangle.width;
-							if (
-								pos.y >
-								refsize.bottom -
-									refsize.top -
-									shape.current.boundingRectangle.height
-							)
-								pos.y =
-									refsize.bottom -
-									refsize.top -
-									shape.current.boundingRectangle.height;
-							if (pos.x < 0) pos.x = 0;
-							if (pos.y < 0) pos.y = 0;
-						}
-						console.debug('pos in drag event', pos);
-						console.debug('type', type, "type == 'addmenu'", type == 'addmenu');
 						if (type == 'addmenu') {
 							//event.preventDefault();
 							let i = CPs[currentConfName].length;
 							console.debug('i in drag event', i);
-							insertEntry(i, { ...data, position: pos });
+							insertEntry(i, { ...data, style:{...data.style,position: pos }});//TODO insert entry returns entyr so that then i can alter its field
 							setVersion(prev => prev + 1);
 						} else {
 							console.debug('enter alter');
@@ -266,13 +207,8 @@ export default function CPeditor({ envName, setPollingError }) {
 							}
 						}
 					}}
-					onDragOver={({ operation }) => {
-						const { source, target } = operation;
-						console.log(`${source.id} is over ${target?.id}`);
-					}}
 				>
 					<div className="flex flex-col w-full">
-						<div ref={panelRef} className="flex flex-col w-min">
 							<StyledGrid
 								style={CPs[currentConfName]?.style}
 								noConf={!currentConfName}
@@ -291,11 +227,9 @@ export default function CPeditor({ envName, setPollingError }) {
 										remove={() => {
 											removeEntry(index);
 										}}
-										parent={panelRef}
 									></DraggableElem>
 								))}
 							</StyledGrid>
-						</div>
 					</div>
 					<div
 						className="flex flex-col w-min"

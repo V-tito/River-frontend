@@ -8,11 +8,14 @@ import {
 	CPstyle,
 	CP,
 	blobp,
-	Coordinates,
+	Coordinates,EntryStyle,
+	validateEntryStyle,
+	validateCoordinates
 } from '@/utils/interfaces/CPtypes';
 import { postCP, renameFile, deleteFile } from '@/utils/api_wrap/fileAPI';
 import { baseMode } from './baseMode';
 import { convertEntry, makeCPfromContents } from './helpers';
+import { useCPStyleManager } from './useCPStyleManager';
 export function editingMode(envName: string) {
 	const {
 		currentConfName,
@@ -209,15 +212,16 @@ export function editingMode(envName: string) {
 	) => {
 		if (confName) updateCPContent(prev => prev.toSpliced(index, 1), confName);
 	};
+	const {updateCPWidth,updateCPBackground,updateCPHeight,updateCPStyle,formatEntryStyle}=useCPStyleManager(currentConfName,setCPs,CPs)
 	const alterEntryField = (
 		index: number,
 		field: string,
 		val:
 			| string
-			| number
+			| number| Coordinates|EntryStyle
 			| ((
-					prev: string | number | MinimalSignal | Coordinates
-			  ) => string | number | MinimalSignal | Coordinates),
+					prev: string | number | MinimalSignal | Coordinates|EntryStyle
+			  ) => string | number | MinimalSignal | Coordinates|EntryStyle),
 		confname: string | undefined = currentConfName
 	) => {
 		console.debug('entered alter entry field');
@@ -242,25 +246,17 @@ export function editingMode(envName: string) {
 						...entry,
 						signal: { ...entry.signal, [field as keyof MinimalSignal]: newval },
 					};
-				} else if (['x', 'y'].includes(field)) {
-					const newval =
-						typeof val == 'function'
-							? val(entry.position[field as keyof Coordinates])
-							: val;
-					console.debug('newval in alter entry field', newval);
-					entry = {
+				} else {const newval=formatEntryStyle(index,field,val,confname);if (newval)entry = {
 						...entry,
-						position: {
-							...entry.position,
-							[field as keyof Coordinates]: newval,
-						},
-					};
-				}
+						style: newval,
+					};}
 				console.debug('entry in alter entry field', entry);
 				updateCPContent(prev => prev.toSpliced(index, 1, entry), confname);
 			}
 		}
 	};
+
+	
 
 	return {
 		currentConfName,
@@ -273,9 +269,11 @@ export function editingMode(envName: string) {
 		updateCPContent,
 		initCPs,
 		renameCP,
-		insertEntry,
+		saveCP,
+		entriesManagement:insertEntry,
 		removeEntry,
 		alterEntryField,
-		saveCP,
+		
+		updateCPWidth,updateCPBackground,updateCPHeight,updateCPStyle
 	};
 }

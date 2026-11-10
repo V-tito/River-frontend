@@ -1,7 +1,10 @@
-import { CPstyle, CP } from '@/utils/interfaces/CPtypes';
-export function useCPStylemanager(
+import { CPstyle, CP, Coordinates,EntryStyle,EntryStyleKeys,validateCoordinates,CoordKeys } from '@/utils/interfaces/CPtypes';
+import { MinimalSignal } from '@/utils/interfaces/minimalSignal';
+
+export function useCPStyleManager(
 	currentConfName: string | undefined,
-	setCPs: React.Dispatch<React.SetStateAction<Record<string, CP>>>
+	setCPs: React.Dispatch<React.SetStateAction<Record<string, CP>>>,
+	CPs:Record<string, CP>,
 ) {
 	const updateCPStyle = (
 		attr: string,
@@ -47,61 +50,45 @@ export function useCPStylemanager(
 	) => {
 		updateCPStyle('background', url, CPName);
 	};
-}
-//rules for style render from draggable elem:
-/*const parentRect = parent.current
-? parent.current?.getBoundingClientRect()
-: null;
-console.debug('parent in draggable elem', parent);
-console.debug('parent bounds in draggable elem', parentRect);
-let x = item?.position?.x,
-y = item?.position?.y;
-console.debug('in draggable elem, x', x, 'y', y);
-if (parentRect) {
-const { left, right, top, bottom, width, height } = parentRect;
-console.debug(y && height, y < height, top < y, y < bottom);
-console.debug(x && width, left < x && x < right, left < x, x < right);
-y = y && height ? (y < height ? (y > 0 ? y : 0) : height) : '';
-x = x && width ? (x < width ? (x > 0 ? x : 0) : '') : '';*/
+		const makeValidPosition=(index:number, pos:Coordinates,CPName: string | undefined = currentConfName)=>{
+		if (!CPName) return;
+		const entrystyle=CPs?.[CPName]?.content?.[index]?.style
+let x = pos?.x,
+y = pos?.y
+const height=CPs?.[CPName]?.style?.height,width=CPs?.[CPName]?.style?.width, prevY=entrystyle?.position.y??0,prevX=entrystyle?.position.x??0
+y = y && height ? (y < height &&y > 0 ? y : prevY) : prevY;
+x = x && width ? (x < width && x > 0 ? x : prevX) : prevX;
+const newpos={x,y}as Coordinates
+return newpos
 
-//and these ones are from drag-n-drop:
-/*const refsize = panelRef.current?.getBoundingClientRect();
-console.debug(
-    'refsize',
-    refsize,
-    'shape.current.boundingRectangle',
-    shape.current.boundingRectangle
-);
-const pos = data.position
-    ? {
-            x: data.position.x + transform.x,
-            y: data.position.y + transform.y,
-        }
-    : {
-            x: shape.current.left - (refsize.left ?? 0),
-            y: shape.current.top - (refsize.top ?? 0),
-        };
-if (refsize) {
-    if (
-        pos.x >
-        refsize.right -
-            refsize.left -
-            shape.current.boundingRectangle.width
-    )
-        pos.x =
-            refsize.right -
-            refsize.left -
-            shape.current.boundingRectangle.width;
-    if (
-        pos.y >
-        refsize.bottom -
-            refsize.top -
-            shape.current.boundingRectangle.height
-    )
-        pos.y =
-            refsize.bottom -
-            refsize.top -
-            shape.current.boundingRectangle.height;
-    if (pos.x < 0) pos.x = 0;
-    if (pos.y < 0) pos.y = 0;
-}*/
+	}
+	const formatEntryStyle=(index:number,field:string,val:string|number|Coordinates|EntryStyle|((prev:string|number|Coordinates|EntryStyle| MinimalSignal)=>string|number|Coordinates|EntryStyle| MinimalSignal),CPName: string | undefined = currentConfName)=>{
+		if (!CPName) return;
+		let entry = CPs?.[CPName]?.content?.[index]			
+		let entrystyle=entry?.style
+		const entryval = entrystyle?.[field as keyof EntryStyle];
+		let newval=null
+		if (field=='position') {if (validateCoordinates(val))
+			newval=val?makeValidPosition(index,val,CPName):null
+			else if (typeof(val)=='function'&&entryval!=undefined) {
+			const pos=val(entryval);if (validateCoordinates(pos)) newval=makeValidPosition(index,pos,CPName)
+				if (newval) entrystyle={...entrystyle,position:newval as Coordinates} as EntryStyle
+		}} else 
+		if (EntryStyleKeys.has(field)) {
+			newval = typeof val == 'function'&&entryval ? val(entryval) : val;
+								console.debug('newval in alter entry field', newval);
+								entrystyle = { ...entrystyle, [field as keyof EntryStyle]: newval } as EntryStyle;//TODO more type guards
+								
+		} else if (CoordKeys.has(field)){
+			let pos,remaining,remname=field=='x'?'y':'x' as keyof Coordinates
+			if (validateCoordinates(entryval)){
+				newval=typeof val == 'function'?val(entryval[field as keyof Coordinates]) :typeof(val)=='number'?val:null
+			remaining=entryval[remname]} else {pos=typeof(val)=='number'?val:null,remaining=0}
+			if (pos) {newval={[field]:pos,[remname]:remaining}; if (validateCoordinates(newval)) newval=makeValidPosition(index,newval,CPName)}
+			if (newval) entrystyle={...entrystyle,position:newval as Coordinates} as EntryStyle
+		}
+		return entrystyle
+
+	}
+	return {updateCPWidth,updateCPBackground,updateCPHeight,updateCPStyle,formatEntryStyle}
+}
