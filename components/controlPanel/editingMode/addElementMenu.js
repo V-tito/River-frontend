@@ -22,7 +22,7 @@ function AddElementMenu() {
 							const { ref } = useDraggable({
 								id: icon,
 								type: 'addmenu',
-								data: { icon: icon, type: type_ },
+								data: { style: { icon: icon }, type: type_ },
 								plugins: [
 									Feedback.configure({
 										feedback: 'clone',

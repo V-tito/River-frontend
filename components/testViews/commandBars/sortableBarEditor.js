@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useContext } from 'react';
 import SortableBar from './sortableBar';
-import BarEditor from './barEditor';
+import BarContextProvider from './barContextProvider';
 import { DragDropProvider } from '@dnd-kit/react';
 import { commandHooksContext } from '../editorTabs';
 import buttonStyles from '@/styles/buttonStyles.module.css';
@@ -20,7 +20,7 @@ const SortableBarEditor = ({
 	console.info('mounted SortableBarEditor component');
 	const [version, setVersion] = useState(0);
 	return (
-		<BarEditor setError={setError}>
+		<BarContextProvider setError={setError}>
 			<ul>
 				<DragDropProvider
 					key={version}
@@ -74,7 +74,7 @@ const SortableBarEditor = ({
 			>
 				Добавить
 			</button>
-		</BarEditor>
+		</BarContextProvider>
 	);
 };
 SortableBarEditor.propTypes = {

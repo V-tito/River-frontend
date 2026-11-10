@@ -2,42 +2,42 @@ import React, { useEffect, useState } from 'react';
 import styles from './controlPanel.module.css';
 import { getBackground } from '@/utils/api_wrap/fileAPI';
 function StyledGrid({ noConf, style, envName, children }) {
-	const [styl, setStyl] = useState({});
-	const getback = async backname => {
+	const [back, setBack] = useState('');
+	const [dims, setDims] = useState({});
+	const resetback = async backname => {
 		let back;
 		if (backname) {
 			back = await getBackground(envName, backname);
 		}
-		return back ? 'url(' + back + ')' : null;
+		setBack(back ? 'url(' + back + ')' : '');
 	};
 
 	const resetDimensions = (w, h) => {
-		return w && h
-			? {
-					width: w + 'px',
-					height: h + 'px',
-					backgroundSize: w + 'px ' + h + 'px',
-				}
-			: null;
+		setDims(
+			w && h
+				? {
+						width: w + 'px',
+						height: h + 'px',
+						backgroundSize: w + 'px ' + h + 'px',
+					}
+				: {}
+		);
 	};
-	const resetStyle = async (width, height, background) => {
-		const backUrl = await getback(background);
-		const dims = resetDimensions(width, height);
-		let temp = dims ?? {};
-		if (backUrl) temp = { ...temp, backgroundImage: backUrl };
-		setStyl(temp);
-	};
-
 	useEffect(() => {
-		const { width, height, background } = style;
-		resetStyle(width, height, background);
-	}, [style]);
+		resetback(style.background);
+	}, [style.background]);
+	useEffect(() => {
+		resetDimensions(style.width, style.height);
+	}, [style.width, style.height]);
 	useEffect(() => {
 		if (noConf) setStyl({ background: null, width: 100, height: 100 });
 	}, [noConf]);
 
 	return (
-		<div className={styles.grid} style={{ ...styl, position: 'relative' }}>
+		<div
+			className={styles.grid}
+			style={{ ...dims, backgroundImage: back, position: 'relative' }}
+		>
 			{children}
 		</div>
 	);

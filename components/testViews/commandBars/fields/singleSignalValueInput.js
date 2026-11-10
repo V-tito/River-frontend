@@ -5,7 +5,7 @@ import inputStyles from '@/styles/inputStyles.module.css';
 import styles from '../commandBar.module.css';
 //hooks & contexts
 import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
-import { BarContext } from '../barEditor';
+import { BarContext } from '../barContextProvider';
 
 const { translateFields } = CommandBarHelpers;
 const CheckIfSigsAreNotUndef = (command, sigsByGroup) => {

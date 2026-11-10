@@ -3,7 +3,7 @@ import styles from '../commandBar.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 //hooks,contexts,helpers
 import { CommandBarHelpers } from '@/utils/hooks/command/commandBarHelpers';
-import { BarContext } from '../barEditor';
+import { BarContext } from '../barContextProvider';
 
 const { isSetter } = CommandBarHelpers;
 const CheckIfSigsAreNotUndef = (command, sigsByGroup) => {

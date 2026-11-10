@@ -9,7 +9,7 @@ import colorStyles from '../commandStatusColors.module.css';
 import buttonStyles from '@/styles/buttonStyles.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
 //contexts
-import { BarContext } from './barEditor';
+import { BarContext } from './barContextProvider';
 import { errorIDsContext, SchemeContext } from '../editorTabs';
 import { execAndMouseDisplayContext } from '../editor';
 //hooks

@@ -56,7 +56,7 @@ export function testingMode(envName: string) {
 	) => {
 		if (confname == undefined) return [];
 		if (!CPs[confname]) return [];
-		CPs[confname].content
+		return CPs[confname].content
 			.filter((elem, index) => {
 				if (isExtEntry(elem)) return elem.valid && elem.type == typ;
 			})

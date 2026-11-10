@@ -132,34 +132,32 @@ const Editor = ({ scheme }) => {
 							deleteTab={deleteTab}
 							addTab={addTab}
 						/>
-						<div className="flex flex-col h-full">
-							<EditorTabs
+						<EditorTabs
+							tabs={tabs}
+							currentTabId={currentTabId}
+							updateTabContent={updateTabContent}
+							setCurrentTabErrorIDs={setCurrentTabErrorIDs}
+							envName={scheme.name}
+						></EditorTabs>
+						<div className={styles.buttonGroups}>
+							<ExecCurrentButtons
+								executeTabScript={executeTabScript}
+								envName={scheme.name}
 								tabs={tabs}
 								currentTabId={currentTabId}
-								updateTabContent={updateTabContent}
-								setCurrentTabErrorIDs={setCurrentTabErrorIDs}
-								envName={scheme.name}
-							></EditorTabs>
-							<div className={styles.buttonGroups}>
-								<ExecCurrentButtons
-									executeTabScript={executeTabScript}
-									envName={scheme.name}
-									tabs={tabs}
-									currentTabId={currentTabId}
-									setPollingError={setPollingError}
-									execBlock={execBlock}
-									setExecBlock={setExecBlock}
-									abortControllers={abortControllers}
-								/>
-								<FileManager
-									currentTabId={currentTabId}
-									tabs={tabs}
-									addTab={addTab}
-									renameTab={renameTab}
-									resetTabContent={resetTabContent}
-									scheme={scheme.name}
-								></FileManager>
-							</div>
+								setPollingError={setPollingError}
+								execBlock={execBlock}
+								setExecBlock={setExecBlock}
+								abortControllers={abortControllers}
+							/>
+							<FileManager
+								currentTabId={currentTabId}
+								tabs={tabs}
+								addTab={addTab}
+								renameTab={renameTab}
+								resetTabContent={resetTabContent}
+								scheme={scheme.name}
+							></FileManager>
 						</div>
 					</div>
 				</div>

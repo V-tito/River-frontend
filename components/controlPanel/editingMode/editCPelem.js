@@ -59,6 +59,7 @@ function Menu({ groups, sigs, setSpecs, specs }) {
 }
 function EditCPelem({ data, index, specs, setSpecs, style, remove }) {
 	const [menuVisibility, setMenuVisibility] = useState(false);
+	console.debug('specs in editelem', specs, 'style', style);
 	useEffect(() => {
 		if (!('signal' in specs)) setSpecs('signal', { parentGroup: '', name: '' });
 	}, [specs]);
@@ -73,10 +74,12 @@ function EditCPelem({ data, index, specs, setSpecs, style, remove }) {
 			className={styles.CPelem}
 			onMouseOver={() => setMenuVisibility(true)}
 			onMouseOut={() => setMenuVisibility(false)}
+			style={{ width: style.width, height: style.height }}
 		>
 			<CloseButton
 				closeAction={remove}
 				className={styles.closeButton}
+				style={{ width: style.width / 4, height: style.height / 4 }}
 			></CloseButton>
 			<Image
 				src={
@@ -86,8 +89,6 @@ function EditCPelem({ data, index, specs, setSpecs, style, remove }) {
 				}
 				className={styles.icon}
 				alt="elem's off"
-				width={56}
-				height={56}
 				onClick={
 					specs.type == 'setter'
 						? e => {

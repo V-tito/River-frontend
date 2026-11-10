@@ -6,7 +6,7 @@ import React, { createContext, useEffect, useState, useContext } from 'react';
 export const BarContext = createContext();
 
 import { useGlobal } from '@/app/GlobalState';
-const BarEditor = ({ setError, children }) => {
+const BarContextProvider = ({ setError, children }) => {
 	const { currentWS } = useGlobal();
 	const schemeName = currentWS.name;
 	const [files, setFiles] = useState([]);
@@ -76,23 +76,21 @@ const BarEditor = ({ setError, children }) => {
 
 	if (loading) return <p>Загрузка...</p>;
 	return (
-		<div className={styles.edit}>
-			<BarContext.Provider
-				value={{
-					sigsByGroup,
-					inputsByBoard,
-					files,
-				}}
-			>
-				{children}
-			</BarContext.Provider>
-		</div>
+		<BarContext.Provider
+			value={{
+				sigsByGroup,
+				inputsByBoard,
+				files,
+			}}
+		>
+			{children}
+		</BarContext.Provider>
 	);
 };
-BarEditor.propTypes = {
+BarContextProvider.propTypes = {
 	formData: PropTypes.array,
 	setFormData: PropTypes.func,
 	setError: PropTypes.func,
 };
 
-export default BarEditor;
+export default BarContextProvider;

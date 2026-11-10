@@ -8,8 +8,17 @@ import StyledIcon from './styledIcon';
  * generates CP set selement for panel in test mode only (for the time being)
  *
  */
-function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
-	const { signal, icon, default_, valid, position } = specs;
+function CPset({
+	specs,
+	style,
+	envName,
+	haveInit,
+	setHaveInit,
+	schemeOn,
+	writeLog,
+}) {
+	const { signal, default_, valid } = specs;
+	const { icon, width, height, position } = style;
 	const { parentGroup, name } = signal;
 	const [on, setOn] = useState(-1);
 	const [disabled, setDisabled] = useState(true);
@@ -77,6 +86,8 @@ function CPset({ specs, envName, haveInit, setHaveInit, schemeOn, writeLog }) {
 				error={on == -1}
 				signal={signal}
 				position={position}
+				w={width}
+				h={height}
 				disabled={disabled}
 			/>
 		</button>

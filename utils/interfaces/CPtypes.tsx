@@ -83,3 +83,4 @@ export function validateCoordinates(entry: unknown): entry is Coordinates {
 	);
 }
 export const CoordKeys = new Set(['x', 'y']);
+export const defaultSide = 56;

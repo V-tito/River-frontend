@@ -76,6 +76,7 @@ function CPview({ envName, writeLog, className = '' }) {
 		if (currentConfName) {
 			validGetters.current = getValidSignals('getter');
 			validSetters.current = getValidSignals('setter');
+			console.debug('current valid getters', validGetters.current);
 			resetPolling();
 			reinit();
 		}
@@ -119,6 +120,7 @@ function CPview({ envName, writeLog, className = '' }) {
 						elem.type == 'setter' ? (
 							<CPset
 								specs={elem}
+								style={elem.style}
 								envName={envName}
 								key={index}
 								haveInit={setterInit}
@@ -129,7 +131,8 @@ function CPview({ envName, writeLog, className = '' }) {
 						) : (
 							<CPget
 								specs={elem}
-								onTable={getterStates[currentConfName]}
+								style={elem.style}
+								onTable={getterStates}
 								schemeOn={schemeOn}
 								key={index}
 								writeLog={writeLog}

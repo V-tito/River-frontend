@@ -281,10 +281,9 @@ export function editingMode(envName: string) {
 		initCPs,
 		renameCP,
 		saveCP,
-		entriesManagement: insertEntry,
+		insertEntry,
 		removeEntry,
 		alterEntryField,
-
 		updateCPWidth,
 		updateCPBackground,
 		updateCPHeight,

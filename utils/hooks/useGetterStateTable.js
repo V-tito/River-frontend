@@ -14,6 +14,9 @@ export default function useGetterStateTable(
 				}, {})
 			: {}
 	);
+	useEffect(() => {
+		console.debug('gs', getterStates);
+	}, [getterStates]);
 	const [loadingTable, setLoadingTable] = useState(false);
 	const responseWaiting = useRef(false);
 	const setResponseWaiting = val => {
@@ -21,7 +24,9 @@ export default function useGetterStateTable(
 	};
 	const intervalId = useRef();
 	const resetPolling = () => {
+		console.debug('entered reset polling');
 		if (!Array.isArray(gettersListRef.current)) {
+			console.debug('polling ref current is no array', gettersListRef.current);
 			setGetterStates({});
 			if (intervalId.current) clearInterval(intervalId.current);
 			return;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import styles from '../commandBar.module.css';
 import inputStyles from '@/styles/inputStyles.module.css';
-import { BarContext } from '../barEditor';
+import { BarContext } from '../barContextProvider';
 
 export default function SetAll({ command, fieldName, updateAction, disabled }) {
 	const { inputsByBoard } = useContext(BarContext);

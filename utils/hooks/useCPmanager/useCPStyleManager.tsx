@@ -6,6 +6,7 @@ import {
 	EntryStyleKeys,
 	validateCoordinates,
 	CoordKeys,
+	defaultSide,
 } from '@/utils/interfaces/CPtypes';
 import { MinimalSignal } from '@/utils/interfaces/minimalSignal';
 
@@ -70,9 +71,11 @@ export function useCPStyleManager(
 		const height = CPs?.[CPName]?.style?.height,
 			width = CPs?.[CPName]?.style?.width,
 			prevY = entrystyle?.position.y ?? 0,
-			prevX = entrystyle?.position.x ?? 0;
-		y = y && height ? (y < height && y > 0 ? y : prevY) : prevY;
-		x = x && width ? (x < width && x > 0 ? x : prevX) : prevX;
+			prevX = entrystyle?.position.x ?? 0,
+			entrywidth = entrystyle?.width ?? defaultSide,
+			entryheight = entrystyle?.height ?? defaultSide;
+		y = y && height ? (y + entryheight < height && y > 0 ? y : prevY) : prevY;
+		x = x && width ? (x + entrywidth < width && x > 0 ? x : prevX) : prevX;
 		const newpos = { x, y } as Coordinates;
 		return newpos;
 	};

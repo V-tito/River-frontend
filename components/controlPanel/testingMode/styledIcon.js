@@ -1,9 +1,12 @@
 import styles from '../controlPanel.module.css';
 import Image from 'next/image';
+
 export default function StyledIcon({
 	icon_,
 	signal,
 	position,
+	w,
+	h,
 	on = 0,
 	error = false,
 	disabled = false,
@@ -13,7 +16,13 @@ export default function StyledIcon({
 	return (
 		<div
 			className={styles.CPelem}
-			style={{ top: position?.y, left: position?.x, position: 'absolute' }}
+			style={{
+				top: position?.y,
+				left: position?.x,
+				position: 'absolute',
+				width: w,
+				height: h,
+			}}
 		>
 			<Image
 				src={

@@ -19,6 +19,8 @@ min-width: 280px;
 .tabs{
 height: 100%;
 width: 100%;
+display: flex;
+flex-direction: column!important;
 }
 .show {
     display: flex;
@@ -35,23 +37,12 @@ width: 100%;
 
   }
   .showBorderless {
-    display: flex;
+    display: inline-flex;
     flex-direction: column!important;
-    height: 80%;
     overflow-y: scroll;
-
-    
-
-  }
-  .edit {
-    display: flex;
-    flex-direction: column!important;
-
     border: 1px solid var(--defaultgrey);
     border-radius: 5px;
-    overflow-y: scroll;
     overflow-x: hidden;
-  
   }
   .editor {
     width: 100%;
@@ -79,6 +70,7 @@ width: 100%;
   .buttonGroups{
     display: grid;
     width: 100%;
+    height: fit-content;
   }
   @container(width>300px){
     .buttonGroups{
